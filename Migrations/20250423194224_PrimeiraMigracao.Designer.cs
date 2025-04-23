@@ -12,7 +12,7 @@ using ProjetoInter.Data;
 namespace ProjetoInter.Migrations
 {
     [DbContext(typeof(DbZoologico))]
-    [Migration("20250423001623_PrimeiraMigracao")]
+    [Migration("20250423194224_PrimeiraMigracao")]
     partial class PrimeiraMigracao
     {
         /// <inheritdoc />
