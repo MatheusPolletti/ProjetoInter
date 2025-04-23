@@ -1,6 +1,15 @@
+using ProjetoInter.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<DbZoologico>(options => 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
+
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+app.UseStaticFiles();
 
 app.Run();
