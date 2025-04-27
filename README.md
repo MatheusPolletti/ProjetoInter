@@ -1,13 +1,13 @@
 # Projeto Inter
 
-Projeto de gerenciamento de zoológicos feito para o Interdisciplinar do 4° semestre da fatec RP.
+Projeto de gerenciamento de zoológicos feito para o Interdisciplinar do 4° semestre da FATEC RP.
 
 ## 👥 Equipe
 
-- Fábio
-- Filiph
-- Matheus
-- Vitória
+- Fábio Rogério Escábio Júnior
+- Filiph Rodrigues Rocha Romão
+- Matheus Cauã Polletti
+- Vitória Assis de Oliveira
 
 ## 🚀 Tecnologias utilizadas
 
@@ -17,11 +17,11 @@ Projeto de gerenciamento de zoológicos feito para o Interdisciplinar do 4° sem
 
 ## ⚙️ Como rodar o projeto
 
-### Para você pegar o repositório
+# Puxando o projeto
 
 ```bash
 # Clone o repositório
-git clone https://github.com/MatheusPolletti/ProjetoInter.git
+git clone linkDoProjetoFork
 
 # Acesse a pasta
 cd ProjetoInter
@@ -32,25 +32,26 @@ git checkout development
 # Atualize a sua branch
 git pull origin development
 
-# Crie uma nova branch para a funcionalide que você vai criar e de o nome dela na branch(Não esqueça esse nome)
+# Crie uma nova branch para a funcionalidade que você vai criar e dê o nome dela
 git checkout -b feature/NomeDaFuncionalidade
 
-### Para rodar ele
+# Rodando o projeto
 
 # Restaure os pacotes
 dotnet restore
 
 # Rode o projeto (2 opções)
-- dotnet run
-- dotnet watch run
+dotnet run
+# ou
+dotnet watch run
 
-### Colocar o código no git
+# Adicionado ao git
 
 # Adicione para o índice do git
 git add .
 
-# Fazer o commit
+# Faça o commit
 git commit -m "Nome explicando a sua mudança do commit"
 
-# Enviar a alteração para o repositório | Lembre de colocar o nome da branch que você criou
+# Enviar a alteração para o repositório | Lembre-se de colocar o nome da branch que você criou
 git push origin feature/NomeDaFuncionalidade
