@@ -11,4 +11,5 @@ public class Funcionario
     public string Cpf { get; set; }
     public string Cargo { get; set; }
     public string? Telefone { get; set; }
+    public bool Status { get; set; }
 }

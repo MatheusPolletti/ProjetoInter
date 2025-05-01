@@ -12,6 +12,7 @@ public class AtendimentoVeterinario
     [DeleteBehavior(DeleteBehavior.NoAction)]
     public Funcionario Funcionario { get; set; }
     public DateTime Data { get; set; }
+    public string Status { get; set; }
     public string Descricao { get; set; }
     public string Resultado { get; set; }
     public string? Observacoes { get; set; }

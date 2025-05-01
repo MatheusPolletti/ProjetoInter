@@ -6,4 +6,5 @@ public class Instituicao
     public string Nome { get; set; }
     public string Endereco { get; set; }
     public string? Contato { get; set; }
+    public bool Status { get; set; }
 }

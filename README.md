@@ -21,7 +21,7 @@ Projeto de gerenciamento de zoológicos feito para o Interdisciplinar do 4° sem
 
 ```bash
 # Clone o repositório
-git clone linkDoProjetoFork
+git clone https://github.com/MatheusPolletti/ProjetoInter.git
 
 # Acesse a pasta
 cd ProjetoInter

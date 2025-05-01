@@ -9,5 +9,7 @@ public class Animal
     public string Especie { get; set; }
     // O ? defini que pode ser nulo a variável
     public DateOnly? DataNascimento { get; set; }
+    public DateOnly? DataFalecimento { get; set; }
+    public bool Status { get; set; }
     public string? ImagemUrl { get; set; }
 }
