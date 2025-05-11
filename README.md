@@ -13,7 +13,7 @@ Projeto de gerenciamento de zoológicos feito para o Interdisciplinar do 4° sem
 
 - .NET (C#)
 - ASP.NET Core
-- SQL Server
+- Supabase
 
 ## ⚙️ Como rodar o projeto
 
