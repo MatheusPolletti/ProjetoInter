@@ -1,32 +1,114 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="~/css/LoginCadastro.css">
-    <link rel="shortcut icon" href="~/img/logo.png" type="image/x-icon">
-    <title>GerenciaZoo</title>
-</head>
-<body>
-    <main>
-        <section class="LogoTitulo">
-            <img src="~/img/logo.png" alt="Logo GerenciaZoo" class="imagem">
+@{
+    ViewData["Title"] = "Dados Completos";
+}
 
-            <h1 class="TituloSistema">GerenciaZoo</h1>
-        </section>
- 
-        <section class="DadosLogin">
-            <h1>Login</h1>
-           
-            <form class="Formulario">
-                <input type="email" name="email" placeholder="E-mail" class="CaixaEmail" required />
-                <input type="password" name="senha" placeholder="Senha" class="CaixaSenha" required />
-               
-                <p><a href="/recuperar-senha">Não consegue acessar sua conta?</a></p>
- 
-                <button type="submit" class="Botao">Entrar</button>
-            </form>
-        </section>
-    </main>
-</body>
-</html>
+<h1>Dados Completos</h1>
+
+<h2>Transferências</h2>
+<table border="1">
+    <tr>
+        <th>ID</th><th>Animal</th><th>Origem</th><th>Destino</th><th>Status</th><th>Data Saída</th><th>Data Entrada</th>
+    </tr>
+@foreach(var t in (List<ProjetoInter.Models.Transferencia>)ViewBag.Transferencias)
+{
+    <tr>
+        <td>@t.TransferenciaId</td>
+        <td>@t.Animal?.Nome</td>
+        <td>@t.InstituicaoOrigem?.Nome</td>
+        <td>@t.InstituicaoDestino?.Nome</td>
+        <td>@(t.Status ? "Ativo" : "Inativo")</td>
+        <td>@t.DataSaida?.ToString("dd/MM/yyyy")</td>
+        <td>@t.DataEntrada?.ToString("dd/MM/yyyy")</td>
+    </tr>
+}
+</table>
+
+<h2>Animais</h2>
+<table border="1">
+    <tr>
+        <th>ID</th><th>Nome</th><th>Espécie</th><th>Status</th><th>Setor</th><th>Sexo</th><th>Peso</th>
+    </tr>
+@foreach(var a in (List<ProjetoInter.Models.Animal>)ViewBag.Animais)
+{
+    <tr>
+        <td>@a.AnimalId</td>
+        <td>@a.Nome</td>
+        <td>@a.Especie?.Descricao</td>
+        <td>@a.Status?.Descricao</td>
+        <td>@a.Setor?.Nome</td>
+        <td>@a.Sexo</td>
+        <td>@a.Peso</td>
+    </tr>
+}
+</table>
+
+<h2>Funcionários</h2>
+<table border="1">
+    <tr>
+        <th>ID</th><th>Nome</th><th>CPF</th><th>Cargo</th><th>Telefone</th>
+    </tr>
+@foreach(var f in (List<ProjetoInter.Models.Funcionario>)ViewBag.Funcionarios)
+{
+    <tr>
+        <td>@f.FuncionarioId</td>
+        <td>@f.Nome</td>
+        <td>@f.Cpf</td>
+        <td>@f.Cargo</td>
+        <td>@f.Telefone</td>
+    </tr>
+}
+</table>
+
+<h2>Procedimentos</h2>
+<table border="1">
+    <tr>
+        <th>ID</th><th>Animal</th><th>Funcionário Tarefa</th><th>Descrição</th><th>Data</th><th>Status</th>
+    </tr>
+@foreach(var p in (List<ProjetoInter.Models.Procedimento>)ViewBag.Procedimentos)
+{
+    <tr>
+        <td>@p.ProcedimentoId</td>
+        <td>@p.Animal?.Nome</td>
+        <td>@p.FuncionarioTarefa?.Nome</td>
+        <td>@p.Descricao</td>
+        <td>@p.DataProcedimento.ToString("dd/MM/yyyy")</td>
+        <td>@(p.Status ? "Ativo" : "Inativo")</td>
+    </tr>
+}
+</table>
+
+<h2>Setores</h2>
+<table border="1">
+    <tr>
+        <th>ID</th><th>Nome</th><th>Descrição</th><th>Status</th><th>Instituição</th>
+    </tr>
+@foreach(var s in (List<ProjetoInter.Models.Setor>)ViewBag.Setores)
+{
+    <tr>
+        <td>@s.SetorId</td>
+        <td>@s.Nome</td>
+        <td>@s.Descricao</td>
+        <td>@(s.Status ? "Ativo" : "Inativo")</td>
+        <td>@s.InstituicaoPertence?.Nome</td>
+    </tr>
+}
+</table>
+
+<h2>Atendimentos Veterinários</h2>
+<table border="1">
+    <tr>
+        <th>ID</th><th>Animal</th><th>Solicitante</th><th>Veterinário</th><th>Descrição</th><th>Data</th><th>Status</th>
+    </tr>
+@foreach(var av in (List<ProjetoInter.Models.AtendimentoVeterinario>)ViewBag.Atendimentos)
+{
+    <tr>
+        <td>@av.AtendimentoVeterinarioId</td>
+        <td>@av.Animal?.Nome</td>
+        <td>@av.FuncionarioSolicitante?.Nome</td>
+        <td>@av.FuncionarioVeterinario?.Nome</td>
+        <td>@av.Descricao</td>
+        <td>@av.Data?.ToString("dd/MM/yyyy")</td>
+        <td>@(av.Status ? "Ativo" : "Inativo")</td>
+    </tr>
+}
+</table>
