@@ -1,0 +1,121 @@
+*, *::before, *::after
+{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+main
+{
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    height: 100vh;
+    width: 100vw;
+
+    gap: 100px;
+}
+
+.LogoTitulo > .TituloSistema
+{
+    display: flex;
+
+    justify-content: center;
+}
+
+.LogoTitulo > .imagem
+{
+    max-height: 35vh;
+    max-width: 35vw;
+    
+    border-radius: 50%;
+}
+
+.DadosLogin > h1
+{
+    display: flex;
+    justify-content: center;
+
+    font-size: 40px;
+    font-weight: normal;
+
+    padding-bottom: 4vh;
+}
+
+.DadosLogin > .Formulario
+{
+    display: flex;
+
+    flex-direction: column;
+
+    row-gap: 3vh;
+}
+
+.CaixaEmail, .CaixaSenha, .Botao
+{
+    max-width: 50vw;
+
+    border: 1px solid #000;
+}
+
+.DadosLogin input
+{
+    padding: 5%;
+
+    outline: none;
+
+    border-radius: 5px;
+}
+
+.Botao
+{
+    font-size: 16px;
+    
+    border: 2px solid #000;
+    border-radius: 999px;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    outline: none;
+    
+    transition: transform 0.3s ease;
+}
+
+.Botao:hover
+{
+    transform: scale(1.2);
+}
+
+.DadosLogin a
+{
+    color: black;
+    transition: color 0.3s;
+}
+
+.DadosLogin a:link
+{
+    text-decoration: none;
+    color: #000;
+}
+
+.DadosLogin a:hover
+{
+    color: red;
+}
+
+@media (max-width: 768px)
+{
+    main
+    {
+        display: flex;
+        flex-direction: column;
+
+        justify-content: start;
+
+        gap: 1vh;
+    }
+}

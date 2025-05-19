@@ -1,9 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ProjetoInter.Data;
 
 public class HomeController : Controller
 {
-    public IActionResult Index()
+    private readonly DbZoologico context;
+
+    public HomeController(DbZoologico _context)
     {
-        return View("LoginCadastro");
+        context = _context;
+    }
+
+    //public IActionResult Index()
+    //{
+     //   return View("LoginCadastro");
+    //}
+
+    public async Task<IActionResult> LoginCadastro()
+    {
+        var usuarios = await context.Usuarios.ToListAsync();
+        return View(usuarios);  
     }
 }

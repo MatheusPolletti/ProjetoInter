@@ -2,10 +2,31 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=devie-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/css/LoginCadastro.css">
+    <link rel="shortcut icon" href="~/img/logo.png" type="image/x-icon">
     <title>GerenciaZoo</title>
 </head>
 <body>
-    <h1>Bem vindo ao GerenciaZoo</h1>
+    <main>
+        <section class="LogoTitulo">
+            <img src="~/img/logo.png" alt="Logo GerenciaZoo" class="imagem">
+
+            <h1 class="TituloSistema">GerenciaZoo</h1>
+        </section>
+ 
+        <section class="DadosLogin">
+            <h1>Login</h1>
+           
+            <form class="Formulario">
+                <input type="email" name="email" placeholder="E-mail" class="CaixaEmail" required />
+                <input type="password" name="senha" placeholder="Senha" class="CaixaSenha" required />
+               
+                <p><a href="/recuperar-senha">Não consegue acessar sua conta?</a></p>
+ 
+                <button type="submit" class="Botao">Entrar</button>
+            </form>
+        </section>
+    </main>
 </body>
 </html>
