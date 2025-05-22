@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="~/css/LoginCadastro.css">
+    <link rel="stylesheet" href="~/css/TelaLoginCadastro.css">
     <link rel="shortcut icon" href="~/img/logo.png" type="image/x-icon">
     <title>GerenciaZoo</title>
 </head>
@@ -18,12 +18,12 @@
         <section class="DadosLogin">
             <h1>Login</h1>
            
-            <form method="post" action="/Home/AcessarSistema" class="Formulario">
+            <form method="post" asp-controller="Home" asp-action="AcessarSistema" class="Formulario">
                 <input type="email" name="email" placeholder="E-mail" class="CaixaEmail" required />
                 <input type="password" name="senha" placeholder="Senha" class="CaixaSenha" required />
                
-                <p><a href="/recuperar-senha">Não consegue acessar sua conta?</a></p>
- 
+                <a asp-controller="Home" asp-action="SemSucessoAcessarConta">Não consegue acessar sua conta?</a>
+                
                 <button type="submit" class="Botao">Entrar</button>
             </form>
         </section>

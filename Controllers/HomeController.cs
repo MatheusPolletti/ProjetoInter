@@ -10,7 +10,7 @@ public class HomeController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> LoginCadastro()
+    public async Task<IActionResult> await LoginCadastro()
     {
         return View();
     }
@@ -18,6 +18,11 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult AcessarSistema()
     {
-        return RedirectToAction("Index", "Animal");
+        return RedirectToAction("Animais", "Animal");
+    }
+
+    public IActionResult SemSucessoAcessarConta()
+    {
+        return View();
     }
 }

@@ -1,0 +1,156 @@
+:root
+{
+    --cor-preto: #000000;
+    --cor-fundo: #F9F7F1;
+
+    --cor-letra: #212121;
+
+    --cor-verde-fraco: #4CAF50;
+    --cor-verde-misto: #339933;
+    --cor-verde-forte: #2E7D32;
+    --cor-azul: #1976D2;
+    
+    --vermelho: #D32F2F;
+}
+
+*, *::before, *::after
+{
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+
+    color: var(--cor-letra);
+}
+
+main
+{
+    display: flex;
+
+    flex-direction: row;
+}
+
+.MainContent
+{
+    flex: 1;
+
+    background-color: var(--cor-fundo);
+
+    border-left: 2px solid var(--cor-preto);
+}
+
+.Sidebar
+{
+    display: flex;
+    flex-direction: column;
+    
+    height: 100vh;
+    width: calc(11vw + 100px);
+    
+    background-color: var(--cor-verde-fraco);
+}
+
+.Topo
+{
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: space-around;
+
+    width: 90%;
+
+    margin-left: 5%;
+    margin-bottom: 8%;
+
+    padding-top: 5%;
+    padding-bottom: 5%;
+
+    border-bottom: 2px solid var(--cor-preto);
+}
+
+.imagem
+{
+    height: 80%;
+    width: 40%;
+    
+    border-radius: 50%;
+}
+
+.NomeTitulo
+{
+    font-size: clamp(18px, 2vw + 1rem, 22px);
+
+    cursor: default;
+}
+
+.navegacao
+{
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+
+    flex-grow: 1;
+}
+
+.botoes 
+{
+    width: 100%;
+
+    font-size: clamp(15px, 2vw + 1rem, 20px);
+
+    padding-left: 5%;
+    
+    text-decoration: none;
+
+    transition: transform 0.3s ease;
+    transform-origin: left center;
+}
+
+.botoes:hover
+{
+    transform: scale(1.1);
+}
+
+.Bottom
+{
+    padding-bottom: 3vh;
+}
+
+#BotaoLogout:hover
+{   
+    color: var(--vermelho);
+}
+
+.TopoContent
+{
+    display: flex;
+
+    align-items: center;
+    justify-content: end;
+
+    padding-right: 4vw;
+
+    background-color: var(--cor-verde-misto);
+
+    height: 10vh;
+
+    border-left: 1px solid var(--cor-preto);
+    border-bottom: 3px solid var(--cor-preto);
+}
+
+
+@media screen and (max-width: 700px)
+{
+    .Sidebar 
+    {
+        display: flex;
+        position: fixed;
+
+        width: 100vw;
+        max-height: calc(10vw + 50px);
+       
+        overflow-x: auto;
+    }
+}

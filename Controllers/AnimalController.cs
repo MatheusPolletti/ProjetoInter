@@ -10,8 +10,14 @@ public class AnimalController : Controller
         _context = context;
     }
 
-     public IActionResult Index()
+    public IActionResult Animais()
     {
         return View();
+    }
+    
+    [HttpPost]
+    public IActionResult AcessarTarefa()
+    {
+        return RedirectToAction("Tarefas", "Tarefa");
     }
 }

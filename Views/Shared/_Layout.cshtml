@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="~/img/logoSimples.png" type="image/x-icon">
+    <link rel="stylesheet" href="~/css/SitePadrao.css">
+    <title>Gerencia Zoo</title>
+</head>
+<body>
+    <main>
+        <nav class="Sidebar">
+        
+            <section class="Topo">
+                <img src="~/img/logoSimples.png" alt="Logo GerenciaZoo" class="imagem">
+                <h1 class="NomeTitulo">GerenciaZoo</h1>
+            </section>
+        
+            <section class="navegacao">
+                    <a asp-controller="Animal" asp-action="Animais" class="botoes">Animais</a>
+        
+                    <a asp-controller="Tarefa" asp-action="Tarefas" class="botoes">Tarefas</a>
+        
+                    <a asp-controller="Colaborador" asp-action="Colaboradores" class="botoes">Colaboradores</a>
+        
+                    <a asp-controller="AtendimentoVeterinario" asp-action="AtendimentosVeterinarios" class="botoes">Atendimento Veterinário</a>
+        
+                    <a asp-controller="Setor" asp-action="Setores" class="botoes">Setores</a>
+        
+                    <a asp-controller="Transferencia" asp-action="Transferencias" class="botoes">Transferências</a>
+            </section>
+        
+            <section class="Bottom">
+                <a asp-controller="Home" asp-action="SemSucessoAcessarConta" class="botoes" id="BotaoLogout">Logout</a>
+            </section>
+        
+        </nav>
+
+        <section class="MainContent">
+            
+            <div class="TopoContent">
+                <h1 class=" ">Usuário</h1>
+            </div>
+            
+            @RenderBody()
+        
+        </section>
+    
+    </main>
+</body>
+</html>
