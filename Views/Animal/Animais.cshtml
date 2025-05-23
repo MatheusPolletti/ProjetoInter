@@ -1,3 +1,41 @@
 @{
     Layout="~/Views/Shared/_Layout.cshtml";
 }
+
+<main>
+
+
+    <!-- Conteúdo principal -->
+    <section class="MainContent">
+        <header class="TopoContent"></header>
+            <span class="NomeUsuario">User</span>
+        </header>
+
+        <div class="ConteudoMain">
+            <div class="TituloContent">
+                <h1>Animais</h1>
+                <input type="text" placeholder="Buscar..." style="margin-left: auto; padding: 5px; border-radius: 30px; border: 1px solid var(--cor-cinza);" />
+                <button style="margin-left: auto;">Excluir</button>
+                <button>Editar</button>
+                <button>Novo</button>
+            </div>
+
+            <!-- Cards dos animais -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+                @for (int i = 0; i < 8; i++)
+                {
+                    <div style="border: 1px solid black; border-radius: 40px; padding: 10px;">
+                        <div style="width: 100%; height: 120px; border: 1px solid black; margin-bottom: 10px;"></div>
+                        <strong>Nome Animal</strong><br />
+                        <span>Espécie</span><br />
+                        <span><strong>ID:</strong> 0000000</span> &nbsp;
+                        <span><strong>Setor:</strong> 00</span><br />
+                        <span><strong>Peso:</strong> 0,00 kg</span> &nbsp;
+                        <span><strong>Sexo:</strong> F</span><br />
+                        <span><strong>Idade:</strong> 0 anos e 0 meses</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+</main>
