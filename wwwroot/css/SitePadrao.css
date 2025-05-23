@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
 :root
 {
     --cor-preto: #000000;
@@ -16,10 +18,18 @@
 *, *::before, *::after
 {
     box-sizing: border-box;
+    
     margin: 0px;
     padding: 0px;
 
     color: var(--cor-letra);
+}
+
+body, html
+{
+    height: 100vh;
+
+    overflow: hidden;
 }
 
 main
@@ -27,24 +37,53 @@ main
     display: flex;
 
     flex-direction: row;
+
+    font-family: 'DM Sans', sans-serif;
+
+    height: 100vh;
 }
 
 .MainContent
 {
+    display: flex;
+
+    flex-direction: column;
+    
+    height: 100vh;
+
+    overflow: hidden;
+
     flex: 1;
 
     background-color: var(--cor-fundo);
+}
 
-    border-left: 2px solid var(--cor-preto);
+.ConteudoMain
+{
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding-inline: calc(11vw + 120px) 2vw;
+
+    padding-top: 3vh;
 }
 
 .Sidebar
 {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
     display: flex;
+    
     flex-direction: column;
     
     height: 100vh;
-    width: calc(11vw + 100px);
+    width: calc(9vw + 150px);
+
+    border-right: 2px solid var(--cor-preto);
     
     background-color: var(--cor-verde-fraco);
 }
@@ -52,6 +91,7 @@ main
 .Topo
 {
     display: flex;
+
     flex-direction: row;
 
     align-items: center;
@@ -70,8 +110,8 @@ main
 
 .imagem
 {
-    height: 80%;
-    width: 40%;
+    height: 75%;
+    width: 32.5%;
     
     border-radius: 50%;
 }
@@ -135,22 +175,105 @@ main
     background-color: var(--cor-verde-misto);
 
     height: 10vh;
+    min-height: 60px;
 
-    border-left: 1px solid var(--cor-preto);
+    flex-shrink: 0;
+    
     border-bottom: 3px solid var(--cor-preto);
 }
 
+.NomeUsuario
+{
+    cursor: default;
+}
 
 @media screen and (max-width: 700px)
 {
-    .Sidebar 
+    main
     {
-        display: flex;
-        position: fixed;
+        flex-direction: column;
+    
+        width: 100%;
+    }
 
-        width: 100vw;
-        max-height: calc(10vw + 50px);
-       
-        overflow-x: auto;
+    .Sidebar
+    {
+        position: relative;
+    
+        flex-direction: row;
+        
+        align-items: center;
+        justify-content: space-between;
+
+        width: 100%;
+        height: auto;
+        
+        padding: 10px 4vw;
+
+        border: none;
+        
+        border-bottom: 2px solid var(--cor-preto);
+
+        background-color: var(--cor-verde-fraco);
+    }
+
+    .Topo
+    {
+        display: none;
+    }
+
+    .navegacao 
+    {
+        flex-direction: row;
+    
+        flex-wrap: wrap;
+    
+        justify-content: center;
+    
+        gap: 4vw;
+    
+        width: 100%;
+    }
+
+    .botoes
+    {
+        font-size: clamp(13px, 4vw, 16px);
+    
+        padding: 5px 2vw;
+    
+        text-align: center;
+    
+        white-space: nowrap;
+    }
+
+    .MainContent
+    {
+        flex: none;
+    
+        width: 100%;
+    
+        height: auto;
+    }
+
+    .ConteudoMain
+    {
+        margin: 0;
+    
+        padding: 4vh 5vw;
+    
+        width: 100%;
+    
+        overflow-x: hidden;
+    }
+
+    .TopoContent
+    {
+        padding: 10px 5vw;
+    
+        flex-direction: column;
+    
+        gap: 10px;
+    
+        align-items: flex-end;
     }
 }

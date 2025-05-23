@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="~/img/logoSimples.png" type="image/x-icon">
+    <link rel="shortcut icon" href="~/img/LogoCapivara.png" type="image/x-icon">
     <link rel="stylesheet" href="~/css/SitePadrao.css">
     <title>Gerencia Zoo</title>
 </head>
@@ -31,7 +31,7 @@
             </section>
         
             <section class="Bottom">
-                <a asp-controller="Home" asp-action="SemSucessoAcessarConta" class="botoes" id="BotaoLogout">Logout</a>
+                <a asp-controller="Home" asp-action="LoginCadastro" class="botoes" id="BotaoLogout">Logout</a>
             </section>
         
         </nav>
@@ -39,10 +39,12 @@
         <section class="MainContent">
             
             <div class="TopoContent">
-                <h1 class=" ">Usuário</h1>
+                <h1 class="NomeUsuario">Usuário</h1>
             </div>
             
-            @RenderBody()
+            <div class="ConteudoMain">
+                @RenderBody()
+            </div>
         
         </section>
     

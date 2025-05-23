@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
 :root
 {
     --cor-preta: #000000;
@@ -7,14 +9,16 @@
 *, *::before, *::after
 {
     box-sizing: border-box;
+
     margin: 0px;
     padding: 0px;
-    
 }
 
 main
 {
     display: flex;
+
+    font-family: 'DM Sans', sans-serif;
 
     justify-content: center;
     align-items: center;
@@ -30,6 +34,8 @@ main
     display: flex;
 
     justify-content: center;
+
+    cursor: default;
 }
 
 .LogoTitulo > .imagem
@@ -43,12 +49,15 @@ main
 .DadosLogin > h1
 {
     display: flex;
+    
     justify-content: center;
 
     font-size: 40px;
     font-weight: normal;
 
     padding-bottom: 4vh;
+    
+    cursor: default;
 }
 
 .DadosLogin > .Formulario
@@ -100,12 +109,14 @@ main
 .DadosLogin a
 {
     color: var(--cor-preta);
+    
     transition: color 0.3s;
 }
 
 .DadosLogin a:link
 {
     text-decoration: none;
+
     color: var(--cor-preta);
 }
 

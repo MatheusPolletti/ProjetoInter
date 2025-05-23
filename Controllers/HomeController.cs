@@ -10,7 +10,7 @@ public class HomeController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> await LoginCadastro()
+    public async Task<IActionResult> LoginCadastro()
     {
         return View();
     }
