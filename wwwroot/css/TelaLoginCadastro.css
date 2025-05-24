@@ -4,6 +4,7 @@
 {
     --cor-preta: #000000;
     --cor-vermelha: #ff0000;
+    --cor-fundo: #F9F7F1;
 }
 
 *, *::before, *::after
@@ -19,6 +20,8 @@ main
     display: flex;
 
     font-family: 'DM Sans', sans-serif;
+
+    background-color: var(--cor-fundo);
 
     justify-content: center;
     align-items: center;

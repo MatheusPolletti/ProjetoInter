@@ -62,11 +62,11 @@ main
 {
     flex: 1;
 
-    overflow-y: auto;
+    overflow-y: auto;  
 
-    padding-inline: calc(11vw + 120px) 2vw;
-
-    padding-top: 3vh;
+    padding-top: calc(2vh + 20px);
+    padding-left: calc(9vw + 150px + 2vw);
+    padding-right: clamp(32px, 6vw, 80px);
 }
 
 .Sidebar
@@ -110,8 +110,8 @@ main
 
 .imagem
 {
-    height: 75%;
-    width: 32.5%;
+    height: 100%;
+    max-width: 25%;
     
     border-radius: 50%;
 }
@@ -185,6 +185,20 @@ main
 .NomeUsuario
 {
     cursor: default;
+}
+
+.Header
+{
+    display: flex;
+
+    align-items: start;
+    justify-content: start;
+
+    background-color: var(--cor-verde-fraco);
+
+    height: 10vh;
+
+    border-bottom: 3px solid var(--cor-preto);
 }
 
 @media screen and (max-width: 700px)
