@@ -1,19 +1,35 @@
-@{
-    Layout="~/Views/Shared/_Layout.cshtml";
-}
-
 @section Styles
 {
     <link rel="stylesheet" href="/css/TelaAnimal.css">
 }
 
+@{
+    Layout="~/Views/Shared/_Layout.cshtml";
+}
+
 @section HeaderBarras
 {
     <div class="Header">
-        <h1>legal</h1>
+        <div class="ConteudoHeader">
+
+            <h1 class="NomePagina">Animais</h1>
+            
+            <div class="Barrabusca">
+                <input type="text" placeholder="Pesquisar..." class="TextoPesquisa">
+                <button class="BotaoIconePesquisa" aria-label="Pesquisar">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                </button>    
+            </div>
+            
+            <div class="BotoesAcoes">
+                <button class="BotaoExcluir">Excluir</button>
+                <button class="BotaoEditar">Editar</button>
+                <button class="BotaoNovo">Novo</button>
+            </div>
+        
+        </div>
     </div>
 }
-
 
 <section class="exemplo">
     <h1>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nulla autem beatae doloremque dolorem fuga adipisci repudiandae dolores illo deleniti reiciendis possimus esse, officia numquam impedit, vitae consequatur, quas praesentium necessitatibus!</h1>
