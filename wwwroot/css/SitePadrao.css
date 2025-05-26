@@ -64,7 +64,6 @@ main
 
     overflow-y: auto;  
 
-    padding-top: calc(2vh + 20px);
     padding-left: calc(9vw + 150px + 2vw);
     padding-right: clamp(32px, 6vw, 80px);
 }

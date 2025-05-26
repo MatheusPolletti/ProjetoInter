@@ -1,3 +1,5 @@
+@model IEnumerable<ProjetoInter.Models.Animal>
+
 @section Styles
 {
     <link rel="stylesheet" href="/css/TelaAnimal.css">
@@ -31,6 +33,46 @@
     </div>
 }
 
-<section class="exemplo">
-    <h1>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nulla autem beatae doloremque dolorem fuga adipisci repudiandae dolores illo deleniti reiciendis possimus esse, officia numquam impedit, vitae consequatur, quas praesentium necessitatibus!</h1>
-</section>
+<div class="container-animais">
+    <div class="grid-animais">
+        @if (Model != null)
+        {
+            foreach (var animal in Model)
+            {
+                var idade = animal.DataNascimento.HasValue
+                    ? DateTime.Now - animal.DataNascimento.Value.ToDateTime(TimeOnly.MinValue)
+                    : TimeSpan.Zero;
+
+                var anos = (int)(idade.Days / 365.25);
+                var meses = (int)((idade.Days % 365.25) / 30.44);
+
+                <div class="card-animal">
+                    <img src="~/@animal.ImagemUrl" alt="Imagem do animal" class="foto-animal" />
+
+                    <div class="info-animal">
+                        <div class="linha-info">
+                            <div class="esquerda"><strong>@animal.Nome</strong></div>
+                            <div class="direita"><strong>ID:</strong> <span class="valor">@animal.AnimalId</span></div>
+                        </div>
+                        <div class="linha-info">
+                            <div class="esquerda">@animal.Especie?.Descricao</div>
+                            <div class="direita"><strong>Setor:</strong> <span class="valor">@animal.Setor?.Nome</span></div>
+                        </div>
+                        <div class="linha-info">
+                            <div class="esquerda"><strong>Peso:</strong> <span class="valor">@animal.Peso.ToString("0.00") kg</span></div>
+                            <div class="direita"><strong>Sexo:</strong> <span class="valor">@animal.Sexo</span></div>
+                        </div>
+                        <div class="linha-info">
+                            <div class="esquerda"><strong>Idade:</strong> <span class="valor">@anos anos e @meses meses</span></div>
+                            <div class="direita"></div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p style="color:red;">Erro: Nenhum animal encontrado ou problema ao carregar o Model.</p>
+        }
+    </div>
+</div>

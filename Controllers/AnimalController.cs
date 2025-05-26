@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjetoInter.Data;
+using Microsoft.EntityFrameworkCore;
 
 public class AnimalController : Controller
 {
@@ -9,10 +10,16 @@ public class AnimalController : Controller
     {
         _context = context;
     }
-
-    public IActionResult Animais()
+    
+    public async Task<IActionResult> Animais()
     {
-        return View();
+        var animais = await _context.Animais
+        .Include(a => a.Setor)
+        .Include(a => a.Status)
+        .Include(a => a.Especie)
+        .ToListAsync();
+
+        return View(animais);
     }
     
     [HttpPost]
