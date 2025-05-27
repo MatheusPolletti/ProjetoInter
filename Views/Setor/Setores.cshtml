@@ -1,4 +1,7 @@
-@section Styles{
+@model IEnumerable<ProjetoInter.Models.Setor>
+
+@section Styles
+{
     <link rel="stylesheet" href="/css/TelaSetor.css">
 }
 
@@ -10,9 +13,9 @@
 {
     <div class="Header">
         <div class="ConteudoHeader">
+        
+             <h1 class="NomePagina">Setores</h1>
 
-            <h1 class="NomePagina">Setores</h1>
-            
             <div class="Barrabusca">
                 <input type="text" placeholder="Pesquisar..." class="TextoPesquisa">
                 <button class="BotaoIconePesquisa" aria-label="Pesquisar">
@@ -30,6 +33,31 @@
     </div>
 }
 
-<section class="exemplo">
-    <h1>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nulla autem beatae doloremque dolorem fuga adipisci repudiandae dolores illo deleniti reiciendis possimus esse, officia numquam impedit, vitae consequatur, quas praesentium necessitatibus!</h1>
-</section>
+<div class="container-setores">
+    <div class="esquerda">
+        @if (Model != null)
+        {
+            foreach(var setor in Model)
+            {
+                <div class="card-setores">
+                    <div class="textos">
+                        <h1 class="nomeSetor">@setor.Nome</h1>
+                        <p><strong>Descrição:</strong> @setor.Descricao</p>
+                    </div>
+                    <div class="card-end">
+                        <h3>ID: @setor.SetorId</h3>
+                        <input type="checkbox">
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    <!--Classe não usada-->
+    <div>
+        <!-- O ~ é o que permite o acesso as imagens-->
+        <img src="~/img/Setores/Zoobotanico.png" alt="Mapa do Zoobotânico de Rio Preto">
+        <div class="legenda">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi sint, sed possimus dolorum laboriosam laborum vero ut officia maiores eum corporis quisquam in, iusto delectus sit! Odio at eligendi laborum.
+        </div>
+    </div>
+</div>

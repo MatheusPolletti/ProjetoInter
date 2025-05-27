@@ -1,4 +1,79 @@
-.exemplo
+.container-setores 
 {
-    background-color: red;
+    padding-top: 2rem;
+    background-color: #f9f7f1;
+    display: flex;
+    gap: 32px
+}
+
+.card-setores
+{
+    background: white;
+  
+    border-radius: 10px;
+  
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+    overflow: hidden;
+    transition: transform 0.2s;
+
+    cursor: pointer;
+}
+
+.card-setores
+{
+    height: 15vh;
+    width: 32vw;
+
+    display: flex;
+    
+    align-items: center;
+    justify-content: space-between;
+    
+    padding: 1vw;
+}
+
+.textos
+{
+    display: flex;
+    
+    flex-direction: column;
+    
+    row-gap: 2vh;
+}
+
+.esquerda
+{
+    display: flex;
+    flex-direction: column;
+    
+    gap: 3vh;
+}
+
+.card-end
+{
+    display: flex;
+    flex-direction: row;
+}
+
+.container-setores input
+{
+    margin-left: 2vw;
+    width: 1.5vw;
+    
+    cursor: pointer;
+}
+
+.container-setores img
+{
+    height: 70vh;
+    width: 40vw;
+
+    border-radius: 24px;
+}
+
+.legenda
+{
+    padding-top: 2vh;
+    width: 40vw;
 }

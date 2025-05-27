@@ -84,7 +84,8 @@
   white-space: nowrap;
 }
 
-.valor {
+.valor 
+{
   color: #999999; /* cinza claro, pode ajustar */
   font-weight: 400; /* opcional: deixar normal, sem negrito */
 }

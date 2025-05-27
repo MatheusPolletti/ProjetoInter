@@ -10,8 +10,10 @@ public class ColaboradorController : Controller
         _context = context;
     }
 
-     public IActionResult Colaboradores()
+    public IActionResult Colaboradores()
     {
         return View();
     }
+    
+    
 }
