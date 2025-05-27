@@ -1,10 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjetoInter.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
-using ProjetoInter.Models;
-using System.Linq;
-
 public class ColaboradorController : Controller
 {
     private readonly DbZoologico _context;
