@@ -62,11 +62,10 @@ main
 {
     flex: 1;
 
-    overflow-y: auto;
+    overflow-y: auto;  
 
-    padding-inline: calc(11vw + 120px) 2vw;
-
-    padding-top: 3vh;
+    padding-left: calc(9vw + 150px + 2vw);
+    padding-right: clamp(32px, 6vw, 80px);
 }
 
 .Sidebar
@@ -110,8 +109,8 @@ main
 
 .imagem
 {
-    height: 75%;
-    width: 32.5%;
+    height: 100%;
+    max-width: 25%;
     
     border-radius: 50%;
 }
@@ -187,93 +186,141 @@ main
     cursor: default;
 }
 
-@media screen and (max-width: 700px)
+.Header
 {
-    main
-    {
-        flex-direction: column;
+    height: 10vh;
+    width: 100vw;
+
+    background-color: var(--cor-verde-fraco);
+
+    border-bottom: 3px solid var(--cor-preto);
+}
+
+.ConteudoHeader
+{
+    display: flex;
     
-        width: 100%;
+    flex-direction: row;
+
+    height: 100%;
+
+    align-items: center;
+    justify-content: space-between;
+    
+    margin-left: calc(14vw + 100px);
+    margin-right: 2vw;
+}
+
+.NomePagina
+{
+    cursor: default;
+}
+
+.Barrabusca
+{
+    display: flex;
+
+    width: calc(24vw + 50px);
+    height: 5vh;
+
+    align-items: center;
+    justify-content: space-evenly;
+
+    margin-left: 4vw;
+
+    background-color: var(--cor-fundo);
+    border: 1px solid var(--cor-preto);
+
+    border-radius: 999px;
+}
+
+.TextoPesquisa
+{
+    height: 4vh;
+    width: calc(19vw + 60px);
+
+    background-color: transparent;
+    
+    border: none;
+    outline: none;
+}
+
+.BotaoIconePesquisa
+{
+    height: 4vh;
+    width: 3vw;
+    
+    border: none;
+    background-color: transparent;
+
+    cursor: pointer;
+}
+
+.BotoesAcoes
+{
+    display: flex;
+
+    gap: 1vw;
+}
+
+.BotaoExcluir, .BotaoEditar, .BotaoNovo
+{
+    height: 5vh;
+    width: 7vw;
+
+    border-radius: 999px;
+
+    border: 1px solid var(--cor-preto);
+    background-color: var(--cor-fundo);
+    
+    cursor: pointer;
+
+    transition: transform 0.2s ease;
+}
+
+.BotaoExcluir:hover, .BotaoEditar:hover, .BotaoNovo:hover
+{
+    transform: scale(1.08);
+}
+
+@media (max-width: 768px)
+{
+    .ConteudoHeader
+    {
+        margin-left: calc(18vw + 100px);
+
+        justify-content: none;
+    }
+    
+    .Barrabusca
+    {
+        width: calc(14vw + 50px);
     }
 
-    .Sidebar
+    .TextoPesquisa
     {
-        position: relative;
-    
-        flex-direction: row;
-        
-        align-items: center;
-        justify-content: space-between;
+        width: 12vw;
 
-        width: 100%;
-        height: auto;
+        background-color: transparent;
         
-        padding: 10px 4vw;
-
         border: none;
-        
-        border-bottom: 2px solid var(--cor-preto);
-
-        background-color: var(--cor-verde-fraco);
+        outline: none;
     }
 
-    .Topo
+    .BotaoIconePesquisa
     {
-        display: none;
+        width: 3vw;
     }
 
-    .navegacao 
+    .BotaoExcluir, .BotaoEditar, .BotaoNovo
     {
-        flex-direction: row;
-    
-        flex-wrap: wrap;
-    
-        justify-content: center;
-    
-        gap: 4vw;
-    
-        width: 100%;
+        width: 7vw;
+
+        font-size: 12px;
     }
 
-    .botoes
+    .BotaoExcluir:hover, .BotaoEditar:hover, .BotaoNovo:hover
     {
-        font-size: clamp(13px, 4vw, 16px);
-    
-        padding: 5px 2vw;
-    
-        text-align: center;
-    
-        white-space: nowrap;
-    }
-
-    .MainContent
-    {
-        flex: none;
-    
-        width: 100%;
-    
-        height: auto;
-    }
-
-    .ConteudoMain
-    {
-        margin: 0;
-    
-        padding: 4vh 5vw;
-    
-        width: 100%;
-    
-        overflow-x: hidden;
-    }
-
-    .TopoContent
-    {
-        padding: 10px 5vw;
-    
-        flex-direction: column;
-    
-        gap: 10px;
-    
-        align-items: flex-end;
+        transform: none;
     }
 }

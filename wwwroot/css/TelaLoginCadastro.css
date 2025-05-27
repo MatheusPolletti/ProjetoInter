@@ -4,6 +4,8 @@
 {
     --cor-preta: #000000;
     --cor-vermelha: #ff0000;
+    --cor-fundo: #F9F7F1;
+    --cor-branco: #FFFFFF;
 }
 
 *, *::before, *::after
@@ -19,6 +21,8 @@ main
     display: flex;
 
     font-family: 'DM Sans', sans-serif;
+
+    background-color: var(--cor-fundo);
 
     justify-content: center;
     align-items: center;
@@ -91,8 +95,8 @@ main
     
     border: 2px solid var(--cor-preta);
     border-radius: 999px;
-
-    background: transparent;
+    
+    background-color: var(--cor-branco);
 
     cursor: pointer;
 
