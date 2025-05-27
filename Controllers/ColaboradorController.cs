@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjetoInter.Data;
+using Microsoft.EntityFrameworkCore;
 
 public class ColaboradorController : Controller
 {
@@ -10,10 +11,24 @@ public class ColaboradorController : Controller
         _context = context;
     }
 
-    public IActionResult Colaboradores()
+    public async Task<IActionResult> Funcionarios()
     {
-        return View();
+        var funcionarios = await _context.Funcionarios
+        
+        .Include(f => f.StatusFuncionario)
+        .Include(f => f.Cargo)
+        .Include(f => f.Cpf)
+        .Include(f => f.Telefone)
+        .Where(f => f.StatusFuncionarioId == 1) // Filtra apenas os colaboradores ativos
+
+        .ToListAsync();
+
+        return View(funcionarios);
     }
-    
-    
+
+     [HttpPost]
+    public IActionResult AcessarTarefa()
+    {
+        return RedirectToAction("Tarefas", "Tarefa");
+    }
 }

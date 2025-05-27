@@ -1,3 +1,7 @@
+@model IEnumerable<ProjetoInter.Models.Funcionario>
+@{
+    ViewData["Title"] = "Colaboradores";
+}
 @section Styles{
     <link rel="stylesheet" href="/css/TelaColaborador.css">
 }
@@ -25,7 +29,7 @@
             <div class="BotoesAcoes">
                 <button  class="BotaoExcluir">Excluir</button>
                 <button class="BotaoEditar">Editar</button>
-               <a  href="~/Colaborador/AdicionarColaboradores" class="BotaoNovo"><button > Novo </a></button>
+              <button class="BotaoNovo" > Novo </button>
             </div>
         
         </div>
@@ -73,27 +77,25 @@
         }
         </style>
 
-        @if (Model != null && Model.Funcionarios != null && Model.Funcionarios.Any())
+        @if (Model != null )
         {
-            foreach (var funcionario in Model.Funcionarios)
+            foreach (var funcionario in Model)
             {
                 <div class="colaborador-card">
-                    <div class="colaborador-foto">
-                        <img src="@(funcionario.FotoUrl ?? "/images/default-user.png")" alt="Foto" />
-                    </div>
+                   
 
                     <div class="colaborador-info">
                         <p><strong>Nome:</strong> @funcionario.Nome</p>
-                        <p><strong>CPF:</strong> @funcionario.CPF</p>
+                        <p><strong>CPF:</strong> @funcionario.Cpf</p>
                         <p><strong>Telefone:</strong> @funcionario.Telefone</p>
                     </div>
                     <div class="colaborador-Id">
                         <label>Id:</label>
-                        <input type="text" value="@funcionario.Id" disabled />
+                        <input type="text" value="@funcionario.FuncionarioId" disabled />
                     </div>
                     <div class="colaborador-status">
                         <label>Status:</label>
-                        <input type="checkbox" @(funcionario.Ativo ? "checked" : "") disabled />
+                        <input type="checkbox" (funcionario.Ativo ? "checked" : "") disabled />
                     </div>
                 </div>
             }
