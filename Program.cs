@@ -12,7 +12,9 @@ builder.Services.AddSession();
 
 var app = builder.Build();
 
-app.MapControllerRoute("default", "/{controller=Home}/{action=LoginCadastro}/{id?}");
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=LoginCadastro}/{id?}");
 
 app.UseSession();
 
