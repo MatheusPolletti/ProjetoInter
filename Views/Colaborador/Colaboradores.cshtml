@@ -12,7 +12,9 @@
         <div class="ConteudoHeader">
 
             <h1 class="NomePagina">Colaboradores</h1>
-            
+
+   
+        
             <div class="Barrabusca">
                 <input type="text" placeholder="Pesquisar..." class="TextoPesquisa">
                 <button class="BotaoIconePesquisa" aria-label="Pesquisar">
@@ -21,15 +23,147 @@
             </div>
             
             <div class="BotoesAcoes">
-                <button class="BotaoExcluir">Excluir</button>
+                <button  class="BotaoExcluir">Excluir</button>
                 <button class="BotaoEditar">Editar</button>
-                <button class="BotaoNovo">Novo</button>
+               <button  href="~/Colaborador/AdicionarColaboradores" class="BotaoNovo"> Novo</button>
             </div>
         
         </div>
     </div>
 }
 
-<section class="exemplo">
-    <h1>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nulla autem beatae doloremque dolorem fuga adipisci repudiandae dolores illo deleniti reiciendis possimus esse, officia numquam impedit, vitae consequatur, quas praesentium necessitatibus!</h1>
-</section>
+<style>
+.colaboradores-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: left;
+}
+</style>
+
+<div class="colaboradores-list">
+
+   
+        <style>
+        .colaborador-card {
+            display: flex;
+            align-items: center;
+            border: 1px solid #161616;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .colaborador-foto img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+
+        .colaborador-info {
+            flex: 1;
+            margin-left: 15px;
+        }
+
+        .colaborador-status {
+            margin-left: 20px;
+        }
+        .colaborador-Id {
+            align-items: left;
+        }
+        </style>
+
+        @if (Model != null && Model.Funcionarios != null && Model.Funcionarios.Any())
+        {
+            foreach (var funcionario in Model.Funcionarios)
+            {
+                <div class="colaborador-card">
+                    <div class="colaborador-foto">
+                        <img src="@(funcionario.FotoUrl ?? "/images/default-user.png")" alt="Foto" />
+                    </div>
+
+                    <div class="colaborador-info">
+                        <p><strong>Nome:</strong> @funcionario.Nome</p>
+                        <p><strong>CPF:</strong> @funcionario.CPF</p>
+                        <p><strong>Telefone:</strong> @funcionario.Telefone</p>
+                    </div>
+                    <div class="colaborador-Id">
+                        <label>Id:</label>
+                        <input type="text" value="@funcionario.Id" disabled />
+                    </div>
+                    <div class="colaborador-status">
+                        <label>Status:</label>
+                        <input type="checkbox" @(funcionario.Ativo ? "checked" : "") disabled />
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>Nenhum colaborador encontrado.</p>
+        }
+
+
+<style> .colaboradores-list-example
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: left;
+}
+</style>
+
+<div class="colaboradores-list-example">
+   
+        <style>
+        .colaborador-card {
+            display: flex;
+            align-items: center;
+            border: 1px solid #161616;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .colaborador-foto img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+
+        .colaborador-info {
+            flex: 1;
+            margin-left: 15px;
+        }
+
+        .colaborador-status {
+            margin-left: 20px;
+        }
+        .colaborador-Id {
+           
+            align-items: left;
+         
+            
+        }
+        </style>
+        <div class="colaborador-card">
+            <div class="colaborador-foto">
+                <img src="(colaborador.FotoUrl ?? "/images/default-user.png")" alt="Foto" />
+            </div>
+            <div class="colaborador-info">
+                <p><strong>Nome:</strong> colaborador.Nome</p>
+                <p><strong>CPF:</strong> colaborador.CPF</p>
+                <p><strong>Telefone:</strong> colaborador.Telefone</p>
+            </div>
+            <div class="colaborador-Id">
+                <p><strong>Id:</strong> colaborador.Id</p>
+            </div>
+            <div class="colaborador-status">
+                <label>Status:</label>
+                <input type="checkbox" (colaborador.Ativo ? "checked" : "") disabled />
+            </div>
+        </div>
+    
+</div>
+
+
