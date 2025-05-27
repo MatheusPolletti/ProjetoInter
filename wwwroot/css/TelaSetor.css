@@ -1,4 +1,50 @@
-.exemplo
-{
-    background-color: red;
+.container-setores {
+  padding: 2rem;
+  background-color: #f9f7f1;
+  display: flex;
+  gap: 32px
+}
+.container-setores > div > *{
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+.titulo {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+.card-setores {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+h1, h3{
+  width: max-content;
+}
+h3{
+  margin-left: 56px;
+}
+.esquerda{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.card-end{
+  display: flex;
+}
+.container-setores input{
+  margin-left: 56px;
+  width: 20px;
+}
+.container-setores img{
+  min-width: 600px;
+  min-height: 600px;
+}
+.legenda{
+  padding: 16px;
+  max-width: 600px;
 }
