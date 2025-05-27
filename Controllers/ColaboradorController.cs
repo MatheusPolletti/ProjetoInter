@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjetoInter.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using ProjetoInter.Models;
+using System.Linq;
 
 public class ColaboradorController : Controller
 {
@@ -25,6 +28,11 @@ public class ColaboradorController : Controller
 
         return View(funcionarios);
     }
+    public IActionResult Colaboradores()
+    {
+        var funcionarios = _context.Funcionarios.ToList();
+        return View(funcionarios);
+    }
 
      [HttpPost]
     public IActionResult AcessarTarefa()
@@ -32,3 +40,11 @@ public class ColaboradorController : Controller
         return RedirectToAction("Tarefas", "Tarefa");
     }
 }
+
+
+
+
+
+
+    // GET: /Colaborador/Colaboradores
+    
