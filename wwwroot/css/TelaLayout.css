@@ -3,15 +3,13 @@
 :root
 {
     --cor-preto: #000000;
-    --cor-fundo: #F9F7F1;
+    --cor-fundo: #F4F4F4;
+
+    --cor-verde: #BBDFB6;
+    --cor-botoes: #317034;
 
     --cor-letra: #212121;
-
-    --cor-verde-fraco: #4CAF50;
-    --cor-verde-misto: #339933;
-    --cor-verde-forte: #2E7D32;
     --cor-azul: #1976D2;
-    
     --vermelho: #D32F2F;
 }
 
@@ -84,7 +82,7 @@ main
 
     border-right: 2px solid var(--cor-preto);
     
-    background-color: var(--cor-verde-fraco);
+    background-color: var(--cor-verde);
 }
 
 .Topo
@@ -110,16 +108,13 @@ main
 .imagem
 {
     height: 100%;
-    max-width: 25%;
-    
-    border-radius: 50%;
+    max-width: 30%;
 }
 
 .NomeTitulo
 {
-    font-size: clamp(18px, 2vw + 1rem, 22px);
-
-    cursor: default;
+    height: 90%;
+    max-width: 40%;
 }
 
 .navegacao
@@ -171,7 +166,7 @@ main
 
     padding-right: 4vw;
 
-    background-color: var(--cor-verde-misto);
+    background-color: var(--cor-fundo);
 
     height: 10vh;
     min-height: 60px;
@@ -191,7 +186,7 @@ main
     height: 10vh;
     width: 100vw;
 
-    background-color: var(--cor-verde-fraco);
+    background-color: var(--cor-fundo);
 
     border-bottom: 3px solid var(--cor-preto);
 }
@@ -259,7 +254,7 @@ main
 .BotoesAcoes
 {
     display: flex;
-
+    
     gap: 1vw;
 }
 
@@ -271,7 +266,7 @@ main
     border-radius: 999px;
 
     border: 1px solid var(--cor-preto);
-    background-color: var(--cor-fundo);
+    background-color: var(--cor-botoes);
     
     cursor: pointer;
 
