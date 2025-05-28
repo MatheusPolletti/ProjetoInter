@@ -26,8 +26,8 @@ public class ColaboradorController : Controller
     }
     public IActionResult Colaboradores()
     {
-        var funcionarios = _context.Funcionarios.ToList();
-        return View(funcionarios);
+        
+        return View();
     }
 
      [HttpPost]
