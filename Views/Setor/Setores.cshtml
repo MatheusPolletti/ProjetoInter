@@ -5,30 +5,36 @@
     <link rel="stylesheet" href="/css/TelaSetor.css">
 }
 
+@section Scripts
+{
+    <script src="~/js/Setor/Modais.js"></script>
+}
+
 @{
-    Layout="~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @section HeaderBarras
 {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <div class="Header">
         <div class="ConteudoHeader">
-        
-             <h1 class="NomePagina">Setores</h1>
+
+            <h1 class="NomePagina">Setores</h1>
 
             <div class="Barrabusca">
                 <input type="text" placeholder="Pesquisar..." class="TextoPesquisa">
                 <button class="BotaoIconePesquisa" aria-label="Pesquisar">
                     <i class="fas fa-search" aria-hidden="true"></i>
-                </button>    
+                </button>
             </div>
-            
+
             <div class="BotoesAcoes">
                 <button class="BotaoExcluir">Excluir</button>
-                <button class="BotaoEditar">Editar</button>
-                <button class="BotaoNovo">Novo</button>
+                <button onclick="modalEditar()" class="BotaoEditar">Editar</button>
+                <button onclick="modalNovo()" class="BotaoNovo">Novo</button>
             </div>
-        
+
         </div>
     </div>
 }
@@ -37,7 +43,7 @@
     <div class="esquerda">
         @if (Model != null)
         {
-            foreach(var setor in Model)
+            foreach (var setor in Model)
             {
                 <div class="card-setores">
                     <div class="textos">
@@ -52,12 +58,46 @@
             }
         }
     </div>
+
     <!--Classe não usada-->
     <div>
         <!-- O ~ é o que permite o acesso as imagens-->
         <img src="~/img/Setores/Zoobotanico.png" alt="Mapa do Zoobotânico de Rio Preto">
         <div class="legenda">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi sint, sed possimus dolorum laboriosam laborum vero ut officia maiores eum corporis quisquam in, iusto delectus sit! Odio at eligendi laborum.
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi sint, sed possimus dolorum laboriosam
+            laborum vero ut officia maiores eum corporis quisquam in, iusto delectus sit! Odio at eligendi laborum.
         </div>
     </div>
+
+    <div id="area-modal-setores">
+        <div id="modal-setores">
+            <button id="modal-close" onclick="fechaModal()">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <h1>Adicionar Setor</h1>
+            <div>
+                <label>Nome:</label>
+                <input type="text">
+            </div>
+
+            <div>
+                <label>Descrição:</label>
+                <input type="text">               
+            </div>
+
+            <div>
+                <label for="status">Status:</label>
+                <select id="status" name="status">
+                    <option value="ativo">Ativo</option>
+                    <option value="inativo">Inativo</option>
+                </select>                
+            </div>
+
+            <button>Adicionar</button>
+
+        </div>
+    </div>
+
+</div>
 </div>
