@@ -215,17 +215,18 @@ main
 .Barrabusca
 {
     display: flex;
+    position: fixed;
 
-    width: calc(24vw + 50px);
+    left: 50vw;
+
+    width: calc(20vw + 50px);
     height: 5vh;
 
     align-items: center;
-    justify-content: space-evenly;
 
     margin-left: 4vw;
 
     background-color: var(--cor-fundo);
-    border: 1px solid var(--cor-preto);
 
     border-radius: 999px;
 }
@@ -234,6 +235,8 @@ main
 {
     height: 4vh;
     width: calc(19vw + 60px);
+
+    padding-left: 2vh;
 
     background-color: transparent;
     
