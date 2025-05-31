@@ -1,0 +1,42 @@
+@model ProjetoInter.Models.Funcionario
+
+<!-- Botão para abrir o pop-up -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#adicionarColaboradorModal">
+    Adicionar Colaborador
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="adicionarColaboradorModal" tabindex="-1" aria-labelledby="adicionarColaboradorLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="AdicionarColaborador" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adicionarColaboradorLabel">Adicionar Novo Colaborador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label asp-for="Nome" class="form-label"></label>
+                        <input asp-for="Nome" class="form-control" />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Cargo" class="form-label"></label>
+                        <input asp-for="Cargo" class="form-control" />
+                        <span asp-validation-for="Cargo" class="text-danger"></span>
+                    </div>
+                    <!-- Adicione outros campos conforme necessário -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Adicionar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

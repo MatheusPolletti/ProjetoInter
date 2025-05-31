@@ -1,0 +1,325 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+:root
+{
+    --cor-preto: #000000;
+    --cor-fundo: #F4F4F4;
+    --cor-branca: white;
+
+    --cor-verde: #BBDFB6;
+    --cor-botoes: #317034;
+
+    --cor-letra: #212121;
+    --cor-azul: #1976D2;
+    --vermelho: #D32F2F;
+}
+
+*, *::before, *::after
+{
+    box-sizing: border-box;
+    
+    margin: 0px;
+    padding: 0px;
+
+    color: var(--cor-letra);
+}
+
+body, html
+{
+    height: 100vh;
+
+    overflow: hidden;
+}
+
+main
+{
+    display: flex;
+
+    flex-direction: row;
+
+    font-family: 'DM Sans', sans-serif;
+
+    height: 100vh;
+}
+
+.MainContent
+{
+    display: flex;
+
+    flex-direction: column;
+    
+    height: 100vh;
+
+    overflow: hidden;
+
+    flex: 1;
+
+    background-color: var(--cor-fundo);
+}
+
+.ConteudoMain
+{
+    flex: 1;
+
+    overflow-y: auto;  
+
+    padding-left: calc(9vw + 150px + 2vw);
+    padding-right: clamp(32px, 6vw, 80px);
+}
+
+.Sidebar
+{
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    display: flex;
+    
+    flex-direction: column;
+    
+    height: 100vh;
+    width: calc(9vw + 150px);
+
+    border-right: 2px solid var(--cor-preto);
+    
+    background-color: var(--cor-verde);
+}
+
+.Topo
+{
+    display: flex;
+
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: space-around;
+
+    width: 90%;
+
+    margin-left: 5%;
+    margin-bottom: 8%;
+
+    padding-top: 5%;
+    padding-bottom: 5%;
+
+    border-bottom: 2px solid var(--cor-preto);
+}
+
+.imagem
+{
+    height: 100%;
+    max-width: 30%;
+}
+
+.NomeTitulo
+{
+    height: 90%;
+    max-width: 40%;
+}
+
+.navegacao
+{
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+
+    flex-grow: 1;
+}
+
+.botoes 
+{
+    width: 100%;
+
+    font-size: clamp(15px, 2vw + 1rem, 20px);
+
+    padding-left: 5%;
+    
+    text-decoration: none;
+
+    transition: transform 0.3s ease;
+    transform-origin: left center;
+}
+
+.botoes:hover
+{
+    transform: scale(1.1);
+}
+
+.Bottom
+{
+    padding-bottom: 3vh;
+}
+
+#BotaoLogout:hover
+{   
+    color: var(--vermelho);
+}
+
+.TopoContent
+{
+    display: flex;
+
+    align-items: center;
+    justify-content: end;
+
+    padding-right: 4vw;
+
+    background-color: var(--cor-branca);
+
+    height: 10vh;
+    min-height: 60px;
+
+    flex-shrink: 0;
+    
+    border-bottom: 3px solid var(--cor-preto);
+}
+
+.NomeUsuario
+{
+    cursor: default;
+}
+
+.Header
+{
+    height: 10vh;
+    width: 100vw;
+
+    background-color: var(--cor-branca);
+
+    border-bottom: 3px solid var(--cor-preto);
+}
+
+.ConteudoHeader
+{
+    display: flex;
+    
+    flex-direction: row;
+
+    height: 100%;
+
+    align-items: center;
+    justify-content: space-between;
+    
+    margin-left: calc(14vw + 100px);
+    margin-right: 2vw;
+}
+
+.NomePagina
+{
+    cursor: default;
+}
+
+.Barrabusca
+{
+    display: flex;
+    position: fixed;
+
+    left: 50vw;
+
+    width: calc(20vw + 50px);
+    height: 5vh;
+
+    align-items: center;
+
+    margin-left: 4vw;
+
+    background-color: var(--cor-fundo);
+
+    border-radius: 999px;
+}
+
+.TextoPesquisa
+{
+    height: 4vh;
+    width: calc(19vw + 60px);
+
+    padding-left: 2vh;
+
+    background-color: transparent;
+    
+    border: none;
+    outline: none;
+}
+
+.BotaoIconePesquisa
+{
+    height: 4vh;
+    width: 3vw;
+    
+    border: none;
+    background-color: transparent;
+
+    cursor: pointer;
+}
+
+.BotoesAcoes
+{
+    display: flex;
+    
+    gap: 1vw;
+}
+
+.BotaoExcluir, .BotaoEditar, .BotaoNovo
+{
+    height: 5vh;
+    width: 7vw;
+
+    border-radius: 999px;
+
+    border: 1px solid var(--cor-preto);
+    background-color: var(--cor-botoes);
+    
+    cursor: pointer;
+
+    transition: transform 0.2s ease;
+}
+
+.BotaoExcluir:hover, .BotaoEditar:hover, .BotaoNovo:hover
+{
+    transform: scale(1.08);
+}
+
+@media (max-width: 768px)
+{
+    .ConteudoHeader
+    {
+        margin-left: calc(18vw + 100px);
+
+        justify-content: none;
+    }
+    
+    .Barrabusca
+    {
+        width: calc(14vw + 50px);
+    }
+
+    .TextoPesquisa
+    {
+        width: 12vw;
+
+        background-color: transparent;
+        
+        border: none;
+        outline: none;
+    }
+
+    .BotaoIconePesquisa
+    {
+        width: 3vw;
+    }
+
+    .BotaoExcluir, .BotaoEditar, .BotaoNovo
+    {
+        width: 7vw;
+
+        font-size: 12px;
+    }
+
+    .BotaoExcluir:hover, .BotaoEditar:hover, .BotaoNovo:hover
+    {
+        transform: none;
+    }
+}

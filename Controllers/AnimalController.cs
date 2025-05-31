@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjetoInter.Data;
+using Microsoft.EntityFrameworkCore;
 
 public class AnimalController : Controller
 {
@@ -9,15 +10,22 @@ public class AnimalController : Controller
     {
         _context = context;
     }
-
-    public IActionResult Animais()
-    {
-        return View();
-    }
     
-    [HttpPost]
-    public IActionResult AcessarTarefa()
+    public async Task<IActionResult> Animais(string busca)
     {
-        return RedirectToAction("Tarefas", "Tarefa");
+        var query = _context.Animais
+            .Include(a => a.Setor)
+            .Include(a => a.Status)
+            .Include(a => a.Especie)
+            .AsQueryable();
+
+        if (!string.IsNullOrEmpty(busca))
+        {
+            query = query.Where(a => a.Nome.ToLower().Contains(busca.ToLower()));
+        }
+
+        var animais = await query.ToListAsync();
+        
+        return View(animais);
     }
 }

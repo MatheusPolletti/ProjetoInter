@@ -4,6 +4,8 @@
 {
     --cor-preta: #000000;
     --cor-vermelha: #ff0000;
+    --cor-fundo: #F9F7F1;
+    --cor-branco: #FFFFFF;
 }
 
 *, *::before, *::after
@@ -20,6 +22,8 @@ main
 
     font-family: 'DM Sans', sans-serif;
 
+    background-color: var(--cor-fundo);
+
     justify-content: center;
     align-items: center;
 
@@ -29,21 +33,10 @@ main
     gap: 100px;
 }
 
-.LogoTitulo > .TituloSistema
-{
-    display: flex;
-
-    justify-content: center;
-
-    cursor: default;
-}
-
 .LogoTitulo > .imagem
 {
     max-height: 35vh;
     max-width: 35vw;
-    
-    border-radius: 50%;
 }
 
 .DadosLogin > h1
@@ -91,8 +84,8 @@ main
     
     border: 2px solid var(--cor-preta);
     border-radius: 999px;
-
-    background: transparent;
+    
+    background-color: var(--cor-branco);
 
     cursor: pointer;
 

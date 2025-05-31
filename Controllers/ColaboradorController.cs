@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjetoInter.Data;
 using Microsoft.EntityFrameworkCore;
+
 public class ColaboradorController : Controller
 {
     private readonly DbZoologico _context;
@@ -27,23 +28,19 @@ public class ColaboradorController : Controller
     }
 
     [HttpGet]
-public async Task<IActionResult> Buscar(string termo)
-{
-    var query = _context.Funcionarios
-        .Include(f => f.StatusFuncionario)
-       
-        
-        
-        .Where(f => f.StatusFuncionarioId == 1);
-
-    if (!string.IsNullOrEmpty(termo))
+    public async Task<IActionResult> Buscar(string termo)
     {
-        termo = termo.ToLower();
-        query = query.Where(f => f.Nome.ToLower().Contains(termo));
+        var query = _context.Funcionarios
+            .Include(f => f.StatusFuncionario)
+            .Where(f => f.StatusFuncionarioId == 1);
+
+        if (!string.IsNullOrEmpty(termo))
+        {
+            termo = termo.ToLower();
+            query = query.Where(f => f.Nome.ToLower().Contains(termo));
+        }
+
+        var resultado = await query.ToListAsync();
+        return View("Colaboradores", resultado);
     }
-
-    var resultado = await query.ToListAsync();
-    return View("Colaboradores", resultado);
-}
-
 }
