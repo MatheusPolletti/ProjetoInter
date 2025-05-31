@@ -10,37 +10,40 @@ public class ColaboradorController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> Funcionarios()
+    public async Task<IActionResult> Colaboradores()
     {
         var funcionarios = await _context.Funcionarios
-        
-        .Include(f => f.StatusFuncionario)
-        .Include(f => f.Cargo)
-        .Include(f => f.Cpf)
-        .Include(f => f.Telefone)
-        .Where(f => f.StatusFuncionarioId == 1) // Filtra apenas os colaboradores ativos
-
-        .ToListAsync();
+            .Include(f => f.StatusFuncionario)
+            .Where(f => f.StatusFuncionarioId == 1)
+            .ToListAsync();
 
         return View(funcionarios);
     }
-    public IActionResult Colaboradores()
-    {
-        
-        return View();
-    }
 
-     [HttpPost]
+    [HttpPost]
     public IActionResult AcessarTarefa()
     {
         return RedirectToAction("Tarefas", "Tarefa");
     }
+
+    [HttpGet]
+public async Task<IActionResult> Buscar(string termo)
+{
+    var query = _context.Funcionarios
+        .Include(f => f.StatusFuncionario)
+       
+        
+        
+        .Where(f => f.StatusFuncionarioId == 1);
+
+    if (!string.IsNullOrEmpty(termo))
+    {
+        termo = termo.ToLower();
+        query = query.Where(f => f.Nome.ToLower().Contains(termo));
+    }
+
+    var resultado = await query.ToListAsync();
+    return View("Colaboradores", resultado);
 }
 
-
-
-
-
-
-    // GET: /Colaborador/Colaboradores
-    
+}
