@@ -4,10 +4,10 @@
 {
     --cor-preto: #000000;
     --cor-fundo: #F4F4F4;
-    --cor-branca: white;
+    --cor-branca: #FFFFFF;
 
     --cor-verde: #BBDFB6;
-    --cor-botoes: #317034;
+    --cor-linhas: #317034;
 
     --cor-letra: #212121;
     --cor-azul: #1976D2;
@@ -81,8 +81,8 @@ main
     height: 100vh;
     width: calc(9vw + 150px);
 
-    border-right: 2px solid var(--cor-preto);
-    
+    border-right: 1px solid var(--cor-preto);
+
     background-color: var(--cor-verde);
 }
 
@@ -93,7 +93,6 @@ main
     flex-direction: row;
 
     align-items: center;
-    justify-content: space-around;
 
     width: 90%;
 
@@ -103,7 +102,7 @@ main
     padding-top: 5%;
     padding-bottom: 5%;
 
-    border-bottom: 2px solid var(--cor-preto);
+    border-bottom: 1px solid var(--cor-linhas);
 }
 
 .imagem
@@ -115,7 +114,7 @@ main
 .NomeTitulo
 {
     height: 90%;
-    max-width: 40%;
+    max-width: 70%;
 }
 
 .navegacao
@@ -174,7 +173,7 @@ main
 
     flex-shrink: 0;
     
-    border-bottom: 3px solid var(--cor-preto);
+    border-bottom: 1px solid var(--cor-preto);
 }
 
 .NomeUsuario
@@ -189,7 +188,7 @@ main
 
     background-color: var(--cor-branca);
 
-    border-bottom: 3px solid var(--cor-preto);
+    border-bottom: 1px solid var(--cor-preto);
 }
 
 .ConteudoHeader
@@ -215,16 +214,15 @@ main
 .Barrabusca
 {
     display: flex;
-    position: fixed;
+    align-items: center;
+    
+    position: absolute;
+    left: clamp(1.1rem, 50vw - 180px, 71vw);
 
-    left: 50vw;
-
-    width: calc(20vw + 50px);
+    width: clamp(240px, 20vw + 70px, 560px);
     height: 5vh;
 
-    align-items: center;
-
-    margin-left: 4vw;
+    margin-right: 10px;
 
     background-color: var(--cor-fundo);
 
@@ -269,8 +267,8 @@ main
 
     border-radius: 999px;
 
-    border: 1px solid var(--cor-preto);
-    background-color: var(--cor-botoes);
+    border: 2px solid var(--cor-linhas);
+    background-color: var(--cor-branca);
     
     cursor: pointer;
 
@@ -290,10 +288,16 @@ main
 
         justify-content: none;
     }
+
+    .NomePagina
+    {
+        font-size: 20px;
+    }
     
     .Barrabusca
     {
         width: calc(14vw + 50px);
+        left: calc(38vw + 110px);
     }
 
     .TextoPesquisa
