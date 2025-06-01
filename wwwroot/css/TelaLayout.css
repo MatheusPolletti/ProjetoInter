@@ -176,6 +176,26 @@ main
     border-bottom: 1px solid var(--cor-preto);
 }
 
+.ImagemFuncionario
+{
+    width: clamp(30px, 3.4vw, 60px);
+
+    aspect-ratio: 1 / 1;
+    
+    border-radius: 50%;
+    border: 2px solid var(--cor-linhas);
+
+    object-fit: cover;
+    
+    margin-right: 0.5vw;
+
+    min-width: 30px;
+    min-height: 30px;
+    
+    max-width: 80px;
+    max-height: 80px;
+}
+
 .NomeUsuario
 {
     cursor: default;
@@ -287,6 +307,11 @@ main
         margin-left: calc(18vw + 100px);
 
         justify-content: none;
+    }
+
+    .ImagemFuncionario
+    {
+        width: 6vw;
     }
 
     .NomePagina
