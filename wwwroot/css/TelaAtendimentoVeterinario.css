@@ -2,3 +2,56 @@
 {
     background-color: red;
 }
+.container-atendimento{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.topo{
+    border-bottom: solid 1px grey;
+    padding: 32px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.carrossel-cards-verticais{
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+}
+.card-vertical{
+    min-width: 300px;
+    background: var(--cor-branca);
+  
+    border-radius: 10px;
+  
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+    overflow: hidden;
+    transition: transform 0.2s;
+
+    cursor: pointer;
+
+    padding: 24px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px
+}
+.card-vertical > div{
+    display: flex;
+    justify-content: space-between;
+}
+.card-vertical > div >div{
+    display: flex;
+    flex-direction: column;
+
+}
+.card-vertical > button{
+    border: solid 1px var(--cor-preto);
+    padding: 4px 24px;
+    width: fit-content;
+    align-self: flex-end;
+    border-radius: 40px;
+    background-color: transparent;
+}
