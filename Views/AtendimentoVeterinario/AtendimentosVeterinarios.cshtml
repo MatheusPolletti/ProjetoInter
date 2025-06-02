@@ -1,9 +1,11 @@
-@section Styles{
+@model IEnumerable<ProjetoInter.Models.AtendimentoVeterinario>
+
+@section Styles {
     <link rel="stylesheet" href="/css/TelaAtendimentoVeterinario.css">
 }
 
 @{
-    Layout="~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @section HeaderBarras
@@ -12,24 +14,58 @@
         <div class="ConteudoHeader">
 
             <h1 class="NomePagina">Atendimentos</h1>
-            
+
             <div class="Barrabusca">
                 <input type="text" placeholder="Pesquisar..." class="TextoPesquisa">
                 <button class="BotaoIconePesquisa" aria-label="Pesquisar">
                     <i class="fas fa-search" aria-hidden="true"></i>
-                </button>    
+                </button>
             </div>
-            
+
             <div class="BotoesAcoes">
                 <button class="BotaoExcluir">Excluir</button>
                 <button class="BotaoEditar">Editar</button>
                 <button class="BotaoNovo">Novo</button>
             </div>
-        
+
         </div>
     </div>
 }
+<div class="container-atendimentos">
+    <div class="topo">
+        <h2>Pendentes</h2>
+        <div class="carrossel-cards-verticais">
+            @* Fazer validacao de data pegar consultas do dia em diante *@
+            @if (Model != null)
+            {
+                foreach (var atendimento in Model)
+                {
+                    <div class="card-vertical">
+                        <div>
+                            <div>
+                                <h4>@atendimento.Animal.Nome</h4>
+                                <p>@atendimento.Animal.Especie?.Descricao | @atendimento.Animal.Setor?.Descricao</p>
+                            </div>
+                            <small>Data: @atendimento.Data</small>
+                        </div>
+                        <h4>Nome Procedimento: <span style="font-weight: normal;">@atendimento.Descricao</span></h4>
+                        <small><strong>Descrição:</strong> @atendimento.Descricao</small>
+                        <small><strong>Obs:</strong> @atendimento.Observacoes</small>
+                        <small><strong>Responsável:</strong> @atendimento.Observacoes</small>
+                        <button>Concluir</button>
+                    </div>
+                }
+            }
+            <div style="width: 150px; height: 150px; background-color: aqua;"></div>
+            <div style="width: 150px; height: 150px; background-color: aqua;"></div>
+            <div style="width: 150px; height: 150px; background-color: aqua;"></div>
+            <div style="width: 150px; height: 150px; background-color: aqua;"></div>
+        </div>
+    </div>
+</div>
+<div class="inferior">
+    @* Fazer validacao de data pegar consultas dos dias anteriores *@
+    <h2>Atendimentos Anteriores</h2>
 
-<section class="exemplo">
-    <h1>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nulla autem beatae doloremque dolorem fuga adipisci repudiandae dolores illo deleniti reiciendis possimus esse, officia numquam impedit, vitae consequatur, quas praesentium necessitatibus!</h1>
-</section>
+</div>
+</div>
