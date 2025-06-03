@@ -1,19 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjetoInter.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
+[Authorize]
 public class AnimalController : Controller
 {
-    private readonly DbZoologico _context;
+    private readonly DbZoologico context;
 
-    public AnimalController(DbZoologico context)
+    public AnimalController(DbZoologico _context)
     {
-        _context = context;
+        context = _context;
     }
-    
+
     public async Task<IActionResult> Animais(string busca)
     {
-        var query = _context.Animais
+        var query = context.Animais
             .Include(a => a.Setor)
             .Include(a => a.Status)
             .Include(a => a.Especie)
@@ -25,7 +27,7 @@ public class AnimalController : Controller
         }
 
         var animais = await query.ToListAsync();
-        
+
         return View(animais);
     }
 }
