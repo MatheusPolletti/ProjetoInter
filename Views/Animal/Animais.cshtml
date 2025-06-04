@@ -5,6 +5,11 @@
     <link rel="stylesheet" href="/css/TelaAnimal.css">
 }
 
+@section Scripts
+{
+    <script src="~/js/Animais/Modais.js"></script>
+}
+
 @{
     Layout="~/Views/Shared/_Layout.cshtml";
 }
@@ -26,7 +31,7 @@
             <div class="BotoesAcoes">
                 <button class="BotaoExcluir">Excluir</button>
                 <button class="BotaoEditar">Editar</button>
-                <button class="BotaoNovo">Novo</button>
+                <button onclick="ModalNovo()" class="BotaoNovo">Novo</button>
             </div>
         
         </div>
@@ -75,4 +80,35 @@
             <p style="color:red;">Erro: Nenhum animal encontrado ou problema ao carregar o Model.</p>
         }
     </div>
+
+    <section id="area-modal-setores">
+        <div id="modal-setores">
+            <button id="modal-close" onclick="FecharModal()">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <h1>Adicionar Setor</h1>
+            <div class="secaoAcao">
+                <label>Nome:</label>
+                <input type="text" class="inputTexto">
+            </div>
+
+            <div class="secaoAcao">
+                <label>Descrição:</label>
+                <input type="text" class="inputTexto">               
+            </div>
+
+            <div class="secaoAcao">
+                <label for="status">Status:</label>
+                <select id="status" name="status">
+                    <option value="ativo">Ativo</option>
+                    <option value="inativo">Inativo</option>
+                </select>                
+            </div>
+
+            <button>Adicionar</button>
+
+        </div>
+    </section>
+
 </div>
