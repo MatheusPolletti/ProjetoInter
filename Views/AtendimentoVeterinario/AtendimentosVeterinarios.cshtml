@@ -1,35 +1,112 @@
-@section Styles{
+@model IEnumerable<ProjetoInter.Models.AtendimentoVeterinario>
+
+@section Styles {
     <link rel="stylesheet" href="/css/TelaAtendimentoVeterinario.css">
 }
 
+@section Scripts
+{
+    <script src="~/js/Setor/Carrossel.js"></script>
+}
+
 @{
-    Layout="~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @section HeaderBarras
 {
     <div class="Header">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <div class="ConteudoHeader">
 
             <h1 class="NomePagina">Atendimentos</h1>
-            
+
             <div class="Barrabusca">
                 <input type="text" placeholder="Pesquisar..." class="TextoPesquisa">
                 <button class="BotaoIconePesquisa" aria-label="Pesquisar">
                     <i class="fas fa-search" aria-hidden="true"></i>
-                </button>    
+                </button>
             </div>
-            
+
             <div class="BotoesAcoes">
                 <button class="BotaoExcluir">Excluir</button>
                 <button class="BotaoEditar">Editar</button>
                 <button class="BotaoNovo">Novo</button>
             </div>
-        
+
         </div>
     </div>
 }
+<div class="container-atendimentos">
+    <div class="topo">
+        <h2>Pendentes</h2>
+        <div class="container-carrossel">
 
-<section class="exemplo">
-    <h1>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nulla autem beatae doloremque dolorem fuga adipisci repudiandae dolores illo deleniti reiciendis possimus esse, officia numquam impedit, vitae consequatur, quas praesentium necessitatibus!</h1>
-</section>
+            <div class="botoes-carrossel">
+                <i class="fa-solid fa-chevron-left" onclick="moveEsquerda()"></i>
+                <i class="fa-solid fa-chevron-right" onclick="moveDireita()"></i>
+            </div>
+            <div class="carrossel-cards-verticais">
+                @* Fazer validacao de data pegar consultas do dia em diante *@
+                @if (Model != null)
+                {
+                    foreach (var atendimento in Model)
+                    {
+                        <div>
+                            <div class="card-vertical">
+                                <div class="topo-card">
+                                    <div class="topo-esquerda">
+                                        <h4>@atendimento.Animal.Nome</h4>
+                                        <p><small>@atendimento.Animal.Especie?.Descricao |
+                                                @atendimento.Animal.Setor?.Descricao</small></p>
+                                    </div>
+                                    <small>Data: @atendimento.Data</small>
+                                </div>
+                                <div class="descricao">
+                                    <h4>Nome Procedimento: <span style="font-weight: normal;">@atendimento.Descricao</span></h4>
+                                    <small><strong>Descrição:</strong> @atendimento.Descricao</small>
+                                    <small><strong>Obs:</strong> @atendimento.Observacoes</small>
+                                    <small><strong>Responsável:</strong> @atendimento.Observacoes</small>
+                                </div>
+                                <button class="btn-concluir">Concluir</button>
+                            </div>
+                        </div>
+                    }
+                }
+                <div style="min-width: 320px; height: 150px; background-color: aqua;"></div>
+                <div style="min-width: 320px; height: 150px; background-color: aqua;"></div>
+                <div style="background-color: blueviolet; min-width: 24px; height: 150px"></div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<div class="inferior">
+    @* Fazer validacao de data pegar consultas dos dias anteriores *@
+    <h2>Atendimentos Anteriores</h2>
+    <div class="cards-horizontais">
+        @if (Model != null)
+        {
+            foreach (var atendimento in Model)
+            {
+                <div class="card-horizontal">
+                    <div>
+                        <h4>@atendimento.Animal.Nome <span style="font-weight: normal;">| @atendimento.Animal.Especie?.Descricao</span></h4>
+                        <small><strong>Descrição:</strong> @atendimento.Descricao</small>
+                    </div>
+                    <div>
+                        <small><strong>Resultado:</strong> @atendimento.Resultado</small>
+                        <small><strong>Responsáveis:</strong> @atendimento.FuncionarioVeterinario.Nome</small>
+                    </div>
+                    <div>
+                        <small>Data: @atendimento.Data</small>
+                    </div>
+                    
+                </div>
+            }
+        }
+
+    </div>
+</div>
+</div>

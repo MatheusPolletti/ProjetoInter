@@ -33,21 +33,10 @@ main
     gap: 100px;
 }
 
-.LogoTitulo > .TituloSistema
-{
-    display: flex;
-
-    justify-content: center;
-
-    cursor: default;
-}
-
 .LogoTitulo > .imagem
 {
     max-height: 35vh;
     max-width: 35vw;
-    
-    border-radius: 50%;
 }
 
 .DadosLogin > h1

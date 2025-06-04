@@ -1,16 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjetoInter.Data;
+using Microsoft.AspNetCore.Authorization;
 
+[Authorize]
 public class TransferenciaController : Controller
 {
-    private readonly DbZoologico _context;
+    private readonly DbZoologico context;
 
-    public TransferenciaController(DbZoologico context)
+    public TransferenciaController(DbZoologico _context)
     {
-        _context = context;
+        context = _context;
     }
 
-     public IActionResult Transferencias()
+    public IActionResult Transferencias()
     {
         return View();
     }

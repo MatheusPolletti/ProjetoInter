@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="~/img/Logos/LogoCapivara.png" type="image/x-icon">
-    <link rel="stylesheet" href="~/css/SitePadrao.css">
+    <link rel="stylesheet" href="~/css/TelaLayout.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Gerencia Zoo</title>
     @RenderSection("Styles", required: false)
@@ -14,8 +14,8 @@
         <nav class="Sidebar">
         
             <section class="Topo">
-                <img src="~/img/Logos/logoSimples.png" alt="Logo GerenciaZoo" class="imagem">
-                <h1 class="NomeTitulo">GerenciaZoo</h1>
+                <img src="~/img/Logos/LogoCapivara.png" alt="Logo GerenciaZoo" class="imagem">
+                <img src="~/img/Logos/LogoNome.png" alt="GerenciaZoo" class="NomeTitulo">
             </section>
         
             <section class="navegacao">
@@ -41,7 +41,8 @@
         <section class="MainContent">
             
             <div class="TopoContent">
-                <h1 class="NomeUsuario">Usuário</h1>
+                <img src="@ViewBag.NomeUsuario" alt="Usuário" class="ImagemFuncionario">
+                <h1 class="NomeUsuario">@ViewBag.ImagemUsuario</h1>
             </div>
 
             @RenderSection("HeaderBarras", required: false)
@@ -53,5 +54,6 @@
         </section>
     
     </main>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

@@ -1,35 +1,99 @@
-@section Styles{
+@model IEnumerable<ProjetoInter.Models.Funcionario>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles
+{
     <link rel="stylesheet" href="/css/TelaColaborador.css">
 }
 
-@{
-    Layout="~/Views/Shared/_Layout.cshtml";
+@section Scripts
+{
+    <script src="~/js/Colaborador/Modais.js"></script>
 }
 
-@section HeaderBarras
-{
+@section HeaderBarras {
     <div class="Header">
         <div class="ConteudoHeader">
-
             <h1 class="NomePagina">Colaboradores</h1>
-            
             <div class="Barrabusca">
                 <input type="text" placeholder="Pesquisar..." class="TextoPesquisa">
                 <button class="BotaoIconePesquisa" aria-label="Pesquisar">
                     <i class="fas fa-search" aria-hidden="true"></i>
-                </button>    
+                </button>
             </div>
-            
             <div class="BotoesAcoes">
                 <button class="BotaoExcluir">Excluir</button>
                 <button class="BotaoEditar">Editar</button>
                 <button class="BotaoNovo">Novo</button>
             </div>
-        
         </div>
     </div>
 }
 
-<section class="exemplo">
-    <h1>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nulla autem beatae doloremque dolorem fuga adipisci repudiandae dolores illo deleniti reiciendis possimus esse, officia numquam impedit, vitae consequatur, quas praesentium necessitatibus!</h1>
-</section>
+<div class="colaboradores-list">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var funcionario in Model)
+        {
+            <div class="colaborador-card">
+                <div class="colaborador-foto">
+                    <img src="/images/default-user.png" alt="Foto" />
+                </div>
+
+                <div class="colaborador-info">
+                    <p><strong>Nome:</strong> @funcionario.Nome</p>
+                    <p><strong>CPF:</strong> @funcionario.Cpf</p>
+                    <p><strong>Telefone:</strong> @funcionario.Telefone</p>
+                </div>
+
+                <div class="colaborador-Id">
+                    <label>Id:</label>
+                    <input type="text" value="@funcionario.FuncionarioId" disabled />
+                </div>
+
+                <div class="colaborador-status">
+                    <label>Status:</label>
+                    <input type="checkbox" @(funcionario.StatusFuncionarioId == 1 ? "checked" : "") disabled />
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Nenhum colaborador encontrado.</p>
+    }
+
+    <section id="area-modal-setores">
+        <div id="modal-setores">
+            <button id="modal-close" onclick="FecharModal()">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <h1>Adicionar Setor</h1>
+            <div class="secaoAcao">
+                <label>Nome:</label>
+                <input type="text" class="inputTexto">
+            </div>
+
+            <div class="secaoAcao">
+                <label>Descrição:</label>
+                <input type="text" class="inputTexto">               
+            </div>
+
+            <div class="secaoAcao">
+                <label for="status">Status:</label>
+                <select id="status" name="status">
+                    <option value="ativo">Ativo</option>
+                    <option value="inativo">Inativo</option>
+                </select>                
+            </div>
+
+            <button>Adicionar</button>
+
+        </div>
+    </section>
+
+</div>
