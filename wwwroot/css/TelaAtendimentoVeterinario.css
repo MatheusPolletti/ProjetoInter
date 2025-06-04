@@ -3,7 +3,7 @@
     flex-direction: column;
     gap: 16px;
     overflow: hidden;
-    
+    padding: 16px;
 }
 .topo{
     border-bottom: solid 1px grey;
@@ -15,6 +15,7 @@
 .container-carrossel{
     position: relative;
     overflow: hidden;
+    padding: 16px 0;
 }
 .botoes-carrossel{
     position: absolute;
@@ -99,10 +100,17 @@
     justify-self: flex-end;
 }
 
+.inferior{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 32px 0;
+}
 .cards-horizontais{
     display: grid;
     grid-template-rows: repeat(auto-fill, 1fr);
-    row-gap: 16px
+    row-gap: 16px;
+    padding: 16px 0;
 }
 .card-horizontal{
     display: grid;
@@ -110,6 +118,10 @@
     align-items: center;
     padding: 24px;
     background-color: var(--cor-branca);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    gap: 16px;
 }
 .card-horizontal > div:first-child{
     grid-column: span 2;
