@@ -1,19 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjetoInter.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
+[Authorize]
 public class AtendimentoVeterinarioController : Controller
 {
-    private readonly DbZoologico _context;
+    private readonly DbZoologico context;
 
-    public AtendimentoVeterinarioController(DbZoologico context)
+    public AtendimentoVeterinarioController(DbZoologico _context)
     {
-        _context = context;
+        context = _context;
     }
 
     public async Task<IActionResult> AtendimentosVeterinarios()
     {
-        var atendimentos = await _context.AtendimentosVeterinarios
+        var atendimentos = await context.AtendimentosVeterinarios
         .Include(a => a.Animal)
             .ThenInclude(animal => animal.Setor)
         .Include(a => a.Animal)
@@ -24,7 +26,6 @@ public class AtendimentoVeterinarioController : Controller
 
         return View(atendimentos);
     }
-
 
     [HttpPost]
     public IActionResult AcessarTarefa()

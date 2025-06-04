@@ -69,16 +69,15 @@
 
     padding: 24px;
 
-    display: grid;
-    grid-template-rows: 80px 1fr auto;
-    row-gap: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px
 }
-.topo-card{
+.card-vertical > div{
     display: flex;
     justify-content: space-between;
-    gap: 8px;
 }
-.topo-esquerda{
+.card-vertical > div >div{
     display: flex;
     flex-direction: column;
 

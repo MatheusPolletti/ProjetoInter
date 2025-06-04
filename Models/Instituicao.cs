@@ -18,4 +18,7 @@ public class Instituicao
 
     [Column("contato")]
     public string? Contato { get; set; }
+
+    [Column("imagemurl")]
+    public string? ImagemUrl { get; set; }
 }

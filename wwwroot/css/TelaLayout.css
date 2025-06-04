@@ -4,10 +4,10 @@
 {
     --cor-preto: #000000;
     --cor-fundo: #F4F4F4;
-    --cor-branca: white;
+    --cor-branca: #FFFFFF;
 
     --cor-verde: #BBDFB6;
-    --cor-botoes: #317034;
+    --cor-linhas: #317034;
 
     --cor-letra: #212121;
     --cor-azul: #1976D2;
@@ -81,8 +81,8 @@ main
     height: 100vh;
     width: calc(9vw + 150px);
 
-    border-right: 2px solid var(--cor-preto);
-    
+    border-right: 1px solid var(--cor-preto);
+
     background-color: var(--cor-verde);
 }
 
@@ -93,7 +93,6 @@ main
     flex-direction: row;
 
     align-items: center;
-    justify-content: space-around;
 
     width: 90%;
 
@@ -103,7 +102,7 @@ main
     padding-top: 5%;
     padding-bottom: 5%;
 
-    border-bottom: 2px solid var(--cor-preto);
+    border-bottom: 1px solid var(--cor-linhas);
 }
 
 .imagem
@@ -115,7 +114,7 @@ main
 .NomeTitulo
 {
     height: 90%;
-    max-width: 40%;
+    max-width: 70%;
 }
 
 .navegacao
@@ -174,7 +173,27 @@ main
 
     flex-shrink: 0;
     
-    border-bottom: 3px solid var(--cor-preto);
+    border-bottom: 1px solid var(--cor-preto);
+}
+
+.ImagemFuncionario
+{
+    width: clamp(30px, 3.4vw, 60px);
+
+    aspect-ratio: 1 / 1;
+    
+    border-radius: 50%;
+    border: 2px solid var(--cor-linhas);
+
+    object-fit: cover;
+    
+    margin-right: 0.5vw;
+
+    min-width: 30px;
+    min-height: 30px;
+    
+    max-width: 80px;
+    max-height: 80px;
 }
 
 .NomeUsuario
@@ -189,7 +208,7 @@ main
 
     background-color: var(--cor-branca);
 
-    border-bottom: 3px solid var(--cor-preto);
+    border-bottom: 1px solid var(--cor-preto);
 }
 
 .ConteudoHeader
@@ -215,16 +234,15 @@ main
 .Barrabusca
 {
     display: flex;
-    position: fixed;
+    align-items: center;
+    
+    position: absolute;
+    left: clamp(1.1rem, 50vw - 180px, 71vw);
 
-    left: 50vw;
-
-    width: calc(20vw + 50px);
+    width: clamp(240px, 20vw + 70px, 560px);
     height: 5vh;
 
-    align-items: center;
-
-    margin-left: 4vw;
+    margin-right: 10px;
 
     background-color: var(--cor-fundo);
 
@@ -269,8 +287,8 @@ main
 
     border-radius: 999px;
 
-    border: 1px solid var(--cor-preto);
-    background-color: var(--cor-botoes);
+    border: 2px solid var(--cor-linhas);
+    background-color: var(--cor-branca);
     
     cursor: pointer;
 
@@ -282,6 +300,119 @@ main
     transform: scale(1.08);
 }
 
+#area-modal-setores 
+{
+  display: none;
+
+  justify-content: center;
+  align-items: center;
+
+  top: 0;
+  left: calc(9vw + 150px);
+  right: 0;
+  bottom: 0;
+
+  z-index: 2;
+}
+
+#modal-setores
+{
+  display: flex;
+  flex-direction: column;
+
+  position: relative;
+
+  background-color: var(--cor-branca);
+
+  gap: 16px;
+  padding: 32px;
+
+  border-radius: 16px;
+
+  z-index: 3;
+  }
+
+#modal-close
+{
+  position: absolute;
+  
+  background-color: transparent;
+
+  right: 16px;
+  top: 16px;
+  
+  border: unset;
+
+  cursor: pointer;
+}
+
+#modal-setores > .secaoAcao
+{
+  display: flex;
+  flex-direction: column;
+  
+  gap: 8px;
+}
+
+.inputTexto, #status
+{
+    width: 500px;
+    height: 40px;
+
+    padding: 0px 16px;
+
+    border-radius: 40px;
+}
+
+#status
+{
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23333' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z' stroke='%23333' stroke-width='1.5'/%3E%3C/svg%3E");
+
+  padding-right: 25px;
+
+  appearance: none;
+  
+  background-repeat: no-repeat;
+
+  background-position: right 8px center;
+}
+
+#modal-setores > button:last-child
+{
+  align-self: center;
+ 
+  padding: 8px 24px;
+ 
+  border-radius: 40px;
+ 
+  background-color: transparent;
+ 
+  border: solid 1px #000000;
+}
+
+#modal-setores > button:last-child:hover
+{  
+  transition: opacity 0.5s;
+
+  opacity: 0.5;
+
+  cursor: pointer;
+}
+
+.overlay
+{
+    position: absolute;
+
+    width: 100vw;
+    height: 100dvh;
+
+    background-color: black;
+
+    opacity: 0.5;
+
+    z-index: 1;
+}
+
 @media (max-width: 768px)
 {
     .ConteudoHeader
@@ -290,10 +421,21 @@ main
 
         justify-content: none;
     }
+
+    .ImagemFuncionario
+    {
+        width: 6vw;
+    }
+
+    .NomePagina
+    {
+        font-size: 20px;
+    }
     
     .Barrabusca
     {
         width: calc(14vw + 50px);
+        left: calc(38vw + 110px);
     }
 
     .TextoPesquisa

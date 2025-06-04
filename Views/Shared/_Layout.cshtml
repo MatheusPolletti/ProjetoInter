@@ -41,7 +41,8 @@
         <section class="MainContent">
             
             <div class="TopoContent">
-                <h1 class="NomeUsuario">Usuário</h1>
+                <img src="@ViewBag.NomeUsuario" alt="Usuário" class="ImagemFuncionario">
+                <h1 class="NomeUsuario">@ViewBag.ImagemUsuario</h1>
             </div>
 
             @RenderSection("HeaderBarras", required: false)

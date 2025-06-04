@@ -1,5 +1,11 @@
-@section Styles{
+@section Styles
+{
     <link rel="stylesheet" href="/css/TelaTarefa.css">
+}
+
+@section Scripts
+{
+    <script src="~/js/Tarefa/Modais.js"></script>
 }
 
 @{
@@ -30,6 +36,34 @@
     </div>
 }
 
-<section class="exemplo">
-    <h1>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nulla autem beatae doloremque dolorem fuga adipisci repudiandae dolores illo deleniti reiciendis possimus esse, officia numquam impedit, vitae consequatur, quas praesentium necessitatibus!</h1>
-</section>
+<div>
+     <section id="area-modal-setores"></section>
+        <div id="modal-setores">
+            <button id="modal-close" onclick="FecharModal()">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <h1>Adicionar Setor</h1>
+            <div class="secaoAcao">
+                <label>Nome:</label>
+                <input type="text" class="inputTexto">
+            </div>
+
+            <div class="secaoAcao">
+                <label>Descrição:</label>
+                <input type="text" class="inputTexto">               
+            </div>
+
+            <div class="secaoAcao">
+                <label for="status">Status:</label>
+                <select id="status" name="status">
+                    <option value="ativo">Ativo</option>
+                    <option value="inativo">Inativo</option>
+                </select>                
+            </div>
+
+            <button>Adicionar</button>
+
+        </div>
+    </section>
+</div>

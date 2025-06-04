@@ -10,8 +10,11 @@ public class Funcionario
     [Column("funcionarioid")]
     public int FuncionarioId { get; set; }
 
+    [Column("auth_user_id")]
+    public Guid? AuthUserId { get; set; }
+
     [Column("status")]
-    public int StatusFuncionarioId { get; set; }  // FK para StatusFuncionario
+    public int StatusFuncionarioId { get; set; }
 
     [Column("nome")]
     public string Nome { get; set; }
@@ -25,7 +28,22 @@ public class Funcionario
     [Column("telefone")]
     public string? Telefone { get; set; }
 
-    // Navegação
+    [Column("imagemurl")]
+    public string? ImagemUrl { get; set; }
+
+    [Column("isadmin")]
+    public bool IsAdmin { get; set; }
+
+    [Column("precisatrocarsenha")]
+    public bool PrecisaTrocarSenha { get; set; }
+
+    [Column("instituicaoid")]
+    public int InstituicaoId { get; set; }
+
+    // Relacionamentos
     [ForeignKey("StatusFuncionarioId")]
     public StatusFuncionario StatusFuncionario { get; set; }
+
+    [ForeignKey("InstituicaoId")]
+    public Instituicao Instituicao { get; set; }
 }

@@ -4,8 +4,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section Styles {
+@section Styles
+{
     <link rel="stylesheet" href="/css/TelaColaborador.css">
+}
+
+@section Scripts
+{
+    <script src="~/js/Colaborador/Modais.js"></script>
 }
 
 @section HeaderBarras {
@@ -59,4 +65,35 @@
     {
         <p>Nenhum colaborador encontrado.</p>
     }
+
+    <section id="area-modal-setores">
+        <div id="modal-setores">
+            <button id="modal-close" onclick="FecharModal()">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <h1>Adicionar Setor</h1>
+            <div class="secaoAcao">
+                <label>Nome:</label>
+                <input type="text" class="inputTexto">
+            </div>
+
+            <div class="secaoAcao">
+                <label>Descrição:</label>
+                <input type="text" class="inputTexto">               
+            </div>
+
+            <div class="secaoAcao">
+                <label for="status">Status:</label>
+                <select id="status" name="status">
+                    <option value="ativo">Ativo</option>
+                    <option value="inativo">Inativo</option>
+                </select>                
+            </div>
+
+            <button>Adicionar</button>
+
+        </div>
+    </section>
+
 </div>
