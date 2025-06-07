@@ -40,6 +40,3 @@ function verificaDireita(){
         //alert("awdWDASd");
     }
 }
-
-
-

@@ -11,7 +11,7 @@
 
 @section Scripts
 {
-    <script src="~/js/Colaborador/Modais.js"></script>
+    <script src="~/js/Modais/Modais.js"></script>
 }
 
 @section HeaderBarras {
@@ -26,74 +26,106 @@
             </div>
             <div class="BotoesAcoes">
                 <button class="BotaoExcluir">Excluir</button>
-                <button class="BotaoEditar">Editar</button>
-                <button class="BotaoNovo">Novo</button>
+                <button onclick="ModalEditarNovo()" class="BotaoEditar">Editar</button>
+                <button onclick="ModalNovo()" class="BotaoNovo">Novo</button>
             </div>
         </div>
     </div>
 }
-
-<div class="colaboradores-list">
-    @if (Model != null && Model.Any())
-    {
-        foreach (var funcionario in Model)
+<section>
+    
+    <div class="colaboradores-list">
+        @if (Model != null && Model.Any())
         {
-            <div class="colaborador-card">
-                <div class="colaborador-foto">
-                    <img src="/images/default-user.png" alt="Foto" />
+            foreach (var funcionario in Model)
+            {
+                <div class="colaborador-card">
+                    <div class="colaborador-foto">
+                        <img src="/images/default-user.png" alt="Foto" />
+                    </div>
+    
+                    <div class="colaborador-info">
+                        <p><strong>Nome:</strong> @funcionario.Nome</p>
+                        <p><strong>CPF:</strong> @funcionario.Cpf</p>
+                        <p><strong>Telefone:</strong> @funcionario.Telefone</p>
+                    </div>
+    
+                    <div class="colaborador-Id">
+                        <label>Id:</label>
+                        <input type="text" value="@funcionario.FuncionarioId" disabled />
+                    </div>
+    
+                    <div class="colaborador-status">
+                        <label>Status:</label>
+                        <input type="checkbox" @(funcionario.StatusFuncionarioId == 1 ? "checked" : "") disabled />
+                    </div>
                 </div>
-
-                <div class="colaborador-info">
-                    <p><strong>Nome:</strong> @funcionario.Nome</p>
-                    <p><strong>CPF:</strong> @funcionario.Cpf</p>
-                    <p><strong>Telefone:</strong> @funcionario.Telefone</p>
-                </div>
-
-                <div class="colaborador-Id">
-                    <label>Id:</label>
-                    <input type="text" value="@funcionario.FuncionarioId" disabled />
-                </div>
-
-                <div class="colaborador-status">
-                    <label>Status:</label>
-                    <input type="checkbox" @(funcionario.StatusFuncionarioId == 1 ? "checked" : "") disabled />
-                </div>
-            </div>
+            }
         }
-    }
-    else
-    {
-        <p>Nenhum colaborador encontrado.</p>
-    }
+        else
+        {
+            <p>Nenhum colaborador encontrado.</p>
+        }
+    </div>
+</section>
 
-    <section id="area-modal-setores">
-        <div id="modal-setores">
-            <button id="modal-close" onclick="FecharModal()">
-                <i class="fas fa-times"></i>
-            </button>
 
-            <h1>Adicionar Setor</h1>
-            <div class="secaoAcao">
-                <label>Nome:</label>
-                <input type="text" class="inputTexto">
-            </div>
+<section class="area-modal-editar">
+    <div class="modal-base">
+        <button class="modal-close" onclick="FecharModalEditar()">
+            <i class="fas fa-times"></i>
+        </button>
 
-            <div class="secaoAcao">
-                <label>Descrição:</label>
-                <input type="text" class="inputTexto">               
-            </div>
+        <h1>Editar Setor</h1>
 
-            <div class="secaoAcao">
-                <label for="status">Status:</label>
-                <select id="status" name="status">
-                    <option value="ativo">Ativo</option>
-                    <option value="inativo">Inativo</option>
-                </select>                
-            </div>
-
-            <button>Adicionar</button>
-
+        <div class="secaoAcao">
+            <label>Nome:</label>
+            <input type="text" class="inputTexto" />
         </div>
-    </section>
 
-</div>
+        <div class="secaoAcao">
+            <label>Descrição:</label>
+            <input type="text" class="inputTexto" />
+        </div>
+
+        <div class="secaoAcao">
+            <label for="editar-status">Status:</label>
+            <select id="editar-status" name="editar-status">
+                <option value="ativo">Ativo</option>
+                <option value="inativo">Inativo</option>
+            </select>
+        </div>
+
+        <button onclick="">Salvar Alterações</button>
+    </div>
+</section>
+
+<section class="area-modal-novo">
+    <div class="modal-base">
+        <button class="modal-close" onclick="FecharModalNovo()">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <h1>Adicionar Setor</h1>
+
+        <div class="secaoAcao">
+            <label>Nome:</label>
+            <input type="text" class="inputTexto" />
+        </div>
+
+        <div class="secaoAcao">
+            <label>Descrição:</label>
+            <input type="text" class="inputTexto" />
+        </div>
+
+        <div class="secaoAcao">
+            <label for="novo-status">Status:</label>
+            <select id="novo-status" name="novo-status">
+                <option value="ativo">Ativo</option>
+                <option value="inativo">Inativo</option>
+            </select>
+        </div>
+
+        <button onclick="">Adicionar</button>
+    </div>
+</section>
