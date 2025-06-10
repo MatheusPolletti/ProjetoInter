@@ -7,6 +7,7 @@
 @section Scripts
 {
     <script src="~/js/Setor/Carrossel.js"></script>
+    <script src="~/js/Modais/Modais.js"></script>
 }
 
 @{
@@ -30,13 +31,14 @@
 
             <div class="BotoesAcoes">
                 <button class="BotaoExcluir">Excluir</button>
-                <button class="BotaoEditar">Editar</button>
-                <button class="BotaoNovo">Novo</button>
+                <button onclick="ModalEditarNovo()" class="BotaoEditar">Editar</button>
+                <button onclick="ModalNovo()" class="BotaoNovo">Novo</button>
             </div>
 
         </div>
     </div>
 }
+
 <div class="container-atendimentos">
     <div class="topo">
         <h2>Pendentes</h2>
@@ -110,3 +112,63 @@
     </div>
 </div>
 </div>
+
+<section class="area-modal-editar">
+    <div class="modal-base">
+        <button class="modal-close" onclick="FecharModalEditar()">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <h1>Editar Setor</h1>
+
+        <div class="secaoAcao">
+            <label>Nome:</label>
+            <input type="text" class="inputTexto" />
+        </div>
+
+        <div class="secaoAcao">
+            <label>Descrição:</label>
+            <input type="text" class="inputTexto" />
+        </div>
+
+        <div class="secaoAcao">
+            <label for="editar-status">Status:</label>
+            <select id="editar-status" name="editar-status">
+                <option value="ativo">Ativo</option>
+                <option value="inativo">Inativo</option>
+            </select>
+        </div>
+
+        <button onclick="">Salvar Alterações</button>
+    </div>
+</section>
+
+<section class="area-modal-novo">
+    <div class="modal-base">
+        <button class="modal-close" onclick="FecharModalNovo()">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <h1>Adicionar Setor</h1>
+
+        <div class="secaoAcao">
+            <label>Nome:</label>
+            <input type="text" class="inputTexto" />
+        </div>
+
+        <div class="secaoAcao">
+            <label>Descrição:</label>
+            <input type="text" class="inputTexto" />
+        </div>
+
+        <div class="secaoAcao">
+            <label for="novo-status">Status:</label>
+            <select id="novo-status" name="novo-status">
+                <option value="ativo">Ativo</option>
+                <option value="inativo">Inativo</option>
+            </select>
+        </div>
+
+        <button onclick="">Adicionar</button>
+    </div>
+</section>
