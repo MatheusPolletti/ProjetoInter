@@ -365,6 +365,9 @@ main
     padding: 0 16px;
 
     border-radius: 40px;
+    border-width: 1px;
+    border-color: var(--cor-preto);
+    border-style: solid;
 }
 
 #editar-status, #novo-status

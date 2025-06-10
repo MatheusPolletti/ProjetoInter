@@ -1,0 +1,39 @@
+@section Styles {
+    <link rel="stylesheet" href="/css/TelaAtendimentoVeterinario.css">
+}
+
+@section Scripts
+{
+    <script src="~/js/Modais/Modais.js"></script>
+}
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section HeaderBarras
+{
+    <div class="Header">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <div class="ConteudoHeader">
+
+            <h1 class="NomePagina">Atendimentos</h1>
+
+            <div class="Barrabusca">
+                <input type="text" placeholder="Pesquisar..." class="TextoPesquisa">
+                <button class="BotaoIconePesquisa" aria-label="Pesquisar">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <div class="BotoesAcoes">
+                <button class="BotaoExcluir">Excluir</button>
+                <button onclick="ModalEditarNovo()" class="BotaoEditar">Editar</button>
+                <button onclick="ModalNovo('.modal-atendimentos')" class="BotaoNovo">Novo</button>
+            </div>
+
+        </div>
+    </div>
+}
+
+<div>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</div>
