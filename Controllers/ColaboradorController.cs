@@ -31,22 +31,34 @@ public class ColaboradorController : Controller
 
     [HttpGet]
     public async Task<IActionResult> Colaboradores(string busca)
+{
+    var query = context.Funcionarios
+        .Include(f => f.StatusFuncionario)
+        .Where(f => f.StatusFuncionarioId == 1); // Apenas ativos
+
+    if (!string.IsNullOrEmpty(busca))
     {
-        var query = context.Funcionarios
+        busca = busca.ToLower();
+            query = query.Where(f => f.Nome.ToLower().Contains(busca)
+                || f.Cpf.ToLower().Contains(busca)
+                || f.Cargo.ToLower().Contains(busca));
+    }
+
+    var funcionarios = await query.ToListAsync();
+    return View(funcionarios);
+}
+    [HttpGet]
+    public async Task<IActionResult> DetalhesColaborador(int id)
+    {
+        var funcionario = await context.Funcionarios
             .Include(f => f.StatusFuncionario)
-            .Where(f => f.StatusFuncionarioId == 1);
+            .FirstOrDefaultAsync(f => f.FuncionarioId == id);
 
-        if (!string.IsNullOrEmpty(busca))
+        if (funcionario == null)
         {
-            busca = busca.ToLower();
-            query = query.Where(f =>
-                f.Nome.ToLower().Contains(busca) ||
-                f.Cargo.ToLower().Contains(busca) ||
-                f.FuncionarioId.ToString().Contains(busca)
-            );
+            return NotFound();
         }
-        var funcionarios = await query.ToListAsync();
 
-        return View(funcionarios);
+        return View(funcionario);
     }
 }
