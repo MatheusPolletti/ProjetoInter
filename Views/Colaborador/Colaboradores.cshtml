@@ -18,12 +18,14 @@
     <div class="Header">
         <div class="ConteudoHeader">
             <h1 class="NomePagina">Colaboradores</h1>
-            <div class="Barrabusca">
-                <input type="text" placeholder="Pesquisar..." class="TextoPesquisa">
-                <button class="BotaoIconePesquisa" aria-label="Pesquisar">
-                    <i class="fas fa-search" aria-hidden="true"></i>
-                </button>
-            </div>
+            
+                <form method="get" asp-action="Colaboradores" class="Barrabusca">
+                    <input type="text" placeholder="Pesquisar..." class="TextoPesquisa" value="@(Context.Request.Query["busca"])">
+                    <button class="BotaoIconePesquisa" aria-label="Pesquisar">
+                        <i class="fas fa-search" aria-hidden="true"></i>
+                    </button>
+                </form>
+            
             <div class="BotoesAcoes">
                 <button class="BotaoExcluir">Excluir</button>
                 <button onclick="ModalEditarNovo()" class="BotaoEditar">Editar</button>
@@ -76,7 +78,7 @@
             <i class="fas fa-times"></i>
         </button>
 
-        <h1>Editar Setor</h1>
+        <h1>Editar Colaboradores</h1>
 
         <div class="secaoAcao">
             <label>Nome:</label>
