@@ -81,8 +81,6 @@ main
     height: 100vh;
     width: calc(9vw + 150px);
 
-    border-right: 1px solid var(--cor-preto);
-
     background-color: var(--cor-verde);
 }
 
@@ -144,7 +142,7 @@ main
 
 .botoes:hover
 {
-    transform: scale(1.1);
+    transform: scale(1.02);
 }
 
 .Bottom
@@ -402,7 +400,7 @@ main
 
 .overlay 
 {
-    position: absolute;
+    position: fixed;
     
     width: 100vw;
     height: 100dvh;
@@ -411,7 +409,8 @@ main
     
     opacity: 0.5;
     
-    z-index: 1;
+    inset: 0;
+    z-index: 999;
 }
 
 @media (max-width: 768px)

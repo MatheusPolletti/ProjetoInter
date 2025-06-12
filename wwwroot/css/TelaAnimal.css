@@ -1,13 +1,33 @@
-.container-animais {
-  padding: 2rem;
-  background-color: #f9f7f1;
+:root {
+  --animal-bg-color: #f9f7f1;
+  --animal-card-bg: #fff;
+  --animal-card-radius: 10px;
+  --animal-card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --animal-card-max-height: 420px;
+  --animal-photo-height: 180px;
+
+  --animal-padding: 12px;
+  --animal-font-size: 0.95rem;
+
+  --animal-info-margin-bottom: 6px;
+  --animal-info-spacing: 15px;
+
+  --animal-text-muted: #999999;
 }
 
+/* Container geral da tela */
+.container-animais {
+  padding: 2rem;
+  background-color: var(--animal-bg-color);
+}
+
+/* Título da página */
 .titulo {
   font-size: 2rem;
   margin-bottom: 1.5rem;
 }
 
+/* Grid que mostra os cards */
 .grid-animais {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -20,16 +40,17 @@
   align-items: stretch;
 }
 
+/* Card do animal */
 .card-animal {
   display: flex;
   flex-direction: column;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--animal-card-bg);
+  border-radius: var(--animal-card-radius);
+  box-shadow: var(--animal-card-shadow);
   overflow: hidden;
   transition: transform 0.2s;
   height: 100%;
-  max-height: 420px;
+  max-height: var(--animal-card-max-height);
   cursor: pointer;
 }
 
@@ -37,30 +58,35 @@
   transform: translateY(-5px);
 }
 
+/* Foto do animal no card */
 .foto-animal {
   width: 100%;
-  height: 180px;
+  height: var(--animal-photo-height);
   object-fit: cover;
   flex-shrink: 0;
 }
 
+/* Informação textual do animal */
 .info-animal {
-  padding: 12px;
-  font-size: 0.95rem;
+  padding: var(--animal-padding);
+  font-size: var(--animal-font-size);
 }
 
+/* Texto forte dentro da info */
 .info-animal strong {
   font-weight: 600;
   margin-right: 5px;
   white-space: nowrap;
 }
 
+/* Linhas que organizam as infos do animal */
 .linha-info {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 6px;
+  margin-bottom: var(--animal-info-margin-bottom);
 }
 
+/* Colunas esquerda e direita dentro da linha */
 .linha-info .esquerda,
 .linha-info .direita {
   flex: 1;
@@ -70,22 +96,159 @@
   text-align: right;
 }
 
-.info-animal p {
-  margin: 5px 0;
-}
-
+/* Parágrafos com infos dentro do card */
 .info-animal p {
   display: inline-block;
-  margin-right: 15px;
+  margin: 5px var(--animal-info-spacing) 5px 0;
 }
 
+/* Span com margem para espaçamento */
 .info-animal span {
-  margin-right: 15px;
+  margin-right: var(--animal-info-spacing);
   white-space: nowrap;
 }
 
-.valor 
-{
-  color: #999999; /* cinza claro, pode ajustar */
-  font-weight: 400; /* opcional: deixar normal, sem negrito */
+/* Texto de valor ou informação secundária */
+.valor {
+  color: var(--animal-text-muted);
+  font-weight: 400;
+}
+
+/* Modal geral */
+.area-modal-novo.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+
+/* Conteúdo do modal */
+.area-modal-novo .modal-conteudo {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 40px 30px;
+  width: 100%;
+  max-width: 920px;
+  max-height: 90vh;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Título */
+.area-modal-novo h2 {
+  font-size: 26px;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+/* Botão fechar */
+.area-modal-novo .fechar {
+  position: absolute;
+  top: 2vh;
+  right: 2vh;
+  font-size: 2vh;
+  color: #777;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+
+.area-modal-novo .fechar:hover {
+  color: #000;
+}
+
+/* Layout inputs 2 colunas */
+.area-modal-novo .form-linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2vh;
+  margin-bottom: 20px;
+}
+
+/* Grupo input */
+.area-modal-novo .form-grupo {
+  flex: 1;
+  min-width: 26wh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Label e input */
+.area-modal-novo .form-grupo label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #444;
+  font-size: 1rem;
+}
+
+.area-modal-novo .form-grupo input,
+.area-modal-novo .form-grupo select {
+  padding: 1vh 1vw;
+  font-size: 1.5vh;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  transition: border-color 0.2s;
+}
+
+/* Botão submit */
+.submit-button {
+  padding: 1vh 2vw;
+  background-color: var(--cor-background);
+  color: var(--cor-preto);
+  border: 1px solid var(--cor-preto);
+  border-radius: 5vh;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+
+.btn-adicionar:hover {
+  transform: scale(1.1);
+}
+
+/* Preview imagem */
+#previewContainer {
+  width: 100%;
+  height: 180px;
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fafafa;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 20px;
+  padding: 1vh;
+  transition: border-color 0.3s;
+}
+
+#previewContainer:hover {
+  border-color: #999;
+}
+
+#previewText {
+  color: #888;
+  font-size: 16px;
+  position: absolute;
+  z-index: 1;
+  text-align: center;
+}
+
+#preview {
+  max-width: 100%;
+  max-height: 100%;
+  display: none;
+  object-fit: contain;
+  z-index: 2;
 }

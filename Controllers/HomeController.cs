@@ -5,7 +5,6 @@ using System.Security.Claims;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text;
-using Microsoft.Extensions.Configuration;
 
 public class HomeController : Controller
 {
