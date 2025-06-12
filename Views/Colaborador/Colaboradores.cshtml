@@ -62,11 +62,11 @@
                     </div>
     
                     
-    
-                    <div class="colaborador-status">
-                        <label>Status:</label>
-                        <input type="checkbox" @(funcionario.StatusFuncionarioId == 1 ? "checked" : "") disabled />
-                    </div>
+                <div class="colaborador-select">
+                    <input type="checkbox" id="select-@funcionario.FuncionarioId" class="select-checkbox" />
+                    <label for="select-@funcionario.FuncionarioId" aria-label="Selecionar colaborador"></label>
+                </div>
+                    
                     
                 </div>
             }
