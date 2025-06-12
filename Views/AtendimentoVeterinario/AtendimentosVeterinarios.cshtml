@@ -8,6 +8,7 @@
 {
     <script src="~/js/Setor/Carrossel.js"></script>
     <script src="~/js/Modais/Modais.js"></script>
+    <script src="~/js/Atendimento/AtendimentoInfo.js"></script>
 }
 
 @{
@@ -86,7 +87,7 @@
                         
                     }
                 }
-                <div style="min-width: 320px; height: 150px; background-color: aqua;"></div>
+                <div style="min-width: 320px; height: 300px; background-color: aqua;"></div>
                 <div style="min-width: 320px; height: 150px; background-color: aqua;"></div>
                 <div style="background-color: blueviolet; min-width: 24px; height: 150px"></div>
             </div>
@@ -108,7 +109,8 @@
         {
             foreach (var atendimento in atendimentosAntigosOrdenados)
             {
-                <a style="text-decoration: none;" href="AtendimentoInfo">
+                <a style="text-decoration: none;" asp-controller="AtendimentoVeterinario" asp-action="AtendimentoInfo" asp-route-id="@atendimento.AtendimentoVeterinarioId" class="card-link">
+                @* <a  onclick="abreAtendimentoInfo()"> *@
                     <div class="card-horizontal" id="@atendimento.AtendimentoVeterinarioId">
                         <div>
                             <h4>@atendimento.Animal.Nome <span style="font-weight: normal;">| @atendimento.Animal.Especie?.Descricao</span></h4>
@@ -128,6 +130,8 @@
 
     </div>
 </div>
+
+
 </div>
 
 <section class="area-modal-novo">
@@ -183,3 +187,4 @@
         <button class="btn-concluir" onclick="">Adicionar</button>
     </div>
 </section>
+

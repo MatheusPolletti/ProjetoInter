@@ -26,7 +26,6 @@
 }
 .botoes-carrossel{
 position: absolute;
-    top: 160px;
     z-index: 2;
     display: flex;
     width: calc(100% + 24px);
@@ -171,4 +170,8 @@ position: absolute;
 }
 .grid > div > input {
     width: auto;
+}
+
+.AtendimentoInfo{
+    position: absolute;
 }
