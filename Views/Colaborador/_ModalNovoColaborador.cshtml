@@ -2,7 +2,7 @@
     Layout = null;
 }
 
-<link rel="stylesheet" href="~/css/TelaAnimal.css" />
+<link rel="stylesheet" href="~/css/ModalAnimal.css" />
 
 <div class="area-modal-novo modal" style="display:none;">
     <div class="modal-conteudo">
@@ -20,15 +20,12 @@
 
                 <div class="form-grupo">
                     <label for="EspecieId">Espécie:</label>
-                    <div class="grupo-especie">
-                        <select id="EspecieId" name="EspecieId" required>
-                            @foreach (var especie in ViewBag.Especies)
-                            {
-                                <option value="@especie.AnimalEspecieId">@especie.Descricao</option>
-                            }
-                        </select>
-                        <button type="button" class="btn-mais-especie" onclick="AbrirModalNovaEspecie()">+</button>
-                    </div>
+                    <select id="EspecieId" name="EspecieId" required>
+                        @foreach (var especie in ViewBag.Especies)
+                        {
+                            <option value="@especie.AnimalEspecieId">@especie.Descricao</option>
+                        }
+                    </select>
                 </div>
             </div>
 
@@ -68,7 +65,7 @@
 
             <div class="form-linha form-imagem">
                 <label for="imagemInput">Imagem:</label>
-                <div id="previewContainer" onclick="document.getElementById('imagemInput').click();">
+                <div id="previewContainer" onclick="document.getElementById('imagemInput').click();" >
                     <span id="previewText">Clique para selecionar uma imagem</span>
                     <img id="preview" />
                 </div>
@@ -84,20 +81,18 @@
     </div>
 </div>
 
-@Html.Partial("_ModalNovaEspecie")
-
 @section Scripts {
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('formNovoAnimal');
-    const errosDiv = document.getElementById('formErrors');
+    var form = document.getElementById('formNovoAnimal');
+    var errosDiv = document.getElementById('formErrors');
 
     if (form) {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
             errosDiv.innerHTML = "";
 
-            const formData = new FormData(form);
+            var formData = new FormData(form);
 
             fetch(form.action, {
                 method: 'POST',
@@ -129,8 +124,8 @@ document.addEventListener('DOMContentLoaded', function() {
 function mostrarPreview(event) {
     const preview = document.getElementById('preview');
     const previewText = document.getElementById('previewText');
-    const file = event.target.files[0];
 
+    const file = event.target.files[0];
     if (!file) {
         preview.src = "";
         preview.style.display = "none";
@@ -145,6 +140,5 @@ function mostrarPreview(event) {
         previewText.style.display = "none";
     }
     reader.readAsDataURL(file);
-}
 </script>
 }

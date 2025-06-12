@@ -47,7 +47,7 @@
             {
                 <div class="card-setores">
                     <div class="textos">
-                        <h1 class="nomeSetor">@setor.Nome</h1>
+                        <h3 class="nomeSetor">@setor.Nome</h3>
                         <p><strong>Descrição:</strong> @setor.Descricao</p>
                     </div>
                     <div class="card-end">
@@ -62,8 +62,9 @@
     <!--Classe não usada-->
     <div>
         <!-- O ~ é o que permite o acesso as imagens-->
-        <img src="~/img/Instituicao/Zoobotanico.png" alt="Mapa do Zoobotânico de Rio Preto">
+        <img src="/@Model.FirstOrDefault().InstituicaoPertence.ImagemUrl" alt="Mapa do Zoobotânico de Rio Preto">
         <div class="legenda">
+            @* colocar descricao da instituicao na Table *@
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi sint, sed possimus dolorum laboriosam
             laborum vero ut officia maiores eum corporis quisquam in, iusto delectus sit! Odio at eligendi laborum.
         </div>

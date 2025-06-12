@@ -1,9 +1,16 @@
+:root {
+  --colaborador-bg-color: #f9f7f1;
+  --colaborador-card-bg: #fff;
+}
 .colaboradores-list {
+    padding: 2rem;
     display: flex;
     flex-direction: column;
     gap: 10px;
     align-items: left;
+    background-color: var(--colaborador-bg-color);
 }
+
 
 .colaborador-card {
     display: flex;
@@ -12,12 +19,19 @@
     padding: 10px;
     border-radius: 8px;
     box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+    background: var(--colaborador-card-bg);
+    transition: transform 0.2s;
+    height: 100%;
 }
 
 .colaborador-foto img {
     width: 60px;
     height: 60px;
-    border-radius: 50%;
+    
+    object-fit: cover;
+   
+ 
+    transition: transform 0.2s;
 }
 
 .colaborador-info {
@@ -27,8 +41,12 @@
 
 .colaborador-status {
     margin-left: 20px;
+    padding: 5px 10px;
+    border-radius: 5px;
+   
 }
 
 .colaborador-Id {
     align-items: left;
+    font-weight: bold;
 }

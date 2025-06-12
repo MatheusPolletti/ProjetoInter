@@ -26,6 +26,22 @@ public class AtendimentoVeterinarioController : Controller
 
         return View(atendimentos);
     }
+    public IActionResult AtendimentoInfo(int id)
+    {
+        var atendimento = context.AtendimentosVeterinarios
+            .Include(a => a.Animal)                  // Carrega o Animal
+                .ThenInclude(a => a.Especie)         // Carrega a Especie do Animal (se necessário)
+            .Include(a => a.FuncionarioVeterinario)  // Carrega o Veterinário
+            .Include(a => a.FuncionarioSolicitante)  // Carrega o Funcionário Solicitante
+            .FirstOrDefault(a => a.AtendimentoVeterinarioId == id);
+
+        if (atendimento == null)
+        {
+            return NotFound();
+        }
+
+        return View(atendimento);
+    }
 
     [HttpPost]
     public IActionResult AcessarTarefa()

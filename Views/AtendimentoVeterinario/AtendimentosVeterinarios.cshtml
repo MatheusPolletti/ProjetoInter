@@ -8,6 +8,7 @@
 {
     <script src="~/js/Setor/Carrossel.js"></script>
     <script src="~/js/Modais/Modais.js"></script>
+    <script src="~/js/Atendimento/AtendimentoInfo.js"></script>
 }
 
 @{
@@ -32,7 +33,7 @@
             <div class="BotoesAcoes">
                 <button class="BotaoExcluir">Excluir</button>
                 <button onclick="ModalEditarNovo()" class="BotaoEditar">Editar</button>
-                <button onclick="ModalNovo()" class="BotaoNovo">Novo</button>
+                <button onclick="ModalNovo('.modal-atendimentos')" class="BotaoNovo">Novo</button>
             </div>
 
         </div>
@@ -42,40 +43,51 @@
 <div class="container-atendimentos">
     <div class="topo">
         <h2>Pendentes</h2>
-        <div class="container-carrossel">
-
+        <div class="container-botoes">
             <div class="botoes-carrossel">
                 <i class="fa-solid fa-chevron-left" onclick="moveEsquerda()"></i>
                 <i class="fa-solid fa-chevron-right" onclick="moveDireita()"></i>
             </div>
+        </div>
+        <div class="container-carrossel">
             <div class="carrossel-cards-verticais">
                 @* Fazer validacao de data pegar consultas do dia em diante *@
+                @{
+                    var atendimentosAntigos = new List<ProjetoInter.Models.AtendimentoVeterinario>();
+                }
                 @if (Model != null)
                 {
                     foreach (var atendimento in Model)
                     {
-                        <div>
-                            <div class="card-vertical">
-                                <div class="topo-card">
-                                    <div class="topo-esquerda">
-                                        <h4>@atendimento.Animal.Nome</h4>
-                                        <p><small>@atendimento.Animal.Especie?.Descricao |
-                                                @atendimento.Animal.Setor?.Descricao</small></p>
+                        if (atendimento.Data.HasValue && atendimento.Data < DateOnly.FromDateTime(DateTime.Now))
+                        {
+                            atendimentosAntigos.Add(atendimento);
+                        }
+                        else{
+                            <div>
+                                <div class="card-vertical">
+                                    <div class="topo-card">
+                                        <div class="topo-esquerda">
+                                            <h4>@atendimento.Animal.Nome</h4>
+                                            <p><small>@atendimento.Animal.Especie?.Descricao |
+                                                    @atendimento.Animal.Setor?.Descricao</small></p>
+                                        </div>
+                                        <small>Data: @atendimento.Data</small>
                                     </div>
-                                    <small>Data: @atendimento.Data</small>
+                                    <div class="descricao">
+                                        <h4>Nome Procedimento: <span style="font-weight: normal;">@atendimento.Descricao</span></h4>
+                                        <small><strong>Descrição:</strong> @atendimento.Descricao</small>
+                                        <small><strong>Obs:</strong> @atendimento.Observacoes</small>
+                                        <small><strong>Responsável:</strong> @atendimento.FuncionarioVeterinario.Nome</small>
+                                    </div>
+                                    <button class="btn-concluir">Concluir</button>
                                 </div>
-                                <div class="descricao">
-                                    <h4>Nome Procedimento: <span style="font-weight: normal;">@atendimento.Descricao</span></h4>
-                                    <small><strong>Descrição:</strong> @atendimento.Descricao</small>
-                                    <small><strong>Obs:</strong> @atendimento.Observacoes</small>
-                                    <small><strong>Responsável:</strong> @atendimento.Observacoes</small>
-                                </div>
-                                <button class="btn-concluir">Concluir</button>
                             </div>
-                        </div>
+                        }
+                        
                     }
                 }
-                <div style="min-width: 320px; height: 150px; background-color: aqua;"></div>
+                <div style="min-width: 320px; height: 300px; background-color: aqua;"></div>
                 <div style="min-width: 320px; height: 150px; background-color: aqua;"></div>
                 <div style="background-color: blueviolet; min-width: 24px; height: 150px"></div>
             </div>
@@ -88,60 +100,39 @@
     @* Fazer validacao de data pegar consultas dos dias anteriores *@
     <h2>Atendimentos Anteriores</h2>
     <div class="cards-horizontais">
+        @{
+            var atendimentosAntigosOrdenados = atendimentosAntigos
+                .OrderByDescending(a => a.Data)
+                .ToList();
+        }
         @if (Model != null)
         {
-            foreach (var atendimento in Model)
+            foreach (var atendimento in atendimentosAntigosOrdenados)
             {
-                <div class="card-horizontal">
-                    <div>
-                        <h4>@atendimento.Animal.Nome <span style="font-weight: normal;">| @atendimento.Animal.Especie?.Descricao</span></h4>
-                        <small><strong>Descrição:</strong> @atendimento.Descricao</small>
+                <a style="text-decoration: none;" asp-controller="AtendimentoVeterinario" asp-action="AtendimentoInfo" asp-route-id="@atendimento.AtendimentoVeterinarioId" class="card-link">
+                @* <a  onclick="abreAtendimentoInfo()"> *@
+                    <div class="card-horizontal" id="@atendimento.AtendimentoVeterinarioId">
+                        <div>
+                            <h4>@atendimento.Animal.Nome <span style="font-weight: normal;">| @atendimento.Animal.Especie?.Descricao</span></h4>
+                            <small><strong>Descrição:</strong> @atendimento.Descricao</small>
+                        </div>
+                        <div>
+                            <small><strong>Resultado:</strong> @atendimento.Resultado</small>
+                            <small><strong>Responsáveis:</strong> @atendimento.FuncionarioVeterinario.Nome</small>
+                        </div>
+                        <div>
+                            <small>Data: @atendimento.Data</small>
+                        </div>
                     </div>
-                    <div>
-                        <small><strong>Resultado:</strong> @atendimento.Resultado</small>
-                        <small><strong>Responsáveis:</strong> @atendimento.FuncionarioVeterinario.Nome</small>
-                    </div>
-                    <div>
-                        <small>Data: @atendimento.Data</small>
-                    </div>
-                    
-                </div>
+                </a>
             }
         }
 
     </div>
 </div>
+
+
 </div>
-
-<section class="area-modal-editar">
-    <div class="modal-base">
-        <button class="modal-close" onclick="FecharModalEditar()">
-            <i class="fas fa-times"></i>
-        </button>
-
-        <h1>Editar Setor</h1>
-
-        <div class="secaoAcao">
-            <label>Nome:</label>
-            <input type="text" class="inputTexto" />
-        </div>
-
-        <div class="secaoAcao">
-            <label>Descrição:</label>
-            <input type="text" class="inputTexto" />
-        </div>
-
-        <div class="secaoAcao">
-            <label for="editar-status">Status:</label>
-            <select id="editar-status" name="editar-status">
-                <option value="ativo">Ativo</option>
-                <option value="inativo">Inativo</option>
-            </select>
-        </div>
-
-        <button onclick="">Salvar Alterações</button>
-    </div>
-</section>
 
 <section class="area-modal-novo">
     <div class="modal-base">
@@ -149,26 +140,50 @@
             <i class="fas fa-times"></i>
         </button>
 
-        <h1>Adicionar Setor</h1>
+        <h1>Solicitar Atendimento</h1>
+
+        <div class="grid">
+            <div class="secaoAcao">
+                <label>Espécie:</label>
+                <select style="width: auto;" id="novo-status" name="novo-status">
+                    <option value="ativo">Exemplo 1</option>
+                    <option value="inativo">Exemplo 2</option>
+                </select>
+            </div>
+            <div class="secaoAcao">
+                <label>Animal:</label>
+                <select style="width: auto;" id="novo-status" name="novo-status">
+                    <option value="ativo">Animal 1</option>
+                    <option value="inativo">Animal 2</option>
+                </select>
+            </div>
+        </div>
+
 
         <div class="secaoAcao">
-            <label>Nome:</label>
-            <input type="text" class="inputTexto" />
+            <label for="novo-status">Funcionário Solicitante:</label>
+            <select style="width: auto;" id="novo-status" name="novo-status">
+                <option value="ativo">Funcionario 1</option>
+                <option value="inativo">Funcionario 2</option>
+            </select>
+        </div>
+
+        <div style="grid-template-columns: 3fr 1fr;" class="grid">
+            <div class="secaoAcao">
+                <label>Veterinário Responsável:</label>
+                <input type="text" class="inputTexto" />
+            </div>
+            <div class="secaoAcao">
+                <label>Data:</label>
+                <input type="date" class="inputTexto" />
+            </div>
         </div>
 
         <div class="secaoAcao">
             <label>Descrição:</label>
-            <input type="text" class="inputTexto" />
+            <textarea style="width: auto; border-radius: 8px; height: 50px" rows="5" cols="33" class="inputTexto">It was a dark and stormy night...</textarea>
         </div>
 
-        <div class="secaoAcao">
-            <label for="novo-status">Status:</label>
-            <select id="novo-status" name="novo-status">
-                <option value="ativo">Ativo</option>
-                <option value="inativo">Inativo</option>
-            </select>
-        </div>
-
-        <button onclick="">Adicionar</button>
+        <button class="btn-concluir" onclick="">Adicionar</button>
     </div>
 </section>

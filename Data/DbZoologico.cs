@@ -21,11 +21,9 @@ public class DbZoologico : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Conversor reutilizável para DateOnly? <-> DateTime?
         var dateOnlyConverter = new ValueConverter<DateOnly?, DateTime?>(
             dateOnly => dateOnly.HasValue ? dateOnly.Value.ToDateTime(TimeOnly.MinValue) : null,
-            dateTime => dateTime.HasValue ? DateOnly.FromDateTime(dateTime.Value) : null
-        );
+            dateTime => dateTime.HasValue ? DateOnly.FromDateTime(dateTime.Value) : null);
 
         modelBuilder.Entity<Animal>()
             .Property(a => a.DataNascimento)

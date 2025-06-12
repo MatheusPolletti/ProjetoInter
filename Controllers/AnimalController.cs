@@ -3,6 +3,13 @@ using ProjetoInter.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using ProjetoInter.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using System.Threading.Tasks;
+using System;
+using System.Linq;
+using System.Collections.Generic;
 
 [Authorize]
 public class AnimalController : Controller
@@ -89,5 +96,28 @@ public class AnimalController : Controller
         await _context.SaveChangesAsync();
 
         return RedirectToAction("Animais");
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult AdicionarEspecie(AnimalEspecie especie)
+    {
+        if (ModelState.IsValid)
+        {
+            _context.AnimalEspecies.Add(especie);
+            _context.SaveChanges();
+
+            return Json(new
+            {
+                success = true,
+                especie = new
+                {
+                    animalEspecieId = especie.AnimalEspecieId,
+                    descricao = especie.Descricao
+                }
+            });
+        }
+
+        return Json(new { success = false, message = "Descrição inválida." });
     }
 }
