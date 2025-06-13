@@ -13,7 +13,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddDbContext<DbZoologico>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Autenticação (Cookies)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

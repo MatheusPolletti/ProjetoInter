@@ -1,0 +1,76 @@
+@{
+    Layout = null;
+}
+
+<div class="modal" id="modalNovaEspecie" style="display:none;">
+    <div class="modal-conteudo">
+        <span class="fechar" onclick="FecharModalNovaEspecie()">×</span>
+        <h2>Nova Espécie</h2>
+
+        <form id="formNovaEspecie" method="post" asp-action="AdicionarEspecie" asp-controller="Animal">
+            @Html.AntiForgeryToken()
+
+            <div class="form-grupo">
+                <label for="Descricao">Descrição:</label>
+                <input type="text" name="Descricao" id="Descricao" placeholder="Descrição da espécie" required />
+            </div>
+
+            <div class="botao-container">
+                <button type="submit" class="submit-button">Salvar</button>
+            </div>
+
+            <div id="erroEspecie" style="color:red; margin-top: 10px;"></div>
+        </form>
+    </div>
+</div>
+
+<script>
+function AbrirModalNovaEspecie() {
+    document.getElementById('modalNovaEspecie').style.display = 'block';
+    document.querySelector('.area-modal-novo').style.display = 'none';
+}
+
+function FecharModalNovaEspecie() {
+    document.getElementById('modalNovaEspecie').style.display = 'none';
+    document.querySelector('.area-modal-novo').style.display = 'block';
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const formNovaEspecie = document.getElementById('formNovaEspecie');
+    const erroEspecie = document.getElementById('erroEspecie');
+
+    formNovaEspecie.addEventListener('submit', function (e) {
+        e.preventDefault();
+        erroEspecie.innerHTML = "";
+
+        const formData = new FormData(formNovaEspecie);
+        fetch(formNovaEspecie.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'RequestVerificationToken': formNovaEspecie.querySelector('input[name="__RequestVerificationToken"]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.especie) {
+                const select = document.getElementById('EspecieId');
+                const option = document.createElement('option');
+                option.value = data.especie.animalEspecieId;
+                option.text = data.especie.descricao;
+                select.appendChild(option);
+                select.value = data.especie.animalEspecieId;
+
+                // Fecha este modal e reabre o de novo animal
+                FecharModalNovaEspecie();
+                formNovaEspecie.reset();
+            } else {
+                erroEspecie.innerHTML = data.message || "Erro ao adicionar espécie.";
+            }
+        })
+        .catch(error => {
+            erroEspecie.innerHTML = "Erro ao enviar: " + error.message;
+        });
+    });
+});
+</script>

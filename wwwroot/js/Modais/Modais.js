@@ -1,51 +1,55 @@
-function ModalNovo()
-{
-    const modalNovo = document.querySelector(".area-modal-novo");
+function abrirModal(selector) {
+  const modal = document.querySelector(selector);
+  const main = document.querySelector(".MainContent");
 
-    const main = document.querySelector(".MainContent");
-    const overlay = document.createElement("div");
-    
+  if (!modal || !main) return;
+
+  // Cria overlay se não existir
+  let overlay = document.querySelector(".overlay");
+  if (!overlay) {
+    overlay = document.createElement("div");
     overlay.className = "overlay";
-    
-    main.appendChild(overlay);
-    
-    modalNovo.style.display = "flex";
-    modalNovo.style.position = "absolute";
-}
-
-function FecharModalNovo()
-{
-    const modalNovo = document.querySelector(".area-modal-novo");
-    
-    const main = document.querySelector(".MainContent");
-    const overlay = document.querySelector(".overlay");
-    
-    main.removeChild(overlay);
-    modalNovo.style.display = "none";
-}
-
-function ModalEditarNovo()
-{
-    const modalEditar = document.querySelector(".area-modal-editar");
-
-    const main = document.querySelector(".MainContent");
-    const overlay = document.createElement("div");
-
-    overlay.className = "overlay";
-
     main.appendChild(overlay);
 
-    modalEditar.style.display = "flex";
-    modalEditar.style.position = "absolute";
+    overlay.addEventListener("click", () => fecharModal(selector));
+  }
+
+  modal.style.display = "flex";
 }
 
-function FecharModalEditar()
-{
-    const modalEditar = document.querySelector(".area-modal-editar");
+function fecharModal(selector) {
+  const modal = document.querySelector(selector);
+  const main = document.querySelector(".MainContent");
+  const overlay = document.querySelector(".overlay");
 
-    const main = document.querySelector(".MainContent");
-    const overlay = document.querySelector(".overlay");
+  if (!modal || !main || !overlay) return;
 
-    main.removeChild(overlay);
-    modalEditar.style.display = "none";
+  main.removeChild(overlay);
+  modal.style.display = "none";
+}
+
+function ModalNovo() {
+  abrirModal(".area-modal-novo");
+}
+
+function FecharModalNovo() {
+  fecharModal(".area-modal-novo");
+}
+
+function ModalEditarNovo() {
+  abrirModal(".area-modal-editar");
+}
+
+function FecharModalEditar() {
+  fecharModal(".area-modal-editar");
+}
+
+function AbrirModalNovaEspecie() {
+  document.getElementById("modalNovaEspecie").style.display = "flex";
+  document.querySelector(".area-modal-novo").style.display = "none";
+}
+
+function FecharModalNovaEspecie() {
+  document.getElementById("modalNovaEspecie").style.display = "none";
+  document.querySelector(".area-modal-novo").style.display = "flex";
 }

@@ -82,62 +82,17 @@
     </div>
 </div>
 
-<section class="area-modal-editar">
-    <div class="modal-base">
-        <button class="modal-close" onclick="FecharModalEditar()">
-            <i class="fas fa-times"></i>
-        </button>
+@Html.Partial("_ModalEditarAnimal")
 
-        <h1>Editar Setor</h1>
 
-        <div class="secaoAcao">
-            <label>Nome:</label>
-            <input type="text" class="inputTexto" />
-        </div>
+@Html.Partial("_ModalNovoAnimal")
 
-        <div class="secaoAcao">
-            <label>Descrição:</label>
-            <input type="text" class="inputTexto" />
-        </div>
+<script>
+    function AbrirModal(id) {
+        document.getElementById(id).style.display = 'flex';
+    }
 
-        <div class="secaoAcao">
-            <label for="editar-status">Status:</label>
-            <select id="editar-status" name="editar-status">
-                <option value="ativo">Ativo</option>
-                <option value="inativo">Inativo</option>
-            </select>
-        </div>
-
-        <button onclick="">Salvar Alterações</button>
-    </div>
-</section>
-
-<section class="area-modal-novo">
-    <div class="modal-base">
-        <button class="modal-close" onclick="FecharModalNovo()">
-            <i class="fas fa-times"></i>
-        </button>
-
-        <h1>Adicionar Setor</h1>
-
-        <div class="secaoAcao">
-            <label>Nome:</label>
-            <input type="text" class="inputTexto" />
-        </div>
-
-        <div class="secaoAcao">
-            <label>Descrição:</label>
-            <input type="text" class="inputTexto" />
-        </div>
-
-        <div class="secaoAcao">
-            <label for="novo-status">Status:</label>
-            <select id="novo-status" name="novo-status">
-                <option value="ativo">Ativo</option>
-                <option value="inativo">Inativo</option>
-            </select>
-        </div>
-
-        <button onclick="">Adicionar</button>
-    </div>
-</section>
+    function FecharModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+</script>

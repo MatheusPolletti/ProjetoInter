@@ -1,13 +1,33 @@
-.container-animais {
-  padding: 2rem;
-  background-color: #f9f7f1;
+:root {
+  --animal-bg-color: #f9f7f1;
+  --animal-card-bg: #fff;
+  --animal-card-radius: 10px;
+  --animal-card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --animal-card-max-height: 420px;
+  --animal-photo-height: 180px;
+
+  --animal-padding: 12px;
+  --animal-font-size: 0.95rem;
+
+  --animal-info-margin-bottom: 6px;
+  --animal-info-spacing: 15px;
+
+  --animal-text-muted: #999999;
 }
 
+/* Container geral da tela */
+.container-animais {
+  padding: 2rem;
+  background-color: var(--animal-bg-color);
+}
+
+/* Título da página */
 .titulo {
   font-size: 2rem;
   margin-bottom: 1.5rem;
 }
 
+/* Grid que mostra os cards */
 .grid-animais {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -20,16 +40,17 @@
   align-items: stretch;
 }
 
+/* Card do animal */
 .card-animal {
   display: flex;
   flex-direction: column;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--animal-card-bg);
+  border-radius: var(--animal-card-radius);
+  box-shadow: var(--animal-card-shadow);
   overflow: hidden;
   transition: transform 0.2s;
   height: 100%;
-  max-height: 420px;
+  max-height: var(--animal-card-max-height);
   cursor: pointer;
 }
 
@@ -37,28 +58,32 @@
   transform: translateY(-5px);
 }
 
+/* Foto do animal no card */
 .foto-animal {
   width: 100%;
-  height: 180px;
+  height: var(--animal-photo-height);
   object-fit: cover;
   flex-shrink: 0;
 }
 
+/* Informação textual do animal */
 .info-animal {
-  padding: 12px;
-  font-size: 0.95rem;
+  padding: var(--animal-padding);
+  font-size: var(--animal-font-size);
 }
 
+/* Texto forte dentro da info */
 .info-animal strong {
   font-weight: 600;
   margin-right: 5px;
   white-space: nowrap;
 }
 
+/* Linhas que organizam as infos do animal */
 .linha-info {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 6px;
+  margin-bottom: var(--animal-info-margin-bottom);
 }
 
 .linha-info .esquerda,
@@ -71,21 +96,256 @@
 }
 
 .info-animal p {
-  margin: 5px 0;
-}
-
-.info-animal p {
   display: inline-block;
-  margin-right: 15px;
+  margin: 5px var(--animal-info-spacing) 5px 0;
 }
 
 .info-animal span {
-  margin-right: 15px;
+  margin-right: var(--animal-info-spacing);
   white-space: nowrap;
 }
 
-.valor 
-{
-  color: #999999; /* cinza claro, pode ajustar */
-  font-weight: 400; /* opcional: deixar normal, sem negrito */
+.valor {
+  color: var(--animal-text-muted);
+  font-weight: 400;
+}
+
+/* Modal geral */
+.area-modal-novo,
+.area-modal-editar,
+#modalNovaEspecie {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+  /* IMPORTANTISSIMO para centralizar com flex no JS */
+  display: none; /* inicialmente escondido */
+  flex-direction: column;
+}
+
+/* quando abrir o modal, seu JS seta display: flex; */
+/* aí o modal fica centralizado */
+
+.area-modal-novo .modal-conteudo,
+.area-modal-editar .modal-conteudo,
+#modalNovaEspecie .modal-conteudo {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 40px 30px;
+  width: 100%;
+  max-width: 920px;
+  max-height: 90vh;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* Título */
+.area-modal-novo h2,
+.area-modal-editar h2,
+#modalNovaEspecie h2 {
+  font-size: 26px;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+/* Botão fechar */
+.area-modal-novo .fechar,
+.area-modal-editar .fechar,
+#modalNovaEspecie .fechar {
+  position: absolute;
+  top: 2vh;
+  right: 2vh;
+  font-size: 2vh;
+  color: #777;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.2s;
+  user-select: none;
+}
+
+.area-modal-novo .fechar:hover,
+.area-modal-editar .fechar:hover,
+#modalNovaEspecie .fechar:hover {
+  color: #000;
+}
+
+/* O resto do seu CSS permanece igual, sem mudanças */
+
+/* Linhas dos formulários */
+.area-modal-novo .form-linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+/* Grupo input */
+.area-modal-novo .form-grupo {
+  flex: 1 1 45%;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Labels */
+.area-modal-novo .form-grupo label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #444;
+  font-size: 1rem;
+}
+
+/* Inputs e selects */
+.area-modal-novo .form-grupo input,
+.area-modal-novo .form-grupo select {
+  padding: 12px 16px;
+  font-size: 1rem;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  transition: border-color 0.2s;
+}
+
+/* Grupo especial para select + botão */
+.area-modal-novo .grupo-especie {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.area-modal-novo .grupo-especie select {
+  flex: 1;
+}
+
+.area-modal-novo .btn-mais-especie {
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* Preview imagem */
+#previewContainer {
+  width: 100%;
+  height: 180px;
+  border: 2px dashed #ccc;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f4f4f4;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 20px;
+  padding: 1vh;
+  transition: border-color 0.3s;
+}
+
+#previewContainer:hover {
+  border-color: #999;
+}
+
+#preview {
+  max-width: 100%;
+  max-height: 100%;
+  display: none;
+  object-fit: contain;
+  z-index: 2;
+}
+
+/* Botão Adicionar */
+.submit-button {
+  padding: 10px 24px;
+  background-color: #fff;
+  color: #000;
+  border: 2px solid #000;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+  display: inline-block;
+  align-self: center;
+}
+
+.submit-button:hover {
+  transform: scale(1.05);
+}
+
+/* Input padrão */
+input[type="text"],
+input[type="date"],
+input[type="number"],
+select {
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+/* Botão '+' */
+.botao-add-especie {
+  border: 1px solid black;
+  background-color: white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+  margin-left: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Container do dropdown + botão */
+.container-especie {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Upload de imagem */
+.area-upload-imagem {
+  border: 1px dashed #ccc;
+  border-radius: 16px;
+  width: 100%;
+  height: 120px;
+  text-align: center;
+  padding-top: 40px;
+  color: #888;
+  font-size: 14px;
+}
+
+/* Botão "Adicionar" */
+.botao-adicionar {
+  margin-top: 16px;
+  padding: 10px 20px;
+  border: 1px solid black;
+  border-radius: 20px;
+  background-color: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.botao-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }

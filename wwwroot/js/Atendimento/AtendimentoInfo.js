@@ -1,3 +1,4 @@
-function abreAtendimentoInfo(){
+function abreAtendimentoInfo()
+{
     const telaAtendimentoInfo = document.querySelector();
 }
