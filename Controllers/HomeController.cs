@@ -10,7 +10,7 @@ public class HomeController : Controller
 {
     private readonly IConfiguration configuration;
 
-    public HomeController( IConfiguration _configuration)
+    public HomeController(IConfiguration _configuration)
     {
         configuration = _configuration;
     }
@@ -106,6 +106,6 @@ public class HomeController : Controller
 
     public IActionResult SemSucessoAcessarConta()
     {
-        return View();
+        return View("~/Views/ResetarSenha/SemSucessoAcessarConta.cshtml");
     }
 }

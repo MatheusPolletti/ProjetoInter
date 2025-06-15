@@ -1,0 +1,9 @@
+@if (ViewBag.Mensagem != null)
+{
+    <p>@ViewBag.Mensagem</p>
+}
+
+<form asp-controller="SemSucessoAcessarConta" asp-action="EnviarEmailRedefinicao" method="post">
+    <input type="email" name="email" placeholder="Digite seu email" required />
+    <button type="submit">Enviar e-mail de redefinição</button>
+</form>

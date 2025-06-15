@@ -22,7 +22,6 @@ public class SetorController : Controller
         return View(setores);
     }
 
-
     [HttpPost]
     public IActionResult AcessarTarefa()
     {

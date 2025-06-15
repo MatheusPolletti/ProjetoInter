@@ -35,4 +35,9 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=LoginCadastro}/{id?}");
 
+app.MapControllerRoute(
+    name: "resetarSenha",
+    pattern: "ResetarSenha",
+    defaults: new { controller = "ResetarSenha", action = "Index" });
+
 app.Run();
