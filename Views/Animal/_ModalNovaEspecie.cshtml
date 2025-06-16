@@ -3,6 +3,8 @@
     <script src="~/js/Animal/ModaisAnimais.js"></script>
 }
 
+<link rel="stylesheet" href="~/css/TelaAnimal.css" />
+
 @{
     Layout = null;
 }
@@ -15,9 +17,10 @@
         <form id="formNovaEspecie" method="post" asp-action="AdicionarEspecie" asp-controller="Animal">
             @Html.AntiForgeryToken()
 
-            <div class="form-grupo">
-                <label for="Descricao">Descrição:</label>
-                <input type="text" name="Descricao" id="Descricao" placeholder="Descrição da espécie" required />
+            <div class="form-linha">
+                    <div class="form-grupo"></div>
+                    <label for="Descricao">Descrição:</label>
+                    <input type="text" name="Descricao" id="Descricao" placeholder="Descrição da espécie" required />
             </div>
 
             <div class="botao-container">
