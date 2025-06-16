@@ -47,7 +47,8 @@
             <div class="form-linha">
                 <div class="form-grupo">
                     <label for="EditarPeso">Peso (kg):</label>
-                    <input type="number" id="EditarPeso" name="Peso" value="@Model.Peso" step="0.01" />
+                    <input type="number" id="EditarPeso" name="Peso" 
+                           value="@Model.Peso.ToString().Replace(",", ".")" step="0.01" />
                 </div>
 
                 <div class="form-grupo">
@@ -62,8 +63,16 @@
             <div class="form-linha">
                 <div class="form-grupo">
                     <label for="EditarDataNascimento">Data de Nascimento:</label>
-                    <input type="date" id="EditarDataNascimento" name="DataNascimento" 
-                           value="@Model.DataNascimento." />
+                    @{
+                        // Solução robusta para formatação da data
+                        string dataFormatada = "";
+                        if (Model.DataNascimento.HasValue)
+                        {
+                            // Formata a data para o padrão ISO (yyyy-MM-dd)
+                            dataFormatada = Model.DataNascimento.Value.ToString("yyyy-MM-dd");
+                        }
+                    }
+                    <input type="date" id="EditarDataNascimento" name="DataNascimento" value="@dataFormatada" />
                 </div>
 
                 <div class="form-grupo">
