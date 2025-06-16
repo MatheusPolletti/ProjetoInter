@@ -216,8 +216,8 @@
 }
 
 .modal input {
-  padding: 12px 16px 12px 16px;
-  padding-right: 440px;
+  padding: 12px 16px;
+  padding-right: 30hw;
   font-size: 1rem;
   border-radius: 3vh;
   border: 1px solid #ccc;
@@ -540,7 +540,7 @@
 
 .area-modal-editar .form-grupo .modal input,
 .area-modal-editar .form-grupo select {
-  padding: 12px 16px;
+  padding: 12px 16px 12px 16px;
   font-size: 1rem;
   border-radius: 3vh;
   border: 1px solid #ccc;
