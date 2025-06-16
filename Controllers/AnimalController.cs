@@ -3,30 +3,20 @@ using ProjetoInter.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using ProjetoInter.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting;
-using System.IO;
-using System.Threading.Tasks;
-using System;
-using System.Linq;
-using System.Collections.Generic;
 
 [Authorize]
-public class AnimalController : Controller
+public class AnimalController : BaseController
 {
-    private readonly DbZoologico _context;
     private readonly IWebHostEnvironment _hostingEnvironment;
-
-    public AnimalController(DbZoologico context, IWebHostEnvironment hostingEnvironment)
+    
+    public AnimalController(DbZoologico _context, IWebHostEnvironment hostingEnvironment) : base(_context)
     {
-        _context = context;
         _hostingEnvironment = hostingEnvironment;
     }
 
-    // GET: /Animal/Animais?busca=texto
     public async Task<IActionResult> Animais(string busca)
     {
-        var query = _context.Animais
+        var query = context.Animais
             .Include(a => a.Setor)
             .Include(a => a.Status)
             .Include(a => a.Especie)
@@ -40,21 +30,19 @@ public class AnimalController : Controller
 
         var animais = await query.ToListAsync();
 
-        ViewBag.Especies = await _context.AnimalEspecies.ToListAsync();
-        ViewBag.Setores = await _context.Setores.ToListAsync();
+        ViewBag.Especies = await context.AnimalEspecies.ToListAsync();
+        ViewBag.Setores = await context.Setores.ToListAsync();
 
         return View(animais);
     }
 
-    // GET: /Animal/Novo - Retorna o partial view modal
     public async Task<IActionResult> Novo()
     {
-        ViewBag.Especies = await _context.AnimalEspecies.ToListAsync();
-        ViewBag.Setores = await _context.Setores.ToListAsync();
+        ViewBag.Especies = await context.AnimalEspecies.ToListAsync();
+        ViewBag.Setores = await context.Setores.ToListAsync();
         return PartialView("_ModalNovoAnimal");
     }
 
-    // POST: /Animal/AdicionarAnimal
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AdicionarAnimal(Animal novoAnimal, IFormFile Imagem)
@@ -92,8 +80,8 @@ public class AnimalController : Controller
             novoAnimal.ImagemUrl = "/uploads/" + fileName;
         }
 
-        _context.Animais.Add(novoAnimal);
-        await _context.SaveChangesAsync();
+        context.Animais.Add(novoAnimal);
+        await context.SaveChangesAsync();
 
         return RedirectToAction("Animais");
     }
@@ -104,8 +92,8 @@ public class AnimalController : Controller
     {
         if (ModelState.IsValid)
         {
-            _context.AnimalEspecies.Add(especie);
-            _context.SaveChanges();
+            context.AnimalEspecies.Add(especie);
+            context.SaveChanges();
 
             return Json(new
             {

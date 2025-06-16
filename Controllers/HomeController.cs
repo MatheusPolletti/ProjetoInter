@@ -60,6 +60,7 @@ public class HomeController : Controller
                 var json = JsonDocument.Parse(responseBody);
                 var accessToken = json.RootElement.GetProperty("access_token").GetString();
                 var refreshToken = json.RootElement.GetProperty("refresh_token").GetString();
+                var uid = json.RootElement.GetProperty("user").GetProperty("id").GetString();
 
                 // Armazena tokens na sessão com segurança
                 HttpContext.Session.SetString("SupabaseAccessToken", accessToken!);
@@ -69,7 +70,8 @@ public class HomeController : Controller
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, email),
-                    new Claim(ClaimTypes.Email, email)
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim("uid", uid!)
                 };
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

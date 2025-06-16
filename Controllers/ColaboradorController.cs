@@ -4,14 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 
 [Authorize]
-public class ColaboradorController : Controller
+public class ColaboradorController : BaseController
 {
-    private readonly DbZoologico context;
-
-    public ColaboradorController(DbZoologico _context)
-    {
-        context = _context;
-    }
+    public ColaboradorController(DbZoologico _context) : base(_context) {}
 
     public async Task<IActionResult> Colaboradores()
     {

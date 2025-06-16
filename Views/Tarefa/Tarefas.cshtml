@@ -1,3 +1,10 @@
+@model ProjetoInter.Models.Funcionario
+
+@{
+    ViewData["Title"] = "Minhas Tarefas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
 @section Styles
 {
     <link rel="stylesheet" href="/css/TelaTarefa.css">
@@ -6,10 +13,6 @@
 @section Scripts
 {
     <script src="~/js/Modais/Modais.js"></script>
-}
-
-@{
-    Layout="~/Views/Shared/_Layout.cshtml";
 }
 
 @section HeaderBarras
@@ -94,4 +97,30 @@
 
         <button onclick="">Adicionar</button>
     </div>
+</section>
+
+<section>
+    <h2>Minhas Tarefas</h2>
+    
+    @if (TempData["Erro"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Erro"]
+        </div>
+    }
+    
+    <div class="card" style="padding: 20px; margin-top: 20px;">
+        <h4>Informações do Funcionário</h4>
+        <p><strong>Nome:</strong> @Model.Nome</p>
+        <p><strong>Email:</strong> @Model.Cpf</p>
+        <p><strong>Cargo:</strong> @Model.Cargo</p>
+    </div>
+    
+    <hr />
+    
+    <h4 style="margin-top: 30px;">Suas tarefas aparecerão aqui futuramente</h4>
+    <ul>
+        <li>Tarefa 1 - Exemplo</li>
+        <li>Tarefa 2 - Exemplo</li>
+    </ul>
 </section>

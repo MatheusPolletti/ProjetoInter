@@ -3,14 +3,9 @@ using ProjetoInter.Data;
 using Microsoft.AspNetCore.Authorization;
 
 [Authorize]
-public class TransferenciaController : Controller
+public class TransferenciaController : BaseController
 {
-    private readonly DbZoologico context;
-
-    public TransferenciaController(DbZoologico _context)
-    {
-        context = _context;
-    }
+    public TransferenciaController(DbZoologico context) : base(context) {}
 
     public IActionResult Transferencias()
     {

@@ -4,14 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 
 [Authorize]
-public class AtendimentoVeterinarioController : Controller
+public class AtendimentoVeterinarioController : BaseController
 {
-    private readonly DbZoologico context;
-
-    public AtendimentoVeterinarioController(DbZoologico _context)
-    {
-        context = _context;
-    }
+    public AtendimentoVeterinarioController(DbZoologico _context) : base(_context) { }
 
     public async Task<IActionResult> AtendimentosVeterinarios()
     {

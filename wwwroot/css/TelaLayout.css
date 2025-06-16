@@ -176,7 +176,7 @@ main
 
 .ImagemFuncionario
 {
-    width: clamp(30px, 3.4vw, 60px);
+    width: clamp(40px, 3.4vw, 80px);
 
     aspect-ratio: 1 / 1;
     
@@ -185,7 +185,7 @@ main
 
     object-fit: cover;
     
-    margin-right: 0.5vw;
+    margin-right: 0.8vw;
 
     min-width: 30px;
     min-height: 30px;
@@ -197,6 +197,10 @@ main
 .NomeUsuario
 {
     cursor: default;
+
+    font-size: clamp(18px, 1.5vw, 24px);
+    
+    font-weight: 500;    
 }
 
 .Header

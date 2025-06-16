@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjetoInter.Data;
 
@@ -10,9 +11,11 @@ using ProjetoInter.Data;
 namespace ProjetoInter.Migrations
 {
     [DbContext(typeof(DbZoologico))]
-    partial class DbZoologicoModelSnapshot : ModelSnapshot
+    [Migration("20250615194412_RemovendoTrocarSenhaUsuario")]
+    partial class RemovendoTrocarSenhaUsuario
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
