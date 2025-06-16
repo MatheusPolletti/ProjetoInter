@@ -7,33 +7,29 @@
 
 @section Scripts
 {
-    <script src="~/js/Modais/Modais.js"></script>
+    <script src="~/js/Animal/ModaisAnimais.js"></script>
 }
 
 @{
-    Layout="~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @section HeaderBarras
 {
     <div class="Header">
         <div class="ConteudoHeader">
-
             <h1 class="NomePagina">Animais</h1>
-            
+
             <form method="get" asp-action="Animais" class="Barrabusca">
-                <input type="text" name="busca" placeholder="Pesquisar..." class="TextoPesquisa" value="@(Context.Request.Query["busca"])" />
-                <button type="submit" class="BotaoIconePesquisa" aria-label="Pesquisar">
-                <i class="fas fa-search" aria-hidden="true"></i>
-                </button>    
+                <input type="text" name="busca" placeholder="Pesquisar…" class="TextoPesquisa" value="@(Context.Request.Query["busca"])" />
+                <button type="submit" class="BotaoIconePesquisa"><i class="fas fa-search" aria-hidden="true"></i></button>    
             </form>
-            
+                                
             <div class="BotoesAcoes">
                 <button class="BotaoExcluir">Excluir</button>
-                <button onclick="ModalEditarNovo()" class="BotaoEditar">Editar</button>
+                <button id="btnEditar" class="BotaoEditar">Editar</button>
                 <button onclick="ModalNovo()" class="BotaoNovo">Novo</button>
-            </div>
-        
+            </div>        
         </div>
     </div>
 }
@@ -52,6 +48,9 @@
                 var meses = (int)((idade.Days % 365.25) / 30.44);
 
                 <div class="card-animal">
+                    <input type="checkbox" class="selecionar-animal" data-id="@animal.AnimalId" />
+
+
                     <img src="~/@animal.ImagemUrl" alt="Imagem do animal" class="foto-animal" />
 
                     <div class="info-animal">
@@ -69,7 +68,6 @@
                         </div>
                         <div class="linha-info">
                             <div class="esquerda"><strong>Idade:</strong> <span class="valor">@anos anos e @meses meses</span></div>
-                            <div class="direita"></div>
                         </div>
                     </div>
                 </div>
@@ -82,17 +80,4 @@
     </div>
 </div>
 
-@Html.Partial("_ModalEditarAnimal")
-
-
 @Html.Partial("_ModalNovoAnimal")
-
-<script>
-    function AbrirModal(id) {
-        document.getElementById(id).style.display = 'flex';
-    }
-
-    function FecharModal(id) {
-        document.getElementById(id).style.display = 'none';
-    }
-</script>
