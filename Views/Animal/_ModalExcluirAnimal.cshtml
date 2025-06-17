@@ -1,0 +1,24 @@
+@{
+    Layout = null;
+}
+
+<div class="modal" id="modalFalecimento" style="display:none">
+    <div class="modal-conteudo">
+        <span class="fechar" onclick="fecharModalFalecimento()">×</span>
+        <h2 class="modal-titulo">Registrar Falecimento</h2>
+        
+        <form id="formFalecimento">
+            <input type="hidden" id="AnimalIdFalecimento" value="" />
+            
+            <div class="form-grupo">
+                <label for="DataFalecimento">Data de Falecimento (opcional):</label>
+                <input type="date" id="DataFalecimento" name="DataFalecimento" />
+            </div>
+            
+            <!-- Container do botão centralizado -->
+            <div class="form-linha">
+                <button type="button" class="submit-button" onclick="confirmarFalecimento()">Confirmar</button>
+            </div>
+        </form>
+    </div>
+</div>

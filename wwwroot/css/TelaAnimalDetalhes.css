@@ -1,0 +1,192 @@
+/* Estilos Gerais */
+.container-detalhes {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* Cabeçalho do Animal */
+.cabecalho-animal {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e0d9c6;
+}
+
+.cabecalho-animal h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.info-basica {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    color: #7f8c8d;
+    font-size: 1.1rem;
+}
+
+/* Container de Informações */
+.info-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Imagem */
+.imagem-container {
+    flex: 1;
+    min-width: 250px;
+    max-width: 300px;
+    height: 250px;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.imagem-animal {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.imagem-placeholder {
+    font-size: 3rem;
+    color: #dee2e6;
+}
+
+/* Dados do Animal */
+.dados-animal {
+    flex: 2;
+    min-width: 300px;
+}
+
+.info-linha {
+    display: flex;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.info-label {
+    width: 150px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.info-valor {
+    flex: 1;
+    color: #34495e;
+}
+
+/* Histórico de Atendimentos */
+.historico-atendimentos {
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+}
+
+.historico-atendimentos h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    font-size: 1.8rem;
+    border-bottom: 2px solid #e0d9c6;
+    padding-bottom: 0.5rem;
+}
+
+/* Cards de Atendimento */
+.card-atendimento {
+    border: 1px solid #e0d9c6;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.card-atendimento:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cabecalho-atendimento {
+    padding: 1rem;
+    background-color: #f5f2e9;
+    border-bottom: 1px solid #e0d9c6;
+}
+
+.cabecalho-atendimento h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+    color: #2c3e50;
+}
+
+.info-atendimento {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.resultado {
+    font-weight: 600;
+    color: #27ae60;
+}
+
+.data {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.corpo-atendimento {
+    padding: 1rem;
+}
+
+.corpo-atendimento p {
+    margin: 0 0 0.5rem 0;
+    line-height: 1.6;
+    color: #34495e;
+}
+
+.responsavel {
+    font-style: italic;
+    color: #7f8c8d;
+    margin-top: 0.5rem;
+}
+
+.sem-atendimentos {
+    text-align: center;
+    color: #7f8c8d;
+    padding: 1rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .info-container {
+        flex-direction: column;
+    }
+    
+    .imagem-container {
+        max-width: 100%;
+    }
+    
+    .info-linha {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .info-label {
+        width: 100%;
+    }
+}

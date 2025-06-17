@@ -30,6 +30,7 @@ public class AnimalController : Controller
             .Include(a => a.Setor)
             .Include(a => a.Status)
             .Include(a => a.Especie)
+            .Where(a => a.StatusId != 5 && a.StatusId != 6)
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(busca))
@@ -75,20 +76,39 @@ public class AnimalController : Controller
 
         if (Imagem != null && Imagem.Length > 0)
         {
-            var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
-            if (!Directory.Exists(uploads))
-                Directory.CreateDirectory(uploads);
+            var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "img", "Animais");
 
+            // Criar pasta se não existir
+            if (!Directory.Exists(uploads))
+            {
+                try
+                {
+                    Directory.CreateDirectory(uploads);
+                    Console.WriteLine($"Pasta criada: {uploads}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erro ao criar pasta: {ex.Message}");
+                    erros.Add("Erro no servidor ao processar imagem");
+                    return Json(new { success = false, errors = erros });
+                }
+            }
+
+            // Nome único para o arquivo
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Imagem.FileName);
             var filePath = Path.Combine(uploads, fileName);
 
+            // Salvar arquivo
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await Imagem.CopyToAsync(stream);
+                Console.WriteLine($"Imagem salva em: {filePath}");
             }
 
-            novoAnimal.ImagemUrl = "/uploads/" + fileName;
+            novoAnimal.ImagemUrl = "/img/Animais/" + fileName;
         }
+
+        novoAnimal.StatusId = 1; // Status "Ativo"
 
         _context.Animais.Add(novoAnimal);
         await _context.SaveChangesAsync();
@@ -163,7 +183,7 @@ public class AnimalController : Controller
             // Tratamento de imagem
             if (Imagem != null && Imagem.Length > 0)
             {
-                var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
+                var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "img", "Animais");
                 if (!Directory.Exists(uploads))
                     Directory.CreateDirectory(uploads);
 
@@ -178,14 +198,19 @@ public class AnimalController : Controller
                 // Remove imagem antiga se existir
                 if (!string.IsNullOrEmpty(animalExistente.ImagemUrl))
                 {
-                    var oldFilePath = Path.Combine(_hostingEnvironment.WebRootPath, animalExistente.ImagemUrl.TrimStart('/'));
+                    var oldFilePath = Path.Combine(
+                        _hostingEnvironment.WebRootPath,
+                        animalExistente.ImagemUrl.TrimStart('/')
+                    );
+
                     if (System.IO.File.Exists(oldFilePath))
                     {
                         System.IO.File.Delete(oldFilePath);
                     }
                 }
 
-                animalExistente.ImagemUrl = "/uploads/" + fileName;
+                // URL correta: /img/animals/
+                animalExistente.ImagemUrl = "/img/Animais/" + fileName;
             }
 
             _context.Update(animalExistente);
@@ -198,5 +223,70 @@ public class AnimalController : Controller
             erros.Add($"Erro ao atualizar: {ex.Message}");
             return Json(new { success = false, errors = erros });
         }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ExcluirAnimais([FromBody] ExcluirAnimaisModel model)
+    {
+        try
+        {
+            const int STATUS_INATIVO = 6; // Status "Inativo"
+
+            var animais = await _context.Animais
+                .Where(a => model.AnimalIds.Contains(a.AnimalId))
+                .ToListAsync();
+
+            foreach (var animal in animais)
+            {
+                animal.StatusId = STATUS_INATIVO; // Marca como inativo
+
+                // Apenas para exclusão individual com data válida
+                if (model.AnimalIds.Count == 1 &&
+                    !string.IsNullOrEmpty(model.DataFalecimento) &&
+                    DateOnly.TryParse(model.DataFalecimento, out DateOnly dataFalec))
+                {
+                    animal.DataFalecimento = dataFalec;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return Json(new { success = true });
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
+    public class ExcluirAnimaisModel
+    {
+        public List<int> AnimalIds { get; set; }
+        public string DataFalecimento { get; set; } // Alterado para string
+    }
+    
+    public async Task<IActionResult> Detalhes(int id)
+    {
+        // Carrega o animal
+        var animal = await _context.Animais
+            .Include(a => a.Especie)
+            .Include(a => a.Setor)
+            .Include(a => a.Status)
+            .FirstOrDefaultAsync(a => a.AnimalId == id);
+
+        if (animal == null) return NotFound();
+
+        // Carrega os atendimentos veterinários relacionados
+        var atendimentos = await _context.AtendimentosVeterinarios
+            .Include(a => a.FuncionarioVeterinario)
+            .Include(a => a.FuncionarioSolicitante)
+            .Where(a => a.AnimalId == id)
+            .OrderByDescending(a => a.Data)
+            .ToListAsync();
+
+        // Passa os dados para a view
+        ViewBag.Animal = animal;
+        ViewBag.Atendimentos = atendimentos;
+
+        return View("DetalheAnimal");
     }
 }
