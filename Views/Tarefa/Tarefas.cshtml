@@ -1,4 +1,4 @@
-@model ProjetoInter.Models.Funcionario
+@model IEnumerable<ProjetoInter.Models.Procedimento>
 
 @{
     ViewData["Title"] = "Minhas Tarefas";
@@ -100,27 +100,23 @@
 </section>
 
 <section>
-    <h2>Minhas Tarefas</h2>
-    
-    @if (TempData["Erro"] != null)
+<table class="table">
+<thead>
+    <tr>
+        <th>Descrição</th>
+        <th>Data</th>
+        <th>Status</th>
+    </tr>
+</thead>
+<tbody>
+    @foreach (var tarefa in Model)
     {
-        <div class="alert alert-danger">
-            @TempData["Erro"]
-        </div>
+        <tr>
+            <td>@tarefa.Descricao</td>
+            <td>@tarefa.DataProcedimento</td>
+            <td>@tarefa.Status</td>
+        </tr>
     }
-    
-    <div class="card" style="padding: 20px; margin-top: 20px;">
-        <h4>Informações do Funcionário</h4>
-        <p><strong>Nome:</strong> @Model.Nome</p>
-        <p><strong>Email:</strong> @Model.Cpf</p>
-        <p><strong>Cargo:</strong> @Model.Cargo</p>
-    </div>
-    
-    <hr />
-    
-    <h4 style="margin-top: 30px;">Suas tarefas aparecerão aqui futuramente</h4>
-    <ul>
-        <li>Tarefa 1 - Exemplo</li>
-        <li>Tarefa 2 - Exemplo</li>
-    </ul>
+</tbody>
+</table>
 </section>

@@ -24,12 +24,15 @@ public class DbZoologico : DbContext
         var dateOnlyConverter = new ValueConverter<DateOnly?, DateTime?>(
             dateOnly => dateOnly.HasValue ? dateOnly.Value.ToDateTime(TimeOnly.MinValue) : null,
             dateTime => dateTime.HasValue ? DateOnly.FromDateTime(dateTime.Value) : null);
-            
+
         // Data animais    
         modelBuilder.Entity<Animal>().Property(a => a.DataNascimento).HasConversion(dateOnlyConverter);
         modelBuilder.Entity<Animal>().Property(a => a.DataFalecimento).HasConversion(dateOnlyConverter);
 
         // Data Atendimentos
         modelBuilder.Entity<AtendimentoVeterinario>().Property(a => a.Data).HasConversion(dateOnlyConverter);
+
+        // Data Procedimento
+        modelBuilder.Entity<Procedimento>().Property(a => a.DataProcedimento).HasConversion(dateOnlyConverter);
     }
 }

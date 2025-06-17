@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjetoInter.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjetoInter.Controllers
 {
@@ -23,17 +24,20 @@ namespace ProjetoInter.Controllers
             return RedirectToAction("Tarefas");
         }
 
-        public IActionResult Tarefas()
+        public async Task<IActionResult> Tarefas()
         {
             var funcionario = ObterFuncionarioLogado();
 
             if (funcionario == null)
             {
                 TempData["Erro"] = "Funcionário não encontrado.";
+
                 return RedirectToAction("LoginCadastro", "Home");
             }
 
-            return View(funcionario);
+            var TarefaFuncionarioLogado = await context.Procedimentos.Where(proced => proced.FuncionarioTarefaId == funcionario.FuncionarioId).ToListAsync();
+            
+            return View(TarefaFuncionarioLogado);
         }
     }
 }
