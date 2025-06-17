@@ -26,40 +26,43 @@
     </div>
 }
 
-<div class="container-detalhes">
-    <!-- Cabeçalho com nome do animal -->
-    <div class="cabecalho-animal">
-        <h1>@animal.Nome</h1>
-        <div class="info-basica">
-            <span>@animal.Especie?.Descricao</span>
-            <span>|</span>
-            <span>@animal.Status?.Descricao</span>
+<!-- Ficha de Informações do Animal no estilo minimalista -->
+<div class="ficha-minimalista">
+    <div class="ficha-linha">
+        <div class="ficha-imagem-circular">
+            @if (!string.IsNullOrEmpty(animal.ImagemUrl))
+            {
+                <img src="@animal.ImagemUrl" alt="@animal.Nome">
+            }
+            else
+            {
+                <div class="imagem-placeholder-circular">
+                    <i class="fas fa-paw"></i>
+                </div>
+            }
         </div>
-    </div>
 
-    <!-- Ficha de Informações do Animal -->
-    <div class="ficha-animal">
-        <div class="ficha-linha">
+        <div class="ficha-conteudo">
             <div class="ficha-item">
                 <span class="ficha-rotulo">Nome:</span>
                 <span class="ficha-valor">@animal.Nome</span>
             </div>
+
             <div class="ficha-item">
                 <span class="ficha-rotulo">ID:</span>
                 <span class="ficha-valor">@animal.AnimalId</span>
             </div>
-        </div>
-        <div class="ficha-linha">
+
             <div class="ficha-item">
                 <span class="ficha-rotulo">Espécie:</span>
                 <span class="ficha-valor">@animal.Especie?.Descricao</span>
             </div>
+
             <div class="ficha-item">
                 <span class="ficha-rotulo">Status:</span>
                 <span class="ficha-valor">@animal.Status?.Descricao</span>
             </div>
-        </div>
-        <div class="ficha-linha">
+
             <div class="ficha-item">
                 <span class="ficha-rotulo">Idade:</span>
                 <span class="ficha-valor">
@@ -73,67 +76,63 @@
                     }
                 </span>
             </div>
+
             <div class="ficha-item">
                 <span class="ficha-rotulo">Setor:</span>
                 <span class="ficha-valor">@animal.Setor?.Nome</span>
             </div>
-        </div>
-        <div class="ficha-linha">
+
             <div class="ficha-item">
                 <span class="ficha-rotulo">Peso:</span>
                 <span class="ficha-valor">@animal.Peso.ToString("N2")</span>
             </div>
+
             <div class="ficha-item">
                 <span class="ficha-rotulo">Sexo:</span>
                 <span class="ficha-valor">@(animal.Sexo == "M" ? "Macho" : "Fêmea")</span>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Histórico de Saúde -->
-    <div class="historico-saude">
-        <div class="historico-titulo">Históricos de Saúde</div>
-        
+
+<!-- Histórico de Saúde -->
+<div class="inferior">
+    <h2>Históricos de Saúde</h2>
+    <div class="cards-horizontais">
         @if (atendimentos != null && atendimentos.Count > 0)
         {
             foreach (var atendimento in atendimentos)
             {
-                <div class="registro-historico">
-                    <div class="registro-titulo">"Atendimento"</div>
-                    <div class="registro-conteudo">
-                        <div class="registro-linha">
-                            <div class="registro-rotulo">ID:</div>
-                            <div class="registro-dado">@atendimento.AtendimentoVeterinarioId</div>
+                <a style="text-decoration: none;" asp-controller="AtendimentoVeterinario" asp-action="AtendimentoInfo" asp-route-id="@atendimento.AtendimentoVeterinarioId" class="card-link">
+                    <div class="card-horizontal">
+                        <div>
+                            <!-- Nome do Animal e Espécie -->
+                            <h4>@atendimento.Animal.Nome <span>| @atendimento.Animal.Especie?.Descricao</span></h4>
+                            <!-- Descrição do Atendimento -->
+                            <small><strong>Descrição:</strong> @atendimento.Descricao</small>
                         </div>
-                        <div class="registro-linha">
-                            <div class="registro-rotulo">Descrição:</div>
-                            <div class="registro-dado">@atendimento.Descricao</div>
+                        <div>
+                            <!-- Resultado (se existir) -->
+                            @if (!string.IsNullOrEmpty(atendimento.Resultado))
+                            {
+                                <small><strong>Resultado:</strong> @atendimento.Resultado</small>
+                            }
+                            <!-- Responsável -->
+                            <small><strong>Responsáveis:</strong> @atendimento.FuncionarioVeterinario?.Nome</small>
                         </div>
-                        
-                        @if (!string.IsNullOrEmpty(atendimento.Resultado))
-                        {
-                            <div class="registro-linha">
-                                <div class="registro-rotulo">Resultado:</div>
-                                <div class="registro-dado">@atendimento.Resultado</div>
-                            </div>
-                        }
-                        
-                        <div class="registro-linha">
-                            <div class="registro-rotulo">Responsáveis:</div>
-                            <div class="registro-dado">@atendimento.FuncionarioVeterinario?.Nome</div>
-                        </div>
-                        <div class="registro-linha">
-                            <div class="registro-rotulo">Data:</div>
-                            <div class="registro-dado">@atendimento.Data?.ToString("dd/MM/yyyy")</div>
+                        <div>
+                            <!-- Data formatada -->
+                            <small>Data: @atendimento.Data?.ToString("dd/MM/yyyy")</small>
                         </div>
                     </div>
-                </div>
+                </a>
             }
         }
         else
         {
-            <div class="registro-historico">
-                <div class="registro-conteudo" style="padding: 20px; text-align: center;">
+            <div class="card-horizontal">
+                <div style="grid-column: 1 / -1; text-align: center; padding: 20px;">
                     Nenhum atendimento registrado para este animal
                 </div>
             </div>
