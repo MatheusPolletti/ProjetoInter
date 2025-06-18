@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 using ProjetoInter.Data;
 using ProjetoInter.Models;
 
@@ -39,5 +40,10 @@ public class BaseController : Controller
         var funcionario = context.Funcionarios.FirstOrDefault(f => f.AuthUserId.ToString() == uid);
 
         return funcionario;
+    }
+
+    protected async Task<List<Instituicao>> InstituicoesCadastradas()
+    {
+        return await context.Instituicoes.ToListAsync();
     }
 }
