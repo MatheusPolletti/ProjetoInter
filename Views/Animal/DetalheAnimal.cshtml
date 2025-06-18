@@ -1,0 +1,141 @@
+@{
+    var animal = ViewBag.Animal as ProjetoInter.Models.Animal;
+    var atendimentos = ViewBag.Atendimentos as List<ProjetoInter.Models.AtendimentoVeterinario>;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="/css/TelaAnimalDetalhes.css">
+}
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section HeaderBarras
+{
+    <div class="Header">
+        <div class="ConteudoHeader">
+            <a style="display: inline-flex; align-items: center; text-decoration: none; gap: 16px;" 
+               asp-controller="Animal" asp-action="Animais">
+                <i class="fa-solid fa-chevron-left"></i>
+                <h1 style="cursor: pointer" class="NomePagina">
+                    Animais
+                </h1>
+            </a>
+        </div>
+    </div>
+}
+
+<!-- Ficha de Informações do Animal no estilo minimalista -->
+<div class="ficha-minimalista">
+    <div class="ficha-linha">
+        <div class="ficha-imagem-circular">
+            @if (!string.IsNullOrEmpty(animal.ImagemUrl))
+            {
+                <img src="@animal.ImagemUrl" alt="@animal.Nome">
+            }
+            else
+            {
+                <div class="imagem-placeholder-circular">
+                    <i class="fas fa-paw"></i>
+                </div>
+            }
+        </div>
+
+        <div class="ficha-conteudo">
+            <div class="ficha-item">
+                <span class="ficha-rotulo">Nome:</span>
+                <span class="ficha-valor">@animal.Nome</span>
+            </div>
+
+            <div class="ficha-item">
+                <span class="ficha-rotulo">ID:</span>
+                <span class="ficha-valor">@animal.AnimalId</span>
+            </div>
+
+            <div class="ficha-item">
+                <span class="ficha-rotulo">Espécie:</span>
+                <span class="ficha-valor">@animal.Especie?.Descricao</span>
+            </div>
+
+            <div class="ficha-item">
+                <span class="ficha-rotulo">Status:</span>
+                <span class="ficha-valor">@animal.Status?.Descricao</span>
+            </div>
+
+            <div class="ficha-item">
+                <span class="ficha-rotulo">Idade:</span>
+                <span class="ficha-valor">
+                    @if (animal.DataNascimento.HasValue)
+                    {
+                        var dataNascimento = animal.DataNascimento.Value.ToDateTime(TimeOnly.MinValue);
+                        var idade = DateTime.Now - dataNascimento;
+                        var anos = (int)(idade.Days / 365.25);
+                        var meses = (int)((idade.Days % 365.25) / 30.44);
+                        @($"{anos} anos e {meses} meses")
+                    }
+                </span>
+            </div>
+
+            <div class="ficha-item">
+                <span class="ficha-rotulo">Setor:</span>
+                <span class="ficha-valor">@animal.Setor?.Nome</span>
+            </div>
+
+            <div class="ficha-item">
+                <span class="ficha-rotulo">Peso:</span>
+                <span class="ficha-valor">@animal.Peso.ToString("N2")</span>
+            </div>
+
+            <div class="ficha-item">
+                <span class="ficha-rotulo">Sexo:</span>
+                <span class="ficha-valor">@(animal.Sexo == "M" ? "Macho" : "Fêmea")</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Histórico de Saúde -->
+<div class="inferior">
+    <h2>Históricos de Saúde</h2>
+    <div class="cards-horizontais">
+        @if (atendimentos != null && atendimentos.Count > 0)
+        {
+            foreach (var atendimento in atendimentos)
+            {
+                <a style="text-decoration: none;" asp-controller="AtendimentoVeterinario" asp-action="AtendimentoInfo" asp-route-id="@atendimento.AtendimentoVeterinarioId" class="card-link">
+                    <div class="card-horizontal">
+                        <div>
+                            <!-- Nome do Animal e Espécie -->
+                            <h4>@atendimento.Animal.Nome <span>| @atendimento.Animal.Especie?.Descricao</span></h4>
+                            <!-- Descrição do Atendimento -->
+                            <small><strong>Descrição:</strong> @atendimento.Descricao</small>
+                        </div>
+                        <div>
+                            <!-- Resultado (se existir) -->
+                            @if (!string.IsNullOrEmpty(atendimento.Resultado))
+                            {
+                                <small><strong>Resultado:</strong> @atendimento.Resultado</small>
+                            }
+                            <!-- Responsável -->
+                            <small><strong>Responsáveis:</strong> @atendimento.FuncionarioVeterinario?.Nome</small>
+                        </div>
+                        <div>
+                            <!-- Data formatada -->
+                            <small>Data: @atendimento.Data?.ToString("dd/MM/yyyy")</small>
+                        </div>
+                    </div>
+                </a>
+            }
+        }
+        else
+        {
+            <div class="card-horizontal">
+                <div style="grid-column: 1 / -1; text-align: center; padding: 20px;">
+                    Nenhum atendimento registrado para este animal
+                </div>
+            </div>
+        }
+    </div>
+</div>

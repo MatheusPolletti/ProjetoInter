@@ -4,14 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 
 [Authorize]
-public class ColaboradorController : Controller
+public class ColaboradorController : BaseController
 {
-    private readonly DbZoologico context;
-
-    public ColaboradorController(DbZoologico _context)
-    {
-        context = _context;
-    }
+    public ColaboradorController(DbZoologico _context) : base(_context) {}
 
     public async Task<IActionResult> Colaboradores()
     {
@@ -31,7 +26,11 @@ public class ColaboradorController : Controller
 
     [HttpGet]
     public async Task<IActionResult> Colaboradores(string busca)
+<<<<<<< HEAD
 {
+=======
+    {
+>>>>>>> 084014b1139905d919488b880cc1883258779381
     var query = context.Funcionarios
         .Include(f => f.StatusFuncionario)
         .Where(f => f.StatusFuncionarioId == 1); // Apenas ativos
@@ -46,7 +45,8 @@ public class ColaboradorController : Controller
 
     var funcionarios = await query.ToListAsync();
     return View(funcionarios);
-}
+    }
+
     [HttpGet]
     public async Task<IActionResult> DetalhesColaborador(int id)
     {

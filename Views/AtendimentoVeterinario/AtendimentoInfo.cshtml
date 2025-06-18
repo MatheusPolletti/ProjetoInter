@@ -1,0 +1,81 @@
+@model ProjetoInter.Models.AtendimentoVeterinario
+
+@section Styles {
+    <link rel="stylesheet" href="/css/TelaAtendimentoInfo.css">
+}
+
+@section Scripts
+{
+    <script src="~/js/Setor/Carrossel.js"></script>
+    <script src="~/js/Modais/Modais.js"></script>
+}
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section HeaderBarras
+{
+    <div class="Header">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <div class="ConteudoHeader">
+            <a style="display: inline-flex; align-items: center; text-decoration: none; gap: 16px;"
+                asp-controller="AtendimentoVeterinario" asp-action="AtendimentosVeterinarios">
+                <i class="fa-solid fa-chevron-left"></i>
+                <h1 style="cursor: pointer" class="NomePagina">
+                    Atendimentos
+                </h1>
+            </a>
+        </div>
+    </div>
+}
+
+<div class="ficha">
+    <div class="ficha-topo">
+        <div>
+            <p>Nome: @Model.Animal?.Nome </p>
+            <p>Prontuário: @Model.Animal?.AnimalId </p>
+            <p>Espécie: @Model.Animal?.Especie?.Descricao </p>
+            @{
+                var idade = Model.Animal.DataNascimento.HasValue
+                ? DateTime.Now - Model.Animal.DataNascimento.Value.ToDateTime(TimeOnly.MinValue)
+                : TimeSpan.Zero;
+
+                var anos = (int)(idade.Days / 365.25);
+                var meses = (int)((idade.Days % 365.25) / 30.44);
+            }
+            <p>Idade: @anos anos e @meses meses </p>
+            <p>Peso: @Model.Animal?.Peso Kg</p>
+            <p>Sexo: @Model.Animal?.Sexo </p>
+        </div>
+        <div>
+            <p><small>Data: @Model.Data</small> </p>
+            <p>Pedido: @Model.AtendimentoVeterinarioId </p>
+            <p>Solicitante: @Model.FuncionarioSolicitante?.Nome </p>
+            <p>Veterinário: @Model.FuncionarioVeterinario?.Nome </p>
+        </div>
+
+    </div>
+    <div class="ficha-desc">
+        <div>
+            <p>Descrição:</p>
+            <p>
+                @Model.Descricao
+            </p>
+        </div>
+
+        <div>
+            <p>Resultado:</p>
+            <p>
+                @Model.Resultado
+            </p>
+        </div>
+
+        <div>
+            <p>Observações:</p>
+            <p>
+                @Model.Observacoes
+            </p>
+        </div>
+    </div>
+</div>

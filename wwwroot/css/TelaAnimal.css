@@ -27,13 +27,13 @@
   margin-bottom: 1.5rem;
 }
 
-/* Grid que mostra os cards */
+/* Grid para os cards */
 .grid-animais {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-  padding: 10px;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 0.5rem;
   width: 100%;
   box-sizing: border-box;
   grid-auto-rows: 1fr;
@@ -42,6 +42,7 @@
 
 /* Card do animal */
 .card-animal {
+  position: relative;
   display: flex;
   flex-direction: column;
   background: var(--animal-card-bg);
@@ -51,7 +52,6 @@
   transition: transform 0.2s;
   height: 100%;
   max-height: var(--animal-card-max-height);
-  cursor: pointer;
 }
 
 .card-animal:hover {
@@ -86,7 +86,6 @@
   margin-bottom: var(--animal-info-margin-bottom);
 }
 
-/* Colunas esquerda e direita dentro da linha */
 .linha-info .esquerda,
 .linha-info .direita {
   flex: 1;
@@ -96,26 +95,25 @@
   text-align: right;
 }
 
-/* Parágrafos com infos dentro do card */
 .info-animal p {
   display: inline-block;
   margin: 5px var(--animal-info-spacing) 5px 0;
 }
 
-/* Span com margem para espaçamento */
 .info-animal span {
   margin-right: var(--animal-info-spacing);
   white-space: nowrap;
 }
 
-/* Texto de valor ou informação secundária */
 .valor {
   color: var(--animal-text-muted);
   font-weight: 400;
 }
 
 /* Modal geral */
-.area-modal-novo.modal {
+.area-modal-novo,
+.area-modal-editar,
+#modalNovaEspecie {
   display: none;
   position: fixed;
   z-index: 1000;
@@ -124,32 +122,44 @@
   justify-content: center;
   align-items: center;
   padding: 24px;
+  box-sizing: border-box;
+  display: none; /* inicialmente escondido */
+  flex-direction: column;
 }
 
-/* Conteúdo do modal */
-.area-modal-novo .modal-conteudo {
+/* quando abrir o modal, o JS seta display: flex; */
+/* aí o modal fica centralizado */
+
+.area-modal-novo .modal-conteudo,
+.area-modal-editar .modal-conteudo,
+#modalNovaEspecie .modal-conteudo {
   background-color: #fff;
-  border-radius: 16px;
+  border-radius: 2.5vh;
   padding: 40px 30px;
   width: 100%;
-  max-width: 920px;
+  max-width: 800px;
   max-height: 90vh;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
   position: relative;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 
 /* Título */
-.area-modal-novo h2 {
+.area-modal-novo h2,
+.area-modal-editar h2,
+#modalNovaEspecie h2 {
   font-size: 26px;
   margin-bottom: 30px;
   color: #333;
 }
 
 /* Botão fechar */
-.area-modal-novo .fechar {
+.area-modal-novo .fechar,
+.area-modal-editar .fechar,
+#modalNovaEspecie .fechar {
   position: absolute;
   top: 2vh;
   right: 2vh;
@@ -158,29 +168,33 @@
   cursor: pointer;
   font-weight: bold;
   transition: color 0.2s;
+  user-select: none;
 }
 
-.area-modal-novo .fechar:hover {
+.area-modal-novo .fechar:hover,
+.area-modal-editar .fechar:hover,
+#modalNovaEspecie .fechar:hover {
   color: #000;
 }
 
-/* Layout inputs 2 colunas */
+
+/* Linhas dos formulários */
 .area-modal-novo .form-linha {
   display: flex;
   flex-wrap: wrap;
-  gap: 2vh;
-  margin-bottom: 20px;
+  gap: 20px;
+  margin-bottom: 24px;
 }
 
 /* Grupo input */
 .area-modal-novo .form-grupo {
-  flex: 1;
-  min-width: 26wh;
+  flex: 1 1 45%;
+  min-width: 220px;
   display: flex;
   flex-direction: column;
 }
 
-/* Label e input */
+/* Labels */
 .area-modal-novo .form-grupo label {
   margin-bottom: 6px;
   font-weight: 600;
@@ -188,31 +202,48 @@
   font-size: 1rem;
 }
 
+/* Inputs e selects */
 .area-modal-novo .form-grupo input,
 .area-modal-novo .form-grupo select {
-  padding: 1vh 1vw;
-  font-size: 1.5vh;
-  border-radius: 8px;
+  padding: 12px 16px 12px 16px;
+  padding-right: 10px;
+  font-size: 1rem;
+  border-radius: 3vh;
   border: 1px solid #ccc;
   background-color: #fff;
   transition: border-color 0.2s;
 }
 
-/* Botão submit */
-.submit-button {
-  padding: 1vh 2vw;
-  background-color: var(--cor-background);
-  color: var(--cor-preto);
-  border: 1px solid var(--cor-preto);
-  border-radius: 5vh;
-  cursor: pointer;
+.modal input {
+  padding: 12px 16px;
+  padding-right: 30hw;
   font-size: 1rem;
-  transition: transform 0.2s ease;
-  display: inline-block;
+  border-radius: 3vh;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  transition: border-color 0.2s;
 }
 
-.btn-adicionar:hover {
-  transform: scale(1.1);
+/* Grupo especial para select + botão */
+.area-modal-novo .grupo-especie {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.area-modal-novo .grupo-especie select {
+  flex: 1;
+}
+
+.area-modal-novo .btn-mais-especie {
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
 }
 
 /* Preview imagem */
@@ -220,11 +251,11 @@
   width: 100%;
   height: 180px;
   border: 2px dashed #ccc;
-  border-radius: 12px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #fafafa;
+  background-color: #f4f4f4;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -237,18 +268,435 @@
   border-color: #999;
 }
 
-#previewText {
-  color: #888;
-  font-size: 16px;
-  position: absolute;
-  z-index: 1;
-  text-align: center;
-}
-
 #preview {
   max-width: 100%;
   max-height: 100%;
   display: none;
   object-fit: contain;
   z-index: 2;
+}
+
+/* Botão Adicionar */
+.submit-button {
+  padding: 10px 24px;
+  background-color: #fff;
+  color: #000;
+  border: 2px solid #000;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+  display: inline-block;
+  align-self: center;
+}
+
+.submit-button:hover {
+  transform: scale(1.05);
+}
+
+/* Botão '+' */
+.botao-add-especie {
+  border: 1px solid black;
+  background-color: white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+  margin-left: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Container do dropdown + botão */
+.container-especie {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Upload de imagem */
+.area-upload-imagem {
+  border: 1px dashed #ccc;
+  border-radius: 16px;
+  width: 100%;
+  height: 120px;
+  text-align: center;
+  padding-top: 40px;
+  color: #888;
+  font-size: 14px;
+}
+
+/* Botão "Adicionar" */
+.botao-adicionar {
+  margin-top: 16px;
+  padding: 10px 20px;
+  border: 1px solid black;
+  border-radius: 20px;
+  background-color: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.botao-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.card-animal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--animal-card-bg);
+  border-radius: var(--animal-card-radius);
+  box-shadow: var(--animal-card-shadow);
+  overflow: hidden;
+  transition: transform 0.2s;
+  height: 100%;
+  max-height: var(--animal-card-max-height);
+  cursor: pointer;
+}
+
+/* Posicionar o checkbox no topo-direto do card */
+.card-animal .selecionar-animal {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  transform: scale(1.5);
+  z-index: 1;
+  cursor: pointer;
+}
+
+.modal-aviso {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.modal-aviso .modal-conteudo {
+  background-color: #fff;
+  border-radius: 2.5vh;
+  padding: 40px 30px;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.modal-aviso .fechar {
+  position: absolute;
+  top: 2vh;
+  right: 2vh;
+  font-size: 2vh;
+  color: #777;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.2s;
+  user-select: none;
+}
+
+.modal-aviso .fechar:hover {
+  color: #000;
+}
+
+/* Modal de Sucesso */
+.modal-sucesso {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+  flex-direction: column;
+}
+
+.modal-sucesso .modal-conteudo {
+  background-color: #fff;
+  border-radius: 2.5vh;
+  padding: 40px 30px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.modal-sucesso .fechar {
+  position: absolute;
+  top: 2vh;
+  right: 2vh;
+  font-size: 2vh;
+  color: #777;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.2s;
+  user-select: none;
+}
+
+.modal-sucesso .fechar:hover {
+  color: #000;
+}
+
+.modal-sucesso h2 {
+  font-size: 26px;
+  margin-bottom: 30px;
+  color: #4CAF50; 
+}
+
+.modal-sucesso p {
+  font-size: 18px;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.modal-sucesso .btn-ok {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  align-self: center;
+  transition: background-color 0.3s;
+}
+
+.modal-sucesso .btn-ok:hover {
+  background-color: #45a049;
+}
+
+/* Melhorias para o modal de aviso */
+.modal-aviso .modal-conteudo {
+  text-align: center;
+}
+
+.modal-aviso p {
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+
+.modal-aviso .btn-ok {
+  background-color: #f0f0f0;
+  color: #333;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  align-self: center;
+  transition: background-color 0.3s;
+}
+
+.modal-aviso .btn-ok:hover {
+  background-color: #e0e0e0;
+}
+
+/* Modal de Edição - Layout */
+.area-modal-editar .form-linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.area-modal-editar .form-grupo {
+  flex: 1 1 45%;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+}
+
+.area-modal-editar .form-grupo label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #444;
+  font-size: 1rem;
+}
+
+.area-modal-editar .form-grupo .modal input,
+.area-modal-editar .form-grupo select {
+  padding: 12px 16px 12px 16px;
+  font-size: 1rem;
+  border-radius: 3vh;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  transition: border-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Grupo de espécie com botão + */
+.area-modal-editar .grupo-especie {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.area-modal-editar .grupo-especie select {
+  flex: 1;
+}
+
+.area-modal-editar .btn-mais-especie {
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* Área de imagem */
+.area-modal-editar #EditarPreviewContainer {
+  width: 100%;
+  height: 180px;
+  border: 2px dashed #ccc;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f4f4f4;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 20px;
+  padding: 1vh;
+  transition: border-color 0.3s;
+}
+
+.area-modal-editar #EditarPreviewContainer:hover {
+  border-color: #999;
+}
+
+.area-modal-editar #EditarPreview {
+  max-width: 100%;
+  max-height: 100%;
+  display: none;
+  object-fit: contain;
+  z-index: 2;
+}
+
+.area-modal-editar #EditarPreviewText {
+  color: #888;
+  font-size: 1rem;
+}
+
+/* Botão de submit */
+.area-modal-editar .btn-atualizar {
+  padding: 10px 24px;
+  background-color: #fff;
+  color: #000;
+  border: 2px solid #000;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+  display: inline-block;
+  align-self: center;
+  margin-top: 20px;
+}
+
+.area-modal-editar .btn-atualizar:hover {
+  transform: scale(1.05);
+  background-color: #f0f0f0;
+}
+
+/* Alinhamento do botão */
+.area-modal-editar .form-linha:last-child {
+  justify-content: center;
+  margin-top: 10px;
+}
+
+/* Estilos para o modal de excluir */
+#modalFalecimento {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+#modalFalecimento .modal-conteudo {
+    background-color: white;
+    border-radius: 10px;
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+#modalFalecimento .fechar {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #777;
+}
+
+#modalFalecimento .fechar:hover {
+    color: #000;
+}
+
+#modalFalecimento .modal-titulo {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+/* Estilos específicos para o modal de falecimento */
+#modalFalecimento .form-linha {
+    display: flex;
+    justify-content: center; /* Centraliza horizontalmente */
+    width: 100%; /* Ocupa toda a largura disponível */
+    margin-top: 20px;
+}
+
+#modalFalecimento .submit-button {
+    padding: 10px 24px;
+    background-color: #fff;
+    color: #000;
+    border: 2px solid #000;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+    /* Remove margens automáticas que podem interferir */
+    margin: 0;
+}
+
+#modalFalecimento .submit-button:hover {
+    transform: scale(1.05);
 }

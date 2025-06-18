@@ -1,3 +1,10 @@
+@model IEnumerable<ProjetoInter.Models.Procedimento>
+
+@{
+    ViewData["Title"] = "Minhas Tarefas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
 @section Styles
 {
     <link rel="stylesheet" href="/css/TelaTarefa.css">
@@ -6,10 +13,6 @@
 @section Scripts
 {
     <script src="~/js/Modais/Modais.js"></script>
-}
-
-@{
-    Layout="~/Views/Shared/_Layout.cshtml";
 }
 
 @section HeaderBarras
@@ -94,4 +97,26 @@
 
         <button onclick="">Adicionar</button>
     </div>
+</section>
+
+<section>
+<table class="table">
+<thead>
+    <tr>
+        <th>Descrição</th>
+        <th>Data</th>
+        <th>Status</th>
+    </tr>
+</thead>
+<tbody>
+    @foreach (var tarefa in Model)
+    {
+        <tr>
+            <td>@tarefa.Descricao</td>
+            <td>@tarefa.DataProcedimento</td>
+            <td>@tarefa.Status</td>
+        </tr>
+    }
+</tbody>
+</table>
 </section>

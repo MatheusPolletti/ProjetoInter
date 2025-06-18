@@ -33,10 +33,7 @@ public class Funcionario
 
     [Column("isadmin")]
     public bool IsAdmin { get; set; }
-
-    [Column("precisatrocarsenha")]
-    public bool PrecisaTrocarSenha { get; set; }
-
+    
     [Column("instituicaoid")]
     public int InstituicaoId { get; set; }
 

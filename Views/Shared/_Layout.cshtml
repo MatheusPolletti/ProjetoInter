@@ -1,3 +1,8 @@
+@{
+    var NomeUsuario = ViewBag.FuncionarioNome as string;
+    var FotoUsuario = ViewBag.FuncionarioFoto as string;
+}
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -41,8 +46,11 @@
         <section class="MainContent">
             
             <div class="TopoContent">
-                <img src="@ViewBag.NomeUsuario" alt="Usuário" class="ImagemFuncionario">
-                <h1 class="NomeUsuario">@ViewBag.ImagemUsuario</h1>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <img src="~/@ViewBag.FotoUsuario" alt="Usuário" class="ImagemFuncionario">
+                    <h1 class="NomeUsuario">@ViewBag.NomeUsuario</h1>
+                }
             </div>
 
             @RenderSection("HeaderBarras", required: false)

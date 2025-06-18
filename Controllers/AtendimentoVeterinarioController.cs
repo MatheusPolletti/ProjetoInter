@@ -4,14 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 
 [Authorize]
-public class AtendimentoVeterinarioController : Controller
+public class AtendimentoVeterinarioController : BaseController
 {
-    private readonly DbZoologico context;
-
-    public AtendimentoVeterinarioController(DbZoologico _context)
-    {
-        context = _context;
-    }
+    public AtendimentoVeterinarioController(DbZoologico _context) : base(_context) { }
 
     public async Task<IActionResult> AtendimentosVeterinarios()
     {
@@ -25,6 +20,22 @@ public class AtendimentoVeterinarioController : Controller
         .ToListAsync();
 
         return View(atendimentos);
+    }
+    public IActionResult AtendimentoInfo(int id)
+    {
+        var atendimento = context.AtendimentosVeterinarios
+            .Include(a => a.Animal)                  // Carrega o Animal
+                .ThenInclude(a => a.Especie)         // Carrega a Especie do Animal (se necessário)
+            .Include(a => a.FuncionarioVeterinario)  // Carrega o Veterinário
+            .Include(a => a.FuncionarioSolicitante)  // Carrega o Funcionário Solicitante
+            .FirstOrDefault(a => a.AtendimentoVeterinarioId == id);
+
+        if (atendimento == null)
+        {
+            return NotFound();
+        }
+
+        return View(atendimento);
     }
 
     [HttpPost]

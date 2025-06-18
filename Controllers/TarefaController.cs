@@ -1,19 +1,43 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjetoInter.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
-[Authorize]
-public class TarefaController : Controller
+namespace ProjetoInter.Controllers
 {
-    private readonly DbZoologico context;
-
-    public TarefaController(DbZoologico _context)
+    [Authorize]
+    public class TarefaController : BaseController
     {
-        context = _context;
-    }
+        public TarefaController(DbZoologico _context) : base(_context) {}
 
-    public IActionResult Tarefas()
-    {
-        return View();
+        [HttpPost]
+        public IActionResult AcessarTarefa()
+        {
+            var funcionario = ObterFuncionarioLogado();
+
+            if (funcionario == null)
+            {
+                TempData["Erro"] = "Funcionário não encontrado.";
+                return RedirectToAction("LoginCadastro", "Home");
+            }
+
+            return RedirectToAction("Tarefas");
+        }
+
+        public async Task<IActionResult> Tarefas()
+        {
+            var funcionario = ObterFuncionarioLogado();
+
+            if (funcionario == null)
+            {
+                TempData["Erro"] = "Funcionário não encontrado.";
+
+                return RedirectToAction("LoginCadastro", "Home");
+            }
+
+            var TarefaFuncionarioLogado = await context.Procedimentos.Where(proced => proced.FuncionarioTarefaId == funcionario.FuncionarioId).ToListAsync();
+            
+            return View(TarefaFuncionarioLogado);
+        }
     }
 }

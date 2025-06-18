@@ -1,0 +1,24 @@
+@{
+    ViewBag.Title = "Redefinir Senha";
+}
+
+<h2>Redefinir Senha</h2>
+
+@if (ViewBag.Mensagem != null)
+{
+    <p>@ViewBag.Mensagem</p>
+}
+
+@if (ViewBag.AccessToken != null)
+{
+    <form method="post" asp-action="Index" asp-controller="ResetarSenha">
+        <input type="hidden" name="accessToken" value="@ViewBag.AccessToken" />
+        <input type="password" name="novaSenha" placeholder="Nova senha" required />
+        <input type="password" name="confirmaSenha" placeholder="Confirme a nova senha" required />
+        <button type="submit">Alterar Senha</button>
+    </form>
+}
+else
+{
+    <p>Token de acesso ausente. Verifique seu link.</p>
+}

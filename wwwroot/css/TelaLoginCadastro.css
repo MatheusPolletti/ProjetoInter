@@ -118,6 +118,24 @@ main
     color: var(--cor-vermelha);
 }
 
+.MensagemErro
+{
+    position: fixed;
+
+    top: 15vh;
+    left: 50%;
+    transform: translateX(-50%);
+
+    font-size: 22px;
+
+    color: var(--cor-vermelha);
+    
+    font-weight: bold;
+
+    opacity: 1;
+    z-index: 999;
+}
+
 @media (max-width: 768px)
 {
     main

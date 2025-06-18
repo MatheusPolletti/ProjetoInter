@@ -2,7 +2,13 @@
     Layout = null;
 }
 
-<link rel="stylesheet" href="~/css/ModalAnimal.css" />
+<link rel="stylesheet" href="~/css/TelaAnimal.css" />
+
+@section Scripts
+{
+    <script src="~/js/Animal/ModaisAnimais.js"></script>
+}
+
 
 <div class="area-modal-novo modal" style="display:none;">
     <div class="modal-conteudo">
@@ -20,12 +26,15 @@
 
                 <div class="form-grupo">
                     <label for="EspecieId">Espécie:</label>
-                    <select id="EspecieId" name="EspecieId" required>
-                        @foreach (var especie in ViewBag.Especies)
-                        {
-                            <option value="@especie.AnimalEspecieId">@especie.Descricao</option>
-                        }
-                    </select>
+                    <div class="grupo-especie">
+                        <select id="EspecieId" name="EspecieId" required>
+                            @foreach (var especie in ViewBag.Especies)
+                            {
+                                <option value="@especie.AnimalEspecieId">@especie.Descricao</option>
+                            }
+                        </select>
+                        <button type="button" class="btn-mais-especie" onclick="AbrirModalNovaEspecie()">+</button>
+                    </div>
                 </div>
             </div>
 
@@ -56,11 +65,11 @@
 
             <div class="form-linha form-imagem">
                 <label for="imagemInput">Imagem:</label>
-                <div id="previewContainer" onclick="document.getElementById('imagemInput').click();" >
+                <div id="previewContainer" onclick="document.getElementById('imagemInput').click();">
                     <span id="previewText">Clique para selecionar uma imagem</span>
                     <img id="preview" />
                 </div>
-                <input type="file" name="Imagem" id="imagemInput" style="display:none;" onchange="mostrarPreview(event)" />
+                <input type="file" name="Imagem" id="imagemInput" style="display:none;" onchange="mostrarPreviewEditar(event)" />
             </div>
 
             <div class="form-linha" style="justify-content: center; margin-top: 20px;">
@@ -72,65 +81,4 @@
     </div>
 </div>
 
-@section Scripts {
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var form = document.getElementById('formNovoAnimal');
-    var errosDiv = document.getElementById('formErrors');
-
-    if (form) {
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            errosDiv.innerHTML = "";
-
-            var formData = new FormData(form);
-
-            fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'RequestVerificationToken': form.querySelector('input[name="__RequestVerificationToken"]').value
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Animal adicionado com sucesso!');
-                    location.reload();
-                } else {
-                    if (data.errors && data.errors.length > 0) {
-                        errosDiv.innerHTML = data.errors.map(e => `<div>${e}</div>`).join('');
-                    } else {
-                        errosDiv.innerHTML = "Erro desconhecido ao adicionar animal.";
-                    }
-                }
-            })
-            .catch(error => {
-                errosDiv.innerHTML = "Erro ao enviar formulário: " + error.message;
-            });
-        });
-    }
-});
-
-function mostrarPreview(event) {
-    const preview = document.getElementById('preview');
-    const previewText = document.getElementById('previewText');
-
-    const file = event.target.files[0];
-    if (!file) {
-        preview.src = "";
-        preview.style.display = "none";
-        previewText.style.display = "block";
-        return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        preview.src = e.target.result;
-        preview.style.display = "block";
-        previewText.style.display = "none";
-    }
-    reader.readAsDataURL(file);
-}
-</script>
-}
+@Html.Partial("_ModalNovaEspecie")

@@ -1,29 +1,119 @@
-<section class="area-modal-editar">
-    <div class="modal-base">
-        <button class="modal-close" onclick="FecharModalEditar()">
-            <i class="fas fa-times"></i>
-        </button>
+@model ProjetoInter.Models.Animal
+@{
+    Layout = null;
+}
 
-        <h1>Editar Setor</h1>
+<link rel="stylesheet" href="~/css/TelaAnimal.css" />
 
-        <div class="secaoAcao">
-            <label>Nome:</label>
-            <input type="text" class="inputTexto" />
-        </div>
+@section Scripts
+{
+    <script src="~/js/Animal/ModaisAnimais.js"></script>
+}
 
-        <div class="secaoAcao">
-            <label>Descrição:</label>
-            <input type="text" class="inputTexto" />
-        </div>
+<link rel="stylesheet" href="~/css/TelaAnimal.css" />
 
-        <div class="secaoAcao">
-            <label for="editar-status">Status:</label>
-            <select id="editar-status" name="editar-status">
-                <option value="ativo">Ativo</option>
-                <option value="inativo">Inativo</option>
-            </select>
-        </div>
+<div class="area-modal-editar modal" style="display:none">
+    <div class="modal-conteudo">
+        <span class="fechar" onclick="document.body.removeChild(document.getElementById('modal-editar-container'))">×</span>
+        <h2>Editar Animal</h2>
 
-        <button onclick="">Salvar Alterações</button>
+        <form id="formEditarAnimal" enctype="multipart/form-data" method="post" asp-controller="Animal" asp-action="EditarAnimal">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" id="EditarId" name="AnimalId" value="@Model.AnimalId" />
+
+            <div class="form-linha">
+                <div class="form-grupo">
+                    <label for="EditarNome">Nome:</label>
+                    <input type="text" id="EditarNome" name="Nome" value="@Model.Nome" />
+                </div>
+
+                <div class="form-grupo">
+                    <label for="EditarEspecieId">Espécie:</label>
+                    <div class="grupo-especie">
+                        <select id="EditarEspecieId" name="EspecieId">
+                            @foreach (var especie in ViewBag.Especies)
+                            {
+                                <option value="@especie.AnimalEspecieId" 
+                                        selected="@(especie.AnimalEspecieId == Model.EspecieId)">
+                                    @especie.Descricao
+                                </option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-linha">
+                <div class="form-grupo">
+                    <label for="EditarPeso">Peso (kg):</label>
+                    <input type="text" id="EditarPeso" name="Peso" 
+                        value="@Model.Peso.ToString("N2", System.Globalization.CultureInfo.InvariantCulture)" 
+                        class="input-peso" />
+                </div>
+
+                <div class="form-grupo">
+                    <label for="EditarSexo">Sexo:</label>
+                    <select id="EditarSexo" name="Sexo">
+                        <option value="M" selected="@(Model.Sexo == "M")">Macho</option>
+                        <option value="F" selected="@(Model.Sexo == "F")">Fêmea</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-linha">
+                <div class="form-grupo">
+                    <label for="EditarDataNascimento">Data de Nascimento:</label>
+                    @{
+                        // Solução robusta para formatação da data
+                        string dataFormatada = "";
+                        if (Model.DataNascimento.HasValue)
+                        {
+                            // Formata a data para o padrão ISO (yyyy-MM-dd)
+                            dataFormatada = Model.DataNascimento.Value.ToString("yyyy-MM-dd");
+                        }
+                    }
+                    <input type="date" id="EditarDataNascimento" name="DataNascimento" value="@dataFormatada" />
+                </div>
+
+                <div class="form-grupo">
+                    <label for="EditarSetorId">Setor:</label>
+                    <select id="EditarSetorId" name="SetorId">
+                        @foreach (var setor in ViewBag.Setores)
+                        {
+                            <option value="@setor.SetorId" 
+                                    selected="@(setor.SetorId == Model.SetorId)">
+                                @setor.Nome
+                            </option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <input type="hidden" name="StatusId" id="EditarStatusId" value="@Model.StatusId" />
+
+            <div class="form-linha form-imagem">
+                <label for="EditarImagem">Imagem:</label>
+                <div id="EditarPreviewContainer" onclick="document.getElementById('EditarImagem').click();">
+                    @if (!string.IsNullOrEmpty(Model.ImagemUrl))
+                    {
+                        <img id="EditarPreview" src="@Model.ImagemUrl" style="display: block;" />
+                        <span id="EditarPreviewText" style="display: none;">Clique para atualizar a imagem</span>
+                    }
+                    else
+                    {
+                        <span id="EditarPreviewText">Clique para atualizar a imagem</span>
+                        <img id="EditarPreview" style="display: none;" />
+                    }
+                </div>
+                <input id="EditarImagem" name="Imagem" id="imagemInput" type="file" style="display:none;" onchange="mostrarPreviewEditar(event)" />
+            </div>
+
+            <div class="form-linha" style="justify-content: center; margin-top: 20px">
+                <button type="submit" class="submit-button btn-atualizar">Salvar Alterações</button>
+            </div>
+
+            <div id="formEditarErrors" style="color: red; margin-top: 10px;"></div>
+        </form>
     </div>
-</section>
+</div>

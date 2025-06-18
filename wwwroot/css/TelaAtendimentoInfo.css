@@ -1,0 +1,22 @@
+.ficha-topo{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: solid 1px black;
+    padding: 32px 40px;
+}
+.ficha-topo > div{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.ficha-desc{
+    padding: 32px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+.ficha-desc > div{
+    display: inherit;
+    flex-direction: inherit;
+    gap: 8px;
+}

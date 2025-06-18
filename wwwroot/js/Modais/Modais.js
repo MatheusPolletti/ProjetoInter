@@ -43,3 +43,13 @@ function ModalEditarNovo() {
 function FecharModalEditar() {
   fecharModal(".area-modal-editar");
 }
+
+function AbrirModalNovaEspecie() {
+  document.getElementById("modalNovaEspecie").style.display = "flex";
+  document.querySelector(".area-modal-novo").style.display = "none";
+}
+
+function FecharModalNovaEspecie() {
+  document.getElementById("modalNovaEspecie").style.display = "none";
+  document.querySelector(".area-modal-novo").style.display = "flex";
+}

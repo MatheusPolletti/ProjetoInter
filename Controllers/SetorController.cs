@@ -4,14 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 
 [Authorize]
-public class SetorController : Controller
+public class SetorController : BaseController
 {
-    private readonly DbZoologico context;
-
-    public SetorController(DbZoologico _context)
-    {
-        context = _context;
-    }
+    public SetorController(DbZoologico _context) : base(_context) {}
 
     public async Task<IActionResult> Setores()
     {
