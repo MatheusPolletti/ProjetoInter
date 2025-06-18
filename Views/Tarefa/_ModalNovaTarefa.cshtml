@@ -1,0 +1,46 @@
+@model List<ProjetoInter.Models.Animal>
+
+@{
+    Layout = null;
+}
+
+<link rel="stylesheet" href="~/css/TelaTarefa.css" />
+
+<div class="area-modal-novo modal" style="display:none;" id="modalNovaTarefa">
+    <div class="modal-conteudo">
+        <span class="modal-close" onclick="FecharModalNovaTarefa()">×</span>
+        <h2>Nova Tarefa</h2>
+
+        <form id="formNovaTarefa">
+            <div class="grupo-input">
+                <label for="Descricao">Descrição</label>
+                <input class="inputTexto" type="text" id="Descricao" name="Descricao" required />
+            </div>
+
+            <div>
+                <label for="AnimalId">Animal</label>
+                <select style="border-radius: 40px" id="AnimalId" name="AnimalId" required>
+                    <option value="">Selecione um animal</option>
+                    @foreach (var animal in Model)
+                    {
+                        <option value="@animal.AnimalId">@animal.Nome - @animal.Especie?.Descricao</option>
+                    }
+                </select>
+            </div>
+
+            <div>
+                <label for="DataProcedimento">Data</label>
+                <input class="inputTexto" type="date" id="DataProcedimento" name="DataProcedimento" required />
+            </div>
+
+            <div style="display: flex; flex-direction: column;">
+                <label for="Observacoes">Observações</label>
+                <textarea id="Observacoes" name="Observacoes"></textarea>
+            </div>
+
+            <input type="hidden" name="FuncionarioTarefaId" />
+
+            <button type="submit" class="btn-salvar">Salvar</button>
+        </form>
+    </div>
+</div>

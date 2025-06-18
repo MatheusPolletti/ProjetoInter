@@ -1,0 +1,51 @@
+@model List<ProjetoInter.Models.Animal>
+
+@{
+    Layout = null;
+}
+
+<link rel="stylesheet" href="~/css/TelaTarefa.css" />
+
+<div class="area-modal-editar modal" style="display:none;" id="modalEditarTarefa">
+    <div class="modal-conteudo">
+        <span class="fechar" onclick="FecharModalEditarTarefa()">×</span>
+        <h2>Editar Tarefa</h2>
+
+        <form id="formEditarTarefa">
+            <input type="hidden" id="Editar_ProcedimentoId" name="ProcedimentoId" />
+
+            <div class="grupo-input">
+                <label for="Editar_Descricao">Descrição</label>
+                <input type="text" id="Editar_Descricao" name="Descricao" required />
+            </div>
+
+            <div class="grupo-input">
+                <label for="Editar_AnimalId">Animal</label>
+                <select id="Editar_AnimalId" name="AnimalId" required>
+                    <option value="">Selecione um animal</option>
+                    @foreach (var animal in Model)
+                    {
+                        <option value="@animal.AnimalId">@animal.Nome - @animal.Especie?.Descricao</option>
+                    }
+                </select>
+            </div>
+
+            <div class="grupo-input">
+                <label for="Editar_DataProcedimento">Data</label>
+                <input type="date" id="Editar_DataProcedimento" name="DataProcedimento" required />
+            </div>
+
+            <div class="grupo-input">
+                <label for="Editar_Observacoes">Observações</label>
+                <textarea id="Editar_Observacoes" name="Observacoes"></textarea>
+            </div>
+
+            <div class="grupo-input">
+                <label for="Editar_Status" style="margin-right:10px;">Concluído?</label>
+                <input type="checkbox" id="Editar_Status" name="Status" />
+            </div>
+
+            <button type="submit" class="btn-salvar">Salvar Alterações</button>
+        </form>
+    </div>
+</div>
