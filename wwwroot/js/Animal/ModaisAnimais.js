@@ -163,6 +163,14 @@ function ModalEditarNovo() {
 }
 
 function submitFormEditar(form) {
+  // CORREÇÃO DO PESO - INÍCIO
+  const pesoInput = form.querySelector('#EditarPeso');
+  if (pesoInput) {
+    const pesoValue = pesoInput.value.replace(',', '.');
+    pesoInput.value = parseFloat(pesoValue).toFixed(2).replace('.', ',');
+  }
+  // CORREÇÃO DO PESO - FIM
+
   const errorsDiv = form.querySelector("#formEditarErrors");
   errorsDiv.innerHTML = '';
   const formData = new FormData(form);
@@ -299,3 +307,75 @@ function fecharModalSucesso() {
     location.reload(); // Recarrega a página após fechar o modal de sucesso
   }
 }
+
+// --------------------------------------------------------------------- Funções de Exclusão ---------------------------------------------------------------------
+    
+    // Função para excluir animais
+    window.excluirAnimais = function() {
+        const selecionados = document.querySelectorAll('.selecionar-animal:checked');
+        const ids = Array.from(selecionados).map(el => parseInt(el.getAttribute('data-id')));
+        
+        console.log('Animais selecionados para exclusão:', ids);
+        
+        if (ids.length === 0) {
+            abriuModalAviso("Selecione pelo menos um animal para excluir.");
+            return;
+        }
+        
+        if (ids.length === 1) {
+            // Exclusão individual - abrir modal de falecimento
+            document.getElementById('AnimalIdFalecimento').value = ids[0];
+            document.getElementById('modalFalecimento').style.display = 'flex';
+        } else {
+            // Exclusão múltipla - confirmar sem data
+            if (confirm(`Tem certeza que deseja excluir ${ids.length} animais?`)) {
+                enviarExclusao(ids, null);
+            }
+        }
+    }
+    
+    window.confirmarFalecimento = function() {
+        const animalId = parseInt(document.getElementById('AnimalIdFalecimento').value);
+        const dataFalecimento = document.getElementById('DataFalecimento').value;
+        
+        fecharModalFalecimento();
+        
+        if (dataFalecimento) {
+            enviarExclusao([animalId], dataFalecimento);
+        } else {
+            if (confirm('Deseja realmente excluir sem registrar a data de falecimento?')) {
+                enviarExclusao([animalId], null);
+            }
+        }
+    }
+    
+    window.fecharModalFalecimento = function() {
+        document.getElementById('modalFalecimento').style.display = 'none';
+    }
+    
+    function enviarExclusao(ids, dataFalecimento) {
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        
+        fetch('/Animal/ExcluirAnimais', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': token
+            },
+            body: JSON.stringify({ 
+                AnimalIds: ids,
+                DataFalecimento: dataFalecimento
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                abriuModalSucesso('Animais excluídos com sucesso!');
+            } else {
+                abriuModalAviso('Erro ao excluir: ' + (data.message || 'Erro desconhecido'));
+            }
+        })
+        .catch(error => {
+            abriuModalAviso('Erro na requisição: ' + error.message);
+        });
+    }
