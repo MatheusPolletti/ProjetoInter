@@ -57,8 +57,8 @@
         <h2>Pendentes</h2>
         <div class="container-botoes">
             <div class="botoes-carrossel">
-                <i class="fa-solid fa-chevron-left" id="btn-carrossel-esquerda"></i>
-                <i class="fa-solid fa-chevron-right" id="btn-carrossel-direita"></i>
+                <i class="fa-solid fa-chevron-left" id="btn-carrossel-esquerda" onclick="moveEsquerda()"></i>
+                <i class="fa-solid fa-chevron-right" id="btn-carrossel-direita" onclick="moveDireita()"></i>
             </div>
         </div>
         <div class="container-carrossel">
@@ -69,6 +69,7 @@
                     {
                         <div>
                             <div class="card-vertical">
+                                <input type="checkbox" class="selecionar-tarefa" data-id="@tarefa.ProcedimentoId" onclick="event.stopPropagation();" />
                                 <div class="topo-card">
                                     <div class="topo-esquerda">
                                         <h4>@tarefa.Descricao</h4>

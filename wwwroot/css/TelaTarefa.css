@@ -44,7 +44,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     width: 50px;
     height: 50px;
-    background-color: #8a6d3b; /* Cor marrom do tema */
+    background-color:var(--cor-linhas)
     color: white !important;
     border-radius: 40px;
     display: flex;
@@ -78,6 +78,14 @@
     display: grid;
     grid-template-rows: 80px 1fr auto;
     row-gap: 16px;
+    position: relative;
+}
+
+.selecionar-tarefa{
+    position: absolute;
+    z-index: 99;
+    top: 10px;
+    right: 10px;
 }
 
 .topo-card {
@@ -99,7 +107,7 @@
 }
 
 .btn-concluir {
-    border: 2px solid #8a6d3b;
+    border: 2px solid var(--cor-linhas);
     padding: 8px 24px;
     width: fit-content;
     align-self: flex-end;
@@ -108,14 +116,12 @@
     margin-top: 8px;
     justify-self: flex-end;
     transition: all 0.3s ease-in-out;
-    color: #8a6d3b;
-    font-weight: 500;
 }
 
 .btn-concluir:hover {
     transform: scale(1.08);
     cursor: pointer;
-    background-color: #8a6d3b;
+    background-color:var(--cor-linhas);
     color: white;
 }
 
@@ -251,21 +257,22 @@
 }
 
 .btn-concluir-modal {
-    background-color: #8a6d3b;
-    color: white;
-    border: none;
-    padding: 12px 24px;
+    border: 2px solid var(--cor-linhas);
+    padding: 8px 24px;
+    width: fit-content;
+    align-self: flex-end;
     border-radius: 40px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 10px;
-    width: 100%;
+    background-color: transparent;
+    margin-top: 8px;
+    justify-self: flex-end;
+    transition: all 0.3s ease-in-out;
 }
 
 .btn-concluir-modal:hover {
-    background-color: #6b542d;
-    transform: scale(1.05);
+    transform: scale(1.08);
+    cursor: pointer;
+    background-color: var(--cor-linhas);
+    color: var(--cor-branca);
 }
 
 /* Estilos adicionais para organização */
