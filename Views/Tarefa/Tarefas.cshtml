@@ -13,6 +13,8 @@
     var animais = ViewData["Animais"] as List<ProjetoInter.Models.Animal>;
 }
 
+@Html.AntiForgeryToken()
+
 @section Styles
 {
     <link rel="stylesheet" href="/css/TelaTarefa.css">
@@ -39,7 +41,7 @@
             </div>
             
             <div class="BotoesAcoes">
-                <button class="BotaoExcluir">Excluir</button>
+                <button class="BotaoExcluir" onclick="excluirTarefasSelecionadas()">Excluir</button>
                 <button id="btn-editar-tarefa" class="BotaoEditar">Editar</button>
                 <button id="btn-nova-tarefa" class="BotaoNovo">Novo</button>
             </div>
@@ -47,8 +49,6 @@
     </div>
 }
 
-<!-- Incluir modais -->
-@await Html.PartialAsync("_ModalEditarTarefa", animais)
 @await Html.PartialAsync("_ModalNovaTarefa", animais)
 
 <!-- Conteúdo Principal -->
