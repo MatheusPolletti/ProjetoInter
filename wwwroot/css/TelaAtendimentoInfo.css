@@ -20,3 +20,10 @@
     flex-direction: inherit;
     gap: 8px;
 }
+
+.desativado {
+    color: rgb(197, 197, 197) !important;
+    border-color: rgb(197, 197, 197) !important;
+    background-color: #f0f0f0 !important; /* Adicione para melhor visualização */
+    cursor: not-allowed !important;
+}

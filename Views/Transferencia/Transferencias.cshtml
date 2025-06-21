@@ -1,6 +1,9 @@
+@using ProjetoInter.Models
+@model IEnumerable<ProjetoInter.Models.Transferencia>
+    
 @section Styles
 {
-    <link rel="stylesheet" href="/css/TelaTransferencia.css">
+    <link rel="stylesheet" href="/css/TelaAtendimentoVeterinario.css">
 }
 
 @section Scripts
@@ -35,6 +38,85 @@
         </div>
     </div>
 }
+
+<div class="container-atendimentos">
+    <div class="topo">
+        <h2>Pendentes</h2>
+        <div class="container-botoes">
+            <div class="botoes-carrossel">
+                <i class="fa-solid fa-chevron-left" onclick="moveEsquerda()"></i>
+                <i class="fa-solid fa-chevron-right" onclick="moveDireita()"></i>
+            </div>
+        </div>
+        <div class="container-carrossel">
+            <div class="carrossel-cards-verticais">
+                @if (Model != null)
+                {
+                    foreach (var transferencia in Model)
+                    {
+                       <div>
+                                <div class="card-vertical">
+                                    
+                                    <input
+                                    type="checkbox" 
+                                    class="atendimento-checkbox"
+                                    data-atendimentoid="@transferencia.TransferenciaId" 
+                                    onclick="verificaCheckboxes()"
+                                    />
+                                    <div style="display: flex; height: fit-content; margin-top: -24px">
+                                        <div class="topo-esquerda">
+                                            <h4><strong></strong> @transferencia.Animal.Nome</h4>
+                                            <p><small>@transferencia.Animal.Especie?.Descricao |
+                                                    @transferencia.Animal.Setor?.Descricao</small></p>
+                                        </div>
+                                    </div>
+                                    <div class="descricao">
+                                        <h4>Origem: <span style="font-weight: normal;">@transferencia.InstituicaoOrigem.Nome</span></h4>
+                                        <h4>Destino: <span style="font-weight: normal;">@transferencia.InstituicaoDestino.Nome</span></h4>
+                                        <small><strong>Saída:</strong> @transferencia.DataSaida</small>
+                                        <small><strong>Entrada:</strong> @transferencia.DataEntrada</small>
+                                    </div>
+                                    <button class="btn-concluir">Concluir</button>
+                                </div>
+                            </div>
+
+                    }
+                }
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<div class="inferior">
+    <h2>Atendimentos Anteriores</h2>
+    <div class="cards-horizontais">
+        @if (Model != null)
+        {
+            foreach (var transferencia in Model)
+            {
+                @* <a style="text-decoration: none;" asp-controller="AtendimentoVeterinario" asp-action="AtendimentoInfo" asp-route-id="@transferencia.TransferenciaId" class="card-link"> *@
+                    <div style="display: flex; justify-content: space-between;" class="card-horizontal" id="@transferencia.TransferenciaId">
+                        <div>
+                            <small>@transferencia.Animal.Especie.Descricao</small>
+                            <h4>@transferencia.Animal.Nome</h4>
+
+                            <small><strong>Origem:</strong> @transferencia.InstituicaoOrigem.Nome</small>
+                            <small><strong> | Destino:</strong> @transferencia.DataSaida</small>
+                            <br>
+                            <small><strong>Saída:</strong> @transferencia.InstituicaoOrigem.Nome</small>
+                            <small><strong> | Chegada:</strong> @transferencia.DataEntrada</small>
+                        </div>
+                        <div>
+                            <small>Colocar Status</small>
+                        </div>
+                    </div>
+                @* </a> *@
+            }
+        }
+
+    </div>
+</div>
 
 <section class="area-modal-editar">
     <div class="modal-base">
