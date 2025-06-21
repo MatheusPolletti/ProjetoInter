@@ -17,14 +17,14 @@
             <input type="hidden" asp-for="ProcedimentoId" />
 
             <div class="form-linha">
-                <div class="form-grupo">
+                <div class="form-input">
                     <label asp-for="Descricao">Descrição:</label>
-                    <input asp-for="Descricao" class="inputTexto" required />
+                    <input asp-for="Descricao" class="inputTexto" required/>
                 </div>
             </div>
 
             <div class="form-linha">
-                <div class="form-grupo">
+                <div class="form-input">
                     <label asp-for="AnimalId">Animal:</label>
                     <select asp-for="AnimalId" class="inputTexto" required>
                         <option value="">Selecione um animal</option>
@@ -35,18 +35,16 @@
                     </select>
                 </div>
 
-                <div class="form-grupo">
+                <div class="form-input">
                     <label asp-for="DataProcedimento">Data:</label>
                     <input asp-for="DataProcedimento" type="date" class="inputTexto" required 
                            value="@Model.DataProcedimento.ToString("yyyy-MM-dd")" />
                 </div>
             </div>
 
-            <div class="form-linha">
-                <div class="form-grupo">
-                    <label asp-for="Observacoes">Observações:</label>
-                    <textarea asp-for="Observacoes" rows="3"></textarea>
-                </div>
+            <div style="display: flex; flex-direction: column;">
+                <label for="Observacoes">Observações</label>
+                <textarea id="Observacoes" name="Observacoes"></textarea>
             </div>
 
             <div class="form-linha">
@@ -58,18 +56,10 @@
 
             <input type="hidden" asp-for="FuncionarioTarefaId" />
 
-            <div class="form-linha" style="justify-content: center; margin-top: 20px">
-                <button type="submit" class="submit-button btn-atualizar">Salvar Alterações</button>
-            </div>
+            <button type="submit" class="btn-salvar">Salvar Alterações</button>
 
-            <div id="formEditarTarefaErrors" style="color: red; margin-top: 10px;"></div>
+
         </form>
     </div>
 </div>
 
-<script>
-    // Configura o evento de fechamento do modal
-    document.querySelector('.area-modal-editar .fechar').addEventListener('click', function() {
-        document.body.removeChild(document.getElementById('modal-editar-container'));
-    });
-</script>
