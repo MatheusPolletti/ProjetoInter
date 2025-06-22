@@ -3,30 +3,21 @@ using ProjetoInter.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using ProjetoInter.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting;
-using System.IO;
-using System.Threading.Tasks;
-using System;
-using System.Linq;
-using System.Collections.Generic;
 
 [Authorize]
-public class AnimalController : Controller
+public class AnimalController : BaseController
 {
-    private readonly DbZoologico _context;
     private readonly IWebHostEnvironment _hostingEnvironment;
 
-    public AnimalController(DbZoologico context, IWebHostEnvironment hostingEnvironment)
+    public AnimalController(DbZoologico _context, IWebHostEnvironment hostingEnvironment) : base(_context)
     {
-        _context = context;
         _hostingEnvironment = hostingEnvironment;
     }
 
     // GET: /Animal/Animais?busca=texto
     public async Task<IActionResult> Animais(string busca)
     {
-        var query = _context.Animais
+        var query = context.Animais
             .Include(a => a.Setor)
             .Include(a => a.Status)
             .Include(a => a.Especie)
@@ -41,8 +32,8 @@ public class AnimalController : Controller
 
         var animais = await query.ToListAsync();
 
-        ViewBag.Especies = await _context.AnimalEspecies.ToListAsync();
-        ViewBag.Setores = await _context.Setores.ToListAsync();
+        ViewBag.Especies = await context.AnimalEspecies.ToListAsync();
+        ViewBag.Setores = await context.Setores.ToListAsync();
 
         return View(animais);
     }
@@ -50,8 +41,8 @@ public class AnimalController : Controller
     // GET: /Animal/Novo - Retorna o partial view modal
     public async Task<IActionResult> Novo()
     {
-        ViewBag.Especies = await _context.AnimalEspecies.ToListAsync();
-        ViewBag.Setores = await _context.Setores.ToListAsync();
+        ViewBag.Especies = await context.AnimalEspecies.ToListAsync();
+        ViewBag.Setores = await context.Setores.ToListAsync();
         return PartialView("_ModalNovoAnimal");
     }
 
@@ -110,8 +101,8 @@ public class AnimalController : Controller
 
         novoAnimal.StatusId = 1; // Status "Ativo"
 
-        _context.Animais.Add(novoAnimal);
-        await _context.SaveChangesAsync();
+        context.Animais.Add(novoAnimal);
+        await context.SaveChangesAsync();
 
         return Json(new { success = true });
     }
@@ -122,8 +113,8 @@ public class AnimalController : Controller
     {
         if (ModelState.IsValid)
         {
-            _context.AnimalEspecies.Add(especie);
-            _context.SaveChanges();
+            context.AnimalEspecies.Add(especie);
+            context.SaveChanges();
 
             return Json(new
             {
@@ -143,15 +134,15 @@ public class AnimalController : Controller
     [HttpGet]
     public async Task<IActionResult> Editar(int id)
     {
-        var animal = await _context.Animais
+        var animal = await context.Animais
             .Include(a => a.Especie)
             .Include(a => a.Setor)
             .FirstOrDefaultAsync(a => a.AnimalId == id);
 
         if (animal == null) return NotFound();
 
-        ViewBag.Especies = await _context.AnimalEspecies.ToListAsync();
-        ViewBag.Setores = await _context.Setores.ToListAsync();
+        ViewBag.Especies = await context.AnimalEspecies.ToListAsync();
+        ViewBag.Setores = await context.Setores.ToListAsync();
 
         return PartialView("_ModalEditarAnimal", animal);
     }
@@ -165,7 +156,7 @@ public class AnimalController : Controller
 
         try
         {
-            var animalExistente = await _context.Animais.FindAsync(animal.AnimalId); // Corrigido para AnimalId
+            var animalExistente = await context.Animais.FindAsync(animal.AnimalId); // Corrigido para AnimalId
             if (animalExistente == null)
             {
                 erros.Add("Animal não encontrado");
@@ -213,8 +204,8 @@ public class AnimalController : Controller
                 animalExistente.ImagemUrl = "/img/Animais/" + fileName;
             }
 
-            _context.Update(animalExistente);
-            await _context.SaveChangesAsync();
+            context.Update(animalExistente);
+            await context.SaveChangesAsync();
 
             return Json(new { success = true });
         }
@@ -233,7 +224,7 @@ public class AnimalController : Controller
         {
             const int STATUS_INATIVO = 6; // Status "Inativo"
 
-            var animais = await _context.Animais
+            var animais = await context.Animais
                 .Where(a => model.AnimalIds.Contains(a.AnimalId))
                 .ToListAsync();
 
@@ -250,7 +241,7 @@ public class AnimalController : Controller
                 }
             }
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return Json(new { success = true });
         }
         catch (Exception ex)
@@ -267,7 +258,7 @@ public class AnimalController : Controller
     public async Task<IActionResult> Detalhes(int id)
     {
         // Carrega o animal
-        var animal = await _context.Animais
+        var animal = await context.Animais
             .Include(a => a.Especie)
             .Include(a => a.Setor)
             .Include(a => a.Status)
@@ -276,7 +267,7 @@ public class AnimalController : Controller
         if (animal == null) return NotFound();
 
         // Carrega os atendimentos veterinários relacionados
-        var atendimentos = await _context.AtendimentosVeterinarios
+        var atendimentos = await context.AtendimentosVeterinarios
             .Include(a => a.FuncionarioVeterinario)
             .Include(a => a.FuncionarioSolicitante)
             .Where(a => a.AnimalId == id)
