@@ -41,9 +41,4 @@ public class BaseController : Controller
 
         return funcionario;
     }
-
-    protected async Task<List<Instituicao>> InstituicoesCadastradas()
-    {
-        return await context.Instituicoes.ToListAsync();
-    }
 }

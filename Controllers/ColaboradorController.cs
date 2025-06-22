@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Text;
 using System.Text.Json;
 using ProjetoInter.Models;
-
+using System.Text.RegularExpressions;
 
 [Authorize]
 public class ColaboradorController : BaseController
@@ -23,13 +23,23 @@ public class ColaboradorController : BaseController
         return RedirectToAction("Tarefas", "Tarefa");
     }
 
+    private async Task<List<StatusFuncionario>> CarregarStatusFuncionario()
+    {
+        return await context.StatusFuncionarios.ToListAsync();
+    }
+
+    private async Task<List<Instituicao>> InstituicoesCadastradas()
+    {
+        return await context.Instituicoes.ToListAsync();
+    }
+
     public async Task<IActionResult> Colaboradores(string? busca)
     {
         var _funcionarioLogado = ObterFuncionarioLogado();
         ViewBag.FuncionarioLogado = _funcionarioLogado;
 
-        var _ListaInstituicoesCadastradas = await InstituicoesCadastradas();
-        ViewBag.ListaInstituicoesCadastradas = _ListaInstituicoesCadastradas;
+        ViewBag.ListaInstituicoesCadastradas = await InstituicoesCadastradas();
+        ViewBag.StatusLista = await CarregarStatusFuncionario();
 
         var query = context.Funcionarios
             .Include(f => f.StatusFuncionario)
@@ -51,78 +61,123 @@ public class ColaboradorController : BaseController
     [HttpPost]
     public async Task<IActionResult> NovoUsuario(string _email, string _password, string _nome, string _cpf, string _cargo, int _instituicao, IFormFile _imagem, string _telefone, bool _adm = false)
     {
-        if (_password.Length < 6 || !_password.Any(char.IsDigit) || _password.Length > 20)
+        try
         {
-            ViewBag.Erro = "A senha deve ter entre  6 e 20 caracteres e conter um número.";
-
-            return await CarregarViewColaboradoresComMensagem();
-        }
-
-        var supabaseUrl = configuration["Supabase:Url"];
-        var supabaseApiKey = configuration["Supabase:ApiKey"];
-
-        using (var client = new HttpClient())
-        {
-            var url = $"{supabaseUrl}/auth/v1/signup";
-
-            client.DefaultRequestHeaders.Add("apikey", supabaseApiKey);
-            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {supabaseApiKey}");
-
-            var body = new
+            if (string.IsNullOrWhiteSpace(_email) || string.IsNullOrWhiteSpace(_password))
             {
-                email = _email,
-                password = _password
-            };
+                ViewBag.Erro = "Email e senha são obrigatórios.";
+                ViewBag.MostrarModal = true;
+                return await CarregarViewColaboradoresComMensagem();
+            }
 
-            var json = JsonSerializer.Serialize(body);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await client.PostAsync(url, content);
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            if (response.IsSuccessStatusCode)
+            if (_password.Length < 6 || !_password.Any(char.IsDigit) || _password.Length > 20)
             {
-                var supabaseResponse = JsonDocument.Parse(responseContent);
-                var uuid = supabaseResponse.RootElement
-                    .GetProperty("user")
-                    .GetProperty("id")
-                    .GetString();
+                ViewBag.Erro = "A senha deve ter entre 6 e 20 caracteres e conter um número.";
+                ViewBag.MostrarModal = true;
+                return await CarregarViewColaboradoresComMensagem();
+            }
 
-                if (Guid.TryParse(uuid, out Guid supabaseGuid))
+            if (_nome.Length < 2 || _nome.Any(char.IsDigit) || _nome.Any(ch => !char.IsLetter(ch) && !char.IsWhiteSpace(ch)))
+            {
+                ViewBag.Erro = "O nome deve ter pelo menos 2 caracteres e não pode conter números ou caracteres especiais.";
+                ViewBag.MostrarModal = true;
+                return await CarregarViewColaboradoresComMensagem();
+            }
+
+            if (!Regex.IsMatch(_cpf, @"^\d{3}\.\d{3}\.\d{3}-\d{2}$"))
+            {
+                ViewBag.Erro = "O CPF deve estar no formato 000.000.000-00.";
+                ViewBag.MostrarModal = true;
+                return await CarregarViewColaboradoresComMensagem();
+            }
+
+            if (_cargo.Length < 3 || _cargo.Length > 50 || _cargo.Any(c => !char.IsLetter(c) && !char.IsWhiteSpace(c)))
+            {
+                ViewBag.Erro = "O cargo deve ter entre 3 e 50 letras, sem caracteres especiais.";
+                ViewBag.MostrarModal = true;
+                return await CarregarViewColaboradoresComMensagem();
+            }
+
+            if (!Regex.IsMatch(_telefone, @"^\(\d{2}\) \d{4}-\d{4}$"))
+            {
+                ViewBag.Erro = "O telefone deve estar no formato (00) 0000-0000.";
+                ViewBag.MostrarModal = true;
+                return await CarregarViewColaboradoresComMensagem();
+            }
+
+            var supabaseUrl = configuration["Supabase:Url"];
+            var supabaseApiKey = configuration["Supabase:ApiKey"];
+
+            using (var client = new HttpClient())
+            {
+                var url = $"{supabaseUrl}/auth/v1/signup";
+                client.DefaultRequestHeaders.Add("apikey", supabaseApiKey);
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {supabaseApiKey}");
+
+                var body = new { email = _email, password = _password };
+                var content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync(url, content);
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
                 {
-                    var funcionarioLogado = ObterFuncionarioLogado();
-
-                    var novoFuncionario = new Funcionario
-                    {
-                        AuthUserId = supabaseGuid,
-                        Nome = _nome,
-                        Cpf = _cpf,
-                        Cargo = _cargo,
-                        Telefone = _telefone,
-                        IsAdmin = _adm,
-                        InstituicaoId = _instituicao,
-                        StatusFuncionarioId = 1,
-                        ImagemUrl = null
-                    };
-
-                    context.Funcionarios.Add(novoFuncionario);
-
-                    await context.SaveChangesAsync();
-
-                    ViewBag.Sucesso = "Funcionário criado com sucesso!";
+                    ViewBag.Erro = $"Erro no Supabase: {responseContent}";
+                    ViewBag.MostrarModal = true;
+                    return await CarregarViewColaboradoresComMensagem();
                 }
-                else
+
+                var supabaseResponse = JsonDocument.Parse(responseContent);
+                var uuid = supabaseResponse.RootElement.GetProperty("user").GetProperty("id").GetString();
+
+                if (!Guid.TryParse(uuid, out Guid supabaseGuid))
                 {
                     ViewBag.Erro = "UUID inválido retornado pelo Supabase.";
+                    ViewBag.MostrarModal = true;
+                    return await CarregarViewColaboradoresComMensagem();
                 }
-            }
-            else
-            {
-                ViewBag.Erro = $"Erro no Supabase: {responseContent}";
+
+                var funcionarioLogado = ObterFuncionarioLogado();
+                var novoFuncionario = new Funcionario
+                {
+                    AuthUserId = supabaseGuid,
+                    Nome = _nome,
+                    Cpf = _cpf,
+                    Cargo = _cargo,
+                    Telefone = _telefone,
+                    IsAdmin = _adm,
+                    InstituicaoId = _instituicao,
+                    StatusFuncionarioId = 1
+                };
+
+                if (_imagem != null && _imagem.Length > 0)
+                {
+                    var imagemNome = $"{Guid.NewGuid()}{Path.GetExtension(_imagem.FileName)}";
+                    var caminhoImagem = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "Funcionarios", imagemNome);
+
+                    using (var stream = new FileStream(caminhoImagem, FileMode.Create))
+                    {
+                        await _imagem.CopyToAsync(stream);
+                    }
+
+                    novoFuncionario.ImagemUrl = $"img/Funcionarios/{imagemNome}";
+                }
+
+                context.Funcionarios.Add(novoFuncionario);
+                await context.SaveChangesAsync();
+
+                ViewBag.Sucesso = "Funcionário criado com sucesso!";
+                ViewBag.MostrarModal = false;
+
+                return await CarregarViewColaboradoresComMensagem();
             }
         }
-
-        return await CarregarViewColaboradoresComMensagem();
+        catch (Exception ex)
+        {
+            ViewBag.Erro = "Erro inesperado: " + ex.Message;
+            ViewBag.MostrarModal = true;
+            return await CarregarViewColaboradoresComMensagem();
+        }
     }
 
     private async Task<IActionResult> CarregarViewColaboradoresComMensagem()
@@ -130,8 +185,9 @@ public class ColaboradorController : BaseController
         var _funcionarioLogado = ObterFuncionarioLogado();
         ViewBag.FuncionarioLogado = _funcionarioLogado;
 
-        var _ListaInstituicoesCadastradas = await InstituicoesCadastradas();
-        ViewBag.ListaInstituicoesCadastradas = _ListaInstituicoesCadastradas;
+        ViewBag.ListaInstituicoesCadastradas = await InstituicoesCadastradas();
+
+        ViewBag.StatusLista = await CarregarStatusFuncionario();
 
         var funcionarios = await context.Funcionarios
             .Include(f => f.StatusFuncionario)
@@ -141,18 +197,25 @@ public class ColaboradorController : BaseController
         return View("Colaboradores", funcionarios);
     }
 
-    [HttpGet]
-    public async Task<IActionResult> DetalhesColaborador(int id)
+    [HttpPost]
+    public async Task<IActionResult> EditarFuncionario(int id, string nome, string cargo, int StatusFuncionarioId)
     {
-        var funcionario = await context.Funcionarios
-            .Include(f => f.StatusFuncionario)
-            .FirstOrDefaultAsync(f => f.FuncionarioId == id);
+        var funcionario = await context.Funcionarios.FindAsync(id);
 
         if (funcionario == null)
         {
-            return NotFound();
+            ViewBag.Erro = "Funcionário não encontrado.";
+            return await CarregarViewColaboradoresComMensagem();
         }
 
-        return View(funcionario);
+        funcionario.Nome = nome;
+        funcionario.Cargo = cargo;
+        funcionario.StatusFuncionarioId = StatusFuncionarioId;
+
+        context.Funcionarios.Update(funcionario);
+        await context.SaveChangesAsync();
+
+        ViewBag.Sucesso = "Funcionário atualizado com sucesso!";
+        return await CarregarViewColaboradoresComMensagem();
     }
 }
