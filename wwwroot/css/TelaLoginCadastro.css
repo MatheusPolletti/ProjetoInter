@@ -162,6 +162,11 @@ main
     display: flex;
 }
 
+#mensagemErroTexto
+{
+    font-family: 'DM Sans', sans-serif;
+}
+
 @media (max-width: 768px)
 {
     main
