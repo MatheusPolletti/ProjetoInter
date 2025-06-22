@@ -5,14 +5,19 @@ using System.Security.Claims;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text;
+using ProjetoInter.Data; // <--- ADICIONE ESTA LINHA para o seu DbContext
+using ProjetoInter.Models; // <--- ADICIONE ESTA LINHA para o seu modelo Funcionario
+using Microsoft.EntityFrameworkCore;
 
 public class HomeController : Controller
 {
     private readonly IConfiguration configuration;
+    private readonly DbZoologico _context;
 
-    public HomeController(IConfiguration _configuration)
+    public HomeController(IConfiguration _configuration, DbZoologico context)
     {
         configuration = _configuration;
+        _context = context;
     }
 
     [HttpGet]
@@ -55,12 +60,75 @@ public class HomeController : Controller
 
             var responseBody = await response.Content.ReadAsStringAsync();
 
+            // if (response.IsSuccessStatusCode)
+            // {
+            //     var json = JsonDocument.Parse(responseBody);
+            //     var accessToken = json.RootElement.GetProperty("access_token").GetString();
+            //     var refreshToken = json.RootElement.GetProperty("refresh_token").GetString();
+            //     var uidString = json.RootElement.GetProperty("user").GetProperty("id").GetString(); // <-- Renomeado para evitar conflito
+
+            //     // Verifica se o UID do Supabase é válido e pode ser convertido para Guid
+            //     if (string.IsNullOrEmpty(uidString) || !Guid.TryParse(uidString, out Guid supabaseUid))
+            //     {
+            //         TempData["Erro"] = "Erro: UID do usuário inválido recebido do Supabase.";
+            //         return RedirectToAction("LoginCadastro");
+            //     }
+
+            //     // --- NOVO: Buscar o funcionário no seu banco de dados usando o UID do Supabase ---
+            //     var funcionario = await _context.Funcionarios
+            //                                     .FirstOrDefaultAsync(f => f.AuthUserId == supabaseUid);
+
+            //     if (funcionario == null)
+            //     {
+            //         // Isso pode acontecer se o usuário existe no Supabase Auth, mas não na sua tabela de Funcionários.
+            //         TempData["Erro"] = "Erro: Usuário autenticado, mas não encontrado em nosso registro de funcionários.";
+            //         return RedirectToAction("LoginCadastro");
+            //     }
+
+
+            //     // Armazena tokens na sessão com segurança
+            //     HttpContext.Session.SetString("SupabaseAccessToken", accessToken!);
+            //     HttpContext.Session.SetString("SupabaseRefreshToken", refreshToken!);
+
+            //     // Cria o cookie de autenticação com os claims do usuário
+            //     var claims = new List<Claim>
+            //     {
+            //         new Claim(ClaimTypes.NameIdentifier, email), // Pode ser o email ou FuncionarioId.ToString()
+            //         new Claim(ClaimTypes.Email, email),
+            //         new Claim("uid", uidString!), // Mantém o UID do Supabase se precisar
+
+            //         // --- ADICIONE ESTE CLAIM: InstituicaoId do funcionário ---
+            //         new Claim("InstituicaoId", funcionario.InstituicaoId.ToString()) 
+            //     };
+
+            //     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            //     var principal = new ClaimsPrincipal(identity);
+
+            //     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            //     return RedirectToAction("Animais", "Animal");
+            // }
             if (response.IsSuccessStatusCode)
             {
                 var json = JsonDocument.Parse(responseBody);
                 var accessToken = json.RootElement.GetProperty("access_token").GetString();
                 var refreshToken = json.RootElement.GetProperty("refresh_token").GetString();
-                var uid = json.RootElement.GetProperty("user").GetProperty("id").GetString();
+                var uidString = json.RootElement.GetProperty("user").GetProperty("id").GetString();
+
+                if (string.IsNullOrEmpty(uidString) || !Guid.TryParse(uidString, out Guid supabaseUid))
+                {
+                    TempData["Erro"] = "Erro: UID do usuário inválido recebido do Supabase.";
+                    return RedirectToAction("LoginCadastro");
+                }
+
+                var funcionario = await _context.Funcionarios
+                                                .FirstOrDefaultAsync(f => f.AuthUserId == supabaseUid);
+
+                if (funcionario == null)
+                {
+                    TempData["Erro"] = "Erro: Usuário autenticado, mas não encontrado em nosso registro de funcionários.";
+                    return RedirectToAction("LoginCadastro");
+                }
 
                 // Armazena tokens na sessão com segurança
                 HttpContext.Session.SetString("SupabaseAccessToken", accessToken!);
@@ -69,9 +137,14 @@ public class HomeController : Controller
                 // Cria o cookie de autenticação com os claims do usuário
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.NameIdentifier, email),
-                    new Claim(ClaimTypes.Email, email),
-                    new Claim("uid", uid!)
+                    // --- MUDANÇAS AQUI: ---
+                    new Claim(ClaimTypes.NameIdentifier, funcionario.FuncionarioId.ToString()), // ID do funcionário
+                    new Claim(ClaimTypes.Name, funcionario.Nome), // Nome do funcionário para exibição
+                    // --- FIM DAS MUDANÇAS ---
+
+                    new Claim(ClaimTypes.Email, email), // Email do funcionário
+                    new Claim("uid", uidString!), // UID do Supabase, se precisar para outras operações
+                    new Claim("InstituicaoId", funcionario.InstituicaoId.ToString()) // ID da instituição
                 };
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -83,26 +156,26 @@ public class HomeController : Controller
             }
             else
             {
+                // Oculta detalhes do erro do Supabase para o usuário final, mostra mensagem genérica.
                 TempData["Erro"] = "Usuário ou senha inválidos.";
-                
                 return RedirectToAction("LoginCadastro");
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            TempData["Erro"] = "Erro ao tentar acessar o sistema.";
-
+            // Logar o erro completo para depuração, mas mostrar mensagem genérica para o usuário.
+            Console.WriteLine($"Erro ao tentar acessar o sistema: {ex.Message}");
+            TempData["Erro"] = "Erro ao tentar acessar o sistema. Por favor, tente novamente.";
             return RedirectToAction("LoginCadastro");
         }
     }
-
     [HttpPost]
     public async Task<IActionResult> Deslogar()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
         HttpContext.Session.Clear();
-        
+
         return RedirectToAction("LoginCadastro", "Home");
     }
 

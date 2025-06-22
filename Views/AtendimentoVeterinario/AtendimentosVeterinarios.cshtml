@@ -1,4 +1,6 @@
+@using ProjetoInter.Models
 @model IEnumerable<ProjetoInter.Models.AtendimentoVeterinario>
+@using System.Security.Claims
 
 @section Styles {
     <link rel="stylesheet" href="/css/TelaAtendimentoVeterinario.css">
@@ -6,9 +8,10 @@
 
 @section Scripts
 {
-    <script src="~/js/Setor/Carrossel.js"></script>
+    <script src="~/js/Atendimento/Carrossel.js"></script>
     <script src="~/js/Modais/Modais.js"></script>
     <script src="~/js/Atendimento/AtendimentoInfo.js"></script>
+    <script src="~/js/Atendimento/AtendimentoScript.js"></script>
 }
 
 @{
@@ -31,15 +34,17 @@
             </div>
 
             <div class="BotoesAcoes">
-                <button class="BotaoExcluir">Excluir</button>
-                <button onclick="ModalEditarNovo()" class="BotaoEditar">Editar</button>
-                <button onclick="ModalNovo('.modal-atendimentos')" class="BotaoNovo">Novo</button>
+                <button class="BotaoExcluir" onclick="excluirAtendimentosSelecionados()">Excluir</button>
+                <button onclick="abrirModalEdicao()" class="BotaoEditar" disabled>Editar</button>
+                <button onclick="abrirModalNovoAtendimento()" class="BotaoNovo">Novo</button>
             </div>
 
         </div>
     </div>
 }
 
+<input type="hidden" id="loggedInFuncionarioId" value="@User.FindFirst(ClaimTypes.NameIdentifier)?.Value" />
+<input type="hidden" id="loggedInFuncionarioNome" value="@User.FindFirst(ClaimTypes.Name)?.Value" />
 <div class="container-atendimentos">
     <div class="topo">
         <h2>Pendentes</h2>
@@ -55,41 +60,45 @@
                 @{
                     var atendimentosAntigos = new List<ProjetoInter.Models.AtendimentoVeterinario>();
                 }
+
                 @if (Model != null)
                 {
                     foreach (var atendimento in Model)
                     {
-                        if (atendimento.Data.HasValue && atendimento.Data < DateOnly.FromDateTime(DateTime.Now))
+                        if (atendimento.Status == false)
                         {
                             atendimentosAntigos.Add(atendimento);
                         }
-                        else{
+                        else
+                        {
                             <div>
                                 <div class="card-vertical">
-                                    <div class="topo-card">
+
+                                    <input type="checkbox" class="atendimento-checkbox"
+                                        data-atendimentoid="@atendimento.AtendimentoVeterinarioId" onclick="verificaCheckboxes()">
+
+                                    <div style="margin-top: -24px" class="topo-card">
                                         <div class="topo-esquerda">
                                             <h4>@atendimento.Animal.Nome</h4>
                                             <p><small>@atendimento.Animal.Especie?.Descricao |
                                                     @atendimento.Animal.Setor?.Descricao</small></p>
                                         </div>
                                         <small>Data: @atendimento.Data</small>
+
                                     </div>
                                     <div class="descricao">
-                                        <h4>Nome Procedimento: <span style="font-weight: normal;">@atendimento.Descricao</span></h4>
-                                        <small><strong>Descrição:</strong> @atendimento.Descricao</small>
+                                        <h4>Descrição: <span style="font-weight: normal;">@atendimento.Descricao</span></h4>
                                         <small><strong>Obs:</strong> @atendimento.Observacoes</small>
                                         <small><strong>Responsável:</strong> @atendimento.FuncionarioVeterinario.Nome</small>
                                     </div>
-                                    <button class="btn-concluir">Concluir</button>
+                                    <button class="BotaoConcluir btn-concluir"
+                                        onclick="abrirModalConcluir(@atendimento.AtendimentoVeterinarioId)">Concluir</button>
                                 </div>
                             </div>
                         }
-                        
+
                     }
                 }
-                <div style="min-width: 320px; height: 300px; background-color: aqua;"></div>
-                <div style="min-width: 320px; height: 150px; background-color: aqua;"></div>
-                <div style="background-color: blueviolet; min-width: 24px; height: 150px"></div>
             </div>
 
         </div>
@@ -102,18 +111,19 @@
     <div class="cards-horizontais">
         @{
             var atendimentosAntigosOrdenados = atendimentosAntigos
-                .OrderByDescending(a => a.Data)
-                .ToList();
+            .OrderByDescending(a => a.Data)
+            .ToList();
         }
         @if (Model != null)
         {
             foreach (var atendimento in atendimentosAntigosOrdenados)
             {
-                <a style="text-decoration: none;" asp-controller="AtendimentoVeterinario" asp-action="AtendimentoInfo" asp-route-id="@atendimento.AtendimentoVeterinarioId" class="card-link">
-                @* <a  onclick="abreAtendimentoInfo()"> *@
+                <a style="text-decoration: none;" asp-controller="AtendimentoVeterinario" asp-action="AtendimentoInfo"
+                    asp-route-id="@atendimento.AtendimentoVeterinarioId" class="card-link">
                     <div class="card-horizontal" id="@atendimento.AtendimentoVeterinarioId">
                         <div>
-                            <h4>@atendimento.Animal.Nome <span style="font-weight: normal;">| @atendimento.Animal.Especie?.Descricao</span></h4>
+                            <h4>@atendimento.Animal.Nome <span style="font-weight: normal;">|
+                                    @atendimento.Animal.Especie?.Descricao</span></h4>
                             <small><strong>Descrição:</strong> @atendimento.Descricao</small>
                         </div>
                         <div>
@@ -140,20 +150,18 @@
         </button>
 
         <h1>Solicitar Atendimento</h1>
-
-        <div class="grid">
-            <div class="secaoAcao">
-                <label>Espécie:</label>
-                <select style="width: auto;" id="novo-status" name="novo-status">
-                    <option value="ativo">Exemplo 1</option>
-                    <option value="inativo">Exemplo 2</option>
-                </select>
-            </div>
+        <div style="grid-template-columns: 1fr;" class="grid">
             <div class="secaoAcao">
                 <label>Animal:</label>
-                <select style="width: auto;" id="novo-status" name="novo-status">
-                    <option value="ativo">Animal 1</option>
-                    <option value="inativo">Animal 2</option>
+                <select style="width: 100%;" id="AnimalId" name="AnimalId" class="inputTexto">
+                    <option value="" disabled selected hidden>Selecionar Animal</option>
+                    @foreach (var animal in ViewBag.Animais)
+                    {
+
+                        <option value="@animal.AnimalId">
+                            @animal.Nome - @animal.Especie?.Descricao (@animal.Setor?.Descricao)
+                        </option>
+                    }
                 </select>
             </div>
         </div>
@@ -161,28 +169,110 @@
 
         <div class="secaoAcao">
             <label for="novo-status">Funcionário Solicitante:</label>
-            <select style="width: auto;" id="novo-status" name="novo-status">
-                <option value="ativo">Funcionario 1</option>
-                <option value="inativo">Funcionario 2</option>
+            <select id="FuncionarioSolicitanteId" style="width: 100%;" class="inputTexto">
+                <option value="@User.FindFirst(ClaimTypes.NameIdentifier)?.Value" selected>
+                    @User.FindFirst(ClaimTypes.Name)?.Value
+                </option>
             </select>
         </div>
 
         <div style="grid-template-columns: 3fr 1fr;" class="grid">
             <div class="secaoAcao">
                 <label>Veterinário Responsável:</label>
-                <input type="text" class="inputTexto" />
+                <select id="VeterinarioResponsavel" style="width: 100%;" class="inputTexto">
+                    <option value="" disabled selected hidden>Selecionar Funcionário</option>
+                    @foreach (var funcionario in ViewBag.Funcionarios)
+                    {
+                        <option value="@funcionario.FuncionarioId">
+                            @funcionario.Nome
+                        </option>
+                    }
+                </select>
             </div>
             <div class="secaoAcao">
                 <label>Data:</label>
-                <input type="date" class="inputTexto" />
+                <input id="DataAtendimento" type="date" class="inputTexto" />
             </div>
         </div>
 
         <div class="secaoAcao">
             <label>Descrição:</label>
-            <textarea style="width: auto; border-radius: 8px; height: 50px" rows="5" cols="33" class="inputTexto">It was a dark and stormy night...</textarea>
+            <textarea id="Descricao" style="width: auto; border-radius: 8px; height: 50px" rows="5" cols="33"
+                class="inputTexto"></textarea>
         </div>
 
-        <button class="btn-concluir" onclick="">Adicionar</button>
+        <button class="btn-concluir" onclick="solicitarAtendimento()">Adicionar</button>
+    </div>
+</section>
+
+
+<section class="area-modal-editar">
+    <div class="modal-base">
+        <button class="modal-close" onclick="FecharModalEditar()">
+            <i class="fas fa-times"></i>
+        </button>
+        <h1 id="modalEditarTitulo">Editar Atendimento</h1> <input type="hidden" id="editAtendimentoId" />
+        <input type="hidden" id="modalPurpose" value="edit" />
+        <div style="grid-template-columns: 1fr;" class="grid">
+            <div class="secaoAcao">
+                <label>Animal:</label>
+                <select style="width: 100%" id="editAnimalId" name="AnimalId" class="inputTexto">
+                    @foreach (var animal in ViewBag.Animais)
+                    {
+                        <option value="@animal.AnimalId">
+                            @animal.Nome - @animal.Especie?.Descricao (@animal.Setor?.Descricao)
+                        </option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="secaoAcao">
+            <label for="editFuncionarioSolicitanteId">Funcionário Solicitante:</label>
+            <select id="editFuncionarioSolicitanteId" style="width: 100%;" class="inputTexto">
+                @foreach (var funcionario in ViewBag.Funcionarios)
+                {
+                    <option value="@funcionario.FuncionarioId">
+                        @funcionario.Nome
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div style="grid-template-columns: 3fr 1fr;" class="grid">
+            <div class="secaoAcao">
+                <label>Veterinário Responsável:</label>
+                <select id="editVeterinarioResponsavel" style="width: 100%;" class="inputTexto">
+                    @foreach (var funcionario in ViewBag.Funcionarios)
+                    {
+                        <option value="@funcionario.FuncionarioId">
+                            @funcionario.Nome
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="secaoAcao">
+                <label>Data:</label>
+                <input id="editDataAtendimento" type="date" class="inputTexto" />
+            </div>
+        </div>
+
+        <div class="secaoAcao">
+            <label>Descrição:</label>
+            <textarea id="editDescricao" style="width: auto; border-radius: 8px; height: 30px" rows="5" cols="33"
+                class="inputTexto"></textarea>
+        </div>
+        <div class="secaoAcao">
+            <label>Obs:</label>
+            <textarea id="editObservacoes" style="width: auto; border-radius: 8px; height: 30px" rows="5" cols="33"
+                class="inputTexto"></textarea>
+        </div>
+        <div class="secaoAcao">
+            <label>Resultado:</label>
+            <textarea id="editResultado" style="width: auto; border-radius: 8px; height: 30px" rows="5" cols="33"
+                class="inputTexto"></textarea>
+        </div>
+
+        <button id="modalActionBtn" class="btn-concluir">Ação do Modal</button>
     </div>
 </section>

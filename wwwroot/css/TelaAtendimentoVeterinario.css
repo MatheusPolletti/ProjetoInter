@@ -78,7 +78,7 @@ position: absolute;
     padding: 24px;
 
     display: grid;
-    grid-template-rows: 80px 1fr auto;
+    
     row-gap: 16px;
 }
 .topo-card{
@@ -174,4 +174,22 @@ position: absolute;
 
 .AtendimentoInfo{
     position: absolute;
+}
+
+.desabilitado{
+    cursor: unset;
+    border-color: #b1b1b1;
+    color: #b1b1b1;
+    transition: unset;
+}
+.desabilitado:hover{
+    transform: unset;
+}
+
+
+.atendimento-checkbox{
+    width: 16px;
+    height: 16px;
+    z-index: 2;
+    justify-self: flex-end
 }

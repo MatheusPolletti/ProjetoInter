@@ -52,8 +52,3 @@ function retangulosSeSobrepoemComMargem(rect1, rect2, margem = 1) {
   );
 }
 
-function verificaDireita() {
-  if (retangulosSeSobrepoemComMargem(container, ultimoCard)) {
-    //alert("awdWDASd");
-  }
-}
