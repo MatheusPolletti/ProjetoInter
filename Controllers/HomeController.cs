@@ -5,8 +5,7 @@ using System.Security.Claims;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text;
-using ProjetoInter.Data; // <--- ADICIONE ESTA LINHA para o seu DbContext
-using ProjetoInter.Models; // <--- ADICIONE ESTA LINHA para o seu modelo Funcionario
+using ProjetoInter.Data;
 using Microsoft.EntityFrameworkCore;
 
 public class HomeController : Controller
@@ -60,54 +59,6 @@ public class HomeController : Controller
 
             var responseBody = await response.Content.ReadAsStringAsync();
 
-            // if (response.IsSuccessStatusCode)
-            // {
-            //     var json = JsonDocument.Parse(responseBody);
-            //     var accessToken = json.RootElement.GetProperty("access_token").GetString();
-            //     var refreshToken = json.RootElement.GetProperty("refresh_token").GetString();
-            //     var uidString = json.RootElement.GetProperty("user").GetProperty("id").GetString(); // <-- Renomeado para evitar conflito
-
-            //     // Verifica se o UID do Supabase é válido e pode ser convertido para Guid
-            //     if (string.IsNullOrEmpty(uidString) || !Guid.TryParse(uidString, out Guid supabaseUid))
-            //     {
-            //         TempData["Erro"] = "Erro: UID do usuário inválido recebido do Supabase.";
-            //         return RedirectToAction("LoginCadastro");
-            //     }
-
-            //     // --- NOVO: Buscar o funcionário no seu banco de dados usando o UID do Supabase ---
-            //     var funcionario = await _context.Funcionarios
-            //                                     .FirstOrDefaultAsync(f => f.AuthUserId == supabaseUid);
-
-            //     if (funcionario == null)
-            //     {
-            //         // Isso pode acontecer se o usuário existe no Supabase Auth, mas não na sua tabela de Funcionários.
-            //         TempData["Erro"] = "Erro: Usuário autenticado, mas não encontrado em nosso registro de funcionários.";
-            //         return RedirectToAction("LoginCadastro");
-            //     }
-
-
-            //     // Armazena tokens na sessão com segurança
-            //     HttpContext.Session.SetString("SupabaseAccessToken", accessToken!);
-            //     HttpContext.Session.SetString("SupabaseRefreshToken", refreshToken!);
-
-            //     // Cria o cookie de autenticação com os claims do usuário
-            //     var claims = new List<Claim>
-            //     {
-            //         new Claim(ClaimTypes.NameIdentifier, email), // Pode ser o email ou FuncionarioId.ToString()
-            //         new Claim(ClaimTypes.Email, email),
-            //         new Claim("uid", uidString!), // Mantém o UID do Supabase se precisar
-
-            //         // --- ADICIONE ESTE CLAIM: InstituicaoId do funcionário ---
-            //         new Claim("InstituicaoId", funcionario.InstituicaoId.ToString()) 
-            //     };
-
-            //     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            //     var principal = new ClaimsPrincipal(identity);
-
-            //     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
-            //     return RedirectToAction("Animais", "Animal");
-            // }
             if (response.IsSuccessStatusCode)
             {
                 var json = JsonDocument.Parse(responseBody);

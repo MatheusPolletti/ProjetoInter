@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using ProjetoInter.Data; // Certifique-se de que este namespace está correto para o seu DbContext
+using ProjetoInter.Data; 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-using ProjetoInter.Models; // Certifique-se de que a model Setor está aqui
+using ProjetoInter.Models;
 
-[Authorize] // Se você estiver usando autenticação
-public class SetorController : BaseController // Assumindo que você tem um BaseController
+[Authorize] 
+public class SetorController : BaseController 
 {
     private readonly DbZoologico _context;
 
