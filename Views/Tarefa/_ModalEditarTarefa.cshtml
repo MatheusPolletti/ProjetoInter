@@ -1,0 +1,64 @@
+@model ProjetoInter.Models.Procedimento
+@{
+    Layout = null;
+    var animais = ViewBag.Animais as List<ProjetoInter.Models.Animal> ?? new List<ProjetoInter.Models.Animal>();
+}
+
+<link rel="stylesheet" href="~/css/TelaTarefa.css" />
+
+<div class="area-modal-editar modal" style="display:none">
+    <div class="modal-conteudo">
+        <span class="fechar">×</span>
+        <h2>Editar Tarefa</h2>
+
+        <form id="formEditarTarefa" method="post" asp-controller="Tarefa" asp-action="EditarTarefa" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="ProcedimentoId" />
+
+            <div class="form-linha">
+                <div class="form-input">
+                    <label asp-for="Descricao">Descrição:</label>
+                    <input asp-for="Descricao" class="inputTexto" required/>
+                </div>
+            </div>
+
+            <div class="form-linha">
+                <div class="form-input">
+                    <label asp-for="AnimalId">Animal:</label>
+                    <select asp-for="AnimalId" class="inputTexto" required>
+                        <option value="">Selecione um animal</option>
+                        @foreach (var animal in animais)
+                        {
+                            <option value="@animal.AnimalId">@animal.Nome - @animal.Especie?.Descricao</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-input">
+                    <label asp-for="DataProcedimento">Data:</label>
+                    <input asp-for="DataProcedimento" type="date" class="inputTexto" required 
+                           value="@Model.DataProcedimento.ToString("yyyy-MM-dd")" />
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column;">
+                <label for="Observacoes">Observações</label>
+                <textarea id="Observacoes" name="Observacoes"></textarea>
+            </div>
+
+            <div class="form-linha">
+                <div class="form-grupo">
+                    <label asp-for="Status">Concluída:</label>
+                    <input type="checkbox" asp-for="Status" />
+                </div>
+            </div>
+
+            <input type="hidden" asp-for="FuncionarioTarefaId" />
+
+            <button type="submit" class="btn-salvar">Salvar Alterações</button>
+
+
+        </form>
+    </div>
+</div>

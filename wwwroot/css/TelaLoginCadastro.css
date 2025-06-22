@@ -6,6 +6,10 @@
     --cor-vermelha: #ff0000;
     --cor-fundo: #F9F7F1;
     --cor-branco: #FFFFFF;
+    
+    --cor-fundo-erro: #FFE1DD;
+    --cor-texto-aviso: #333333;
+    --cor-borda-erro: #F5A9A9;
 }
 
 *, *::before, *::after
@@ -118,22 +122,49 @@ main
     color: var(--cor-vermelha);
 }
 
-.MensagemErro
+.MensagemErro 
 {
-    position: fixed;
+    display: flex;
 
+    align-items: center;
+    justify-content: center;
+
+    position: fixed;
+    
     top: 15vh;
     left: 50%;
+
+    width: 18vw;
+    height: 5vh;
+
     transform: translateX(-50%);
+   
+    font-size: 18px;
 
-    font-size: 22px;
-
-    color: var(--cor-vermelha);
-    
     font-weight: bold;
+    
+    color: var(--cor-texto-aviso);
+    
+    background-color: var(--cor-fundo-erro);
+   
+    border: 2px solid var(--cor-borda-erro);
 
+    border-radius: 10px;
+    
     opacity: 1;
     z-index: 999;
+    
+    display: none;
+}
+
+.MensagemErro.show 
+{
+    display: flex;
+}
+
+#mensagemErroTexto
+{
+    font-family: 'DM Sans', sans-serif;
 }
 
 @media (max-width: 768px)

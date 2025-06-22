@@ -1,16 +1,27 @@
 :root {
-  --colaborador-bg-color: #f9f7f1;
-  --colaborador-card-bg: #fff;
+    --colaborador-bg-color: #f9f7f1;
+    --colaborador-card-bg: #fff;
+
+    --cor-fundo-erro: #FFE1DD;
+    --cor-texto-aviso: #333333;
+    --cor-borda-erro: #F5A9A9;
+
+    --cor-verde-botao: #4CAF50;
+    --cor-verde-escuro-botao: #45a049;
+    --cor-branco-texto: #FFFFFF;
+
+    --cor-fundo-sucesso: #d4edda;
+    --cor-borda-sucesso: #A5D6A7;
 }
+
 .colaboradores-list {
     padding: 2rem;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    align-items: left;
+    align-items: flex-start;
     background-color: var(--colaborador-bg-color);
 }
-
 
 .colaborador-card {
     display: flex;
@@ -22,15 +33,14 @@
     background: var(--colaborador-card-bg);
     transition: transform 0.2s;
     height: 100%;
+    width: 100%;
 }
 
 .colaborador-foto img {
     width: 60px;
     height: 60px;
-    
     object-fit: cover;
-   
- 
+    border-radius: 50%;
     transition: transform 0.2s;
 }
 
@@ -43,10 +53,134 @@
     margin-left: 20px;
     padding: 5px 10px;
     border-radius: 5px;
-   
 }
 
 .colaborador-Id {
-    align-items: left;
     font-weight: bold;
+}
+
+.divisaoDiv {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding-bottom: 10px;
+}
+
+.divisaoDiv .secaoAcao {
+    flex: 1;
+}
+
+.secaoAcao {
+    width: 20vw;
+}
+
+.inputTexto {
+    width: 100%;
+}
+
+#checkAdm {
+    cursor: pointer;
+}
+
+.Mensagem {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    height: 8vh;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--cor-texto-aviso);
+    border-radius: 10px;
+    z-index: 2000;
+}
+
+.Mensagem.show {
+    display: flex;
+}
+
+#mensagemTexto {
+    font-family: 'DM Sans', sans-serif;
+    padding-right: 20px;
+}
+
+.Mensagem.erro {
+    background-color: var(--cor-fundo-erro);
+    border: 2px solid var(--cor-borda-erro);
+}
+
+.Mensagem.sucesso {
+    background-color: var(--cor-fundo-sucesso);
+    border: 2px solid var(--cor-borda-sucesso);
+}
+
+.DivBotao {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#BotaoCadastrar,
+#BotaoEditar {
+    background-color: var(--cor-verde-botao);
+    color: var(--cor-branco-texto);
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#BotaoCadastrar:hover,
+#BotaoEditar:hover {
+    background-color: var(--cor-verde-escuro-botao);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* NOVO: Preview Container para imagem (Novo e Editar) */
+.preview-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 180px;
+    border: 2px dashed #ccc;
+    border-radius: 16px;
+    background-color: #f4f4f4;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+    padding: 1vh;
+    transition: border-color 0.3s;
+}
+
+.preview-container:hover {
+    border-color: #999;
+}
+
+.preview-imagem {
+    max-width: 100%;
+    max-height: 100%;
+    display: none;
+    object-fit: contain;
+    z-index: 2;
+}
+
+.preview-text {
+    z-index: 1;
+    color: #777;
+}
+
+/* Checkbox de seleção */
+.colaborador-select input[type="checkbox"] {
+    transform: scale(1.4);
+    margin-left: 15px;
+    cursor: pointer;
 }

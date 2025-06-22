@@ -1,25 +1,36 @@
 @model IEnumerable<ProjetoInter.Models.Procedimento>
 
+
 @{
     ViewData["Title"] = "Minhas Tarefas";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    // Separar tarefas pendentes e concluídas
+    var tarefasPendentes = Model.Where(t => !t.Status).ToList();
+    var tarefasConcluidas = Model.Where(t => t.Status).ToList();
+    
+    // Obter animais do ViewData
+    var animais = ViewData["Animais"] as List<ProjetoInter.Models.Animal>;
 }
+
+@Html.AntiForgeryToken()
 
 @section Styles
 {
     <link rel="stylesheet" href="/css/TelaTarefa.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 }
 
 @section Scripts
 {
-    <script src="~/js/Modais/Modais.js"></script>
+    <script src="~/js/Modais/CarrosselTarefa.js"></script>
+    <script src="~/js/Modais/Tarefas.js"></script>
 }
 
 @section HeaderBarras
 {
     <div class="Header">
         <div class="ConteudoHeader">
-
             <h1 class="NomePagina">Tarefas</h1>
             
             <div class="Barrabusca">
@@ -30,93 +41,106 @@
             </div>
             
             <div class="BotoesAcoes">
-                <button class="BotaoExcluir">Excluir</button>
-                <button onclick="ModalEditarNovo()" class="BotaoEditar">Editar</button>
-                <button onclick="ModalNovo()" class="BotaoNovo">Novo</button>
+                <button class="BotaoExcluir" onclick="excluirTarefasSelecionadas()">Excluir</button>
+                <button id="btn-editar-tarefa" class="BotaoEditar">Editar</button>
+                <button id="btn-nova-tarefa" class="BotaoNovo">Novo</button>
             </div>
-        
         </div>
     </div>
 }
 
-<section class="area-modal-editar">
-    <div class="modal-base">
-        <button class="modal-close" onclick="FecharModalEditar()">
-            <i class="fas fa-times"></i>
-        </button>
+@await Html.PartialAsync("_ModalNovaTarefa", animais)
 
-        <h1>Editar Setor</h1>
-
-        <div class="secaoAcao">
-            <label>Nome:</label>
-            <input type="text" class="inputTexto" />
+<!-- Conteúdo Principal -->
+<div class="container-tarefas">
+    <div class="topo">
+        <h2>Pendentes</h2>
+        <div class="container-botoes">
+            <div class="botoes-carrossel">
+                <i class="fa-solid fa-chevron-left" id="btn-carrossel-esquerda" onclick="moveEsquerda()"></i>
+                <i class="fa-solid fa-chevron-right" id="btn-carrossel-direita" onclick="moveDireita()"></i>
+            </div>
         </div>
-
-        <div class="secaoAcao">
-            <label>Descrição:</label>
-            <input type="text" class="inputTexto" />
+        <div class="container-carrossel">
+            <div class="carrossel-cards-verticais">
+                @if (tarefasPendentes != null && tarefasPendentes.Count > 0)
+                {
+                    foreach (var tarefa in tarefasPendentes)
+                    {
+                        <div>
+                            <div class="card-vertical">
+                                <input type="checkbox" class="selecionar-tarefa" data-id="@tarefa.ProcedimentoId" onclick="event.stopPropagation();" />
+                                <div class="topo-card">
+                                    <div class="topo-esquerda">
+                                        <h4>@tarefa.Descricao</h4>
+                                        @if (tarefa.Animal != null)
+                                        {
+                                            <p><small>@tarefa.Animal.Nome | @tarefa.Animal.Especie?.Descricao</small></p>
+                                        }
+                                        else
+                                        {
+                                            <p><small>Animal não especificado</small></p>
+                                        }
+                                    </div>
+                                    <small>Data: @tarefa.DataProcedimento.ToString("dd/MM/yyyy")</small>
+                                </div>
+                                <div class="descricao">
+                                    @if (!string.IsNullOrEmpty(tarefa.Observacoes))
+                                    {
+                                        <small><strong>Observações:</strong> @tarefa.Observacoes</small>
+                                    }
+                                    <small><strong>Responsável:</strong> @(tarefa.FuncionarioTarefa?.Nome ?? "Não atribuído")</small>
+                                </div>
+                                <button class="btn-concluir" data-tarefa-id="@tarefa.ProcedimentoId">Concluir</button>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="card-vazio">
+                        <p>Nenhuma tarefa pendente</p>
+                    </div>
+                }
+            </div>
         </div>
-
-        <div class="secaoAcao">
-            <label for="editar-status">Status:</label>
-            <select id="editar-status" name="editar-status">
-                <option value="ativo">Ativo</option>
-                <option value="inativo">Inativo</option>
-            </select>
-        </div>
-
-        <button onclick="">Salvar Alterações</button>
     </div>
-</section>
+</div>
 
-<section class="area-modal-novo">
-    <div class="modal-base">
-        <button class="modal-close" onclick="FecharModalNovo()">
-            <i class="fas fa-times"></i>
-        </button>
-
-        <h1>Adicionar Setor</h1>
-
-        <div class="secaoAcao">
-            <label>Nome:</label>
-            <input type="text" class="inputTexto" />
-        </div>
-
-        <div class="secaoAcao">
-            <label>Descrição:</label>
-            <input type="text" class="inputTexto" />
-        </div>
-
-        <div class="secaoAcao">
-            <label for="novo-status">Status:</label>
-            <select id="novo-status" name="novo-status">
-                <option value="ativo">Ativo</option>
-                <option value="inativo">Inativo</option>
-            </select>
-        </div>
-
-        <button onclick="">Adicionar</button>
+<div class="inferior">
+    <h2>Concluídas</h2>
+    <div class="cards-horizontais">
+        @if (tarefasConcluidas != null && tarefasConcluidas.Count > 0)
+        {
+            foreach (var tarefa in tarefasConcluidas)
+            {
+                <div class="card-link">
+                    <div class="card-horizontal">
+                        <div>
+                            <h4>@tarefa.Descricao</h4>
+                            @if (!string.IsNullOrEmpty(tarefa.Observacoes))
+                            {
+                                <small><strong>Observações:</strong> @tarefa.Observacoes</small>
+                            }
+                        </div>
+                        <div>
+                            <small><strong>Concluído por:</strong> @(tarefa.FuncionarioTarefa?.Nome ?? "Não atribuído")</small>
+                            <small><strong>Concluído em:</strong> @DateTime.Now.ToString("dd/MM/yyyy")</small>
+                        </div>
+                        <div>
+                            <small>Data: @tarefa.DataProcedimento.ToString("dd/MM/yyyy")</small>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="card-horizontal">
+                <div class="mensagem-vazia">
+                    Nenhuma tarefa concluída
+                </div>
+            </div>
+        }
     </div>
-</section>
-
-<section>
-<table class="table">
-<thead>
-    <tr>
-        <th>Descrição</th>
-        <th>Data</th>
-        <th>Status</th>
-    </tr>
-</thead>
-<tbody>
-    @foreach (var tarefa in Model)
-    {
-        <tr>
-            <td>@tarefa.Descricao</td>
-            <td>@tarefa.DataProcedimento</td>
-            <td>@tarefa.Status</td>
-        </tr>
-    }
-</tbody>
-</table>
-</section>
+</div>

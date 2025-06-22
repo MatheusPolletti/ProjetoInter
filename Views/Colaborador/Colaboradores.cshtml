@@ -2,6 +2,10 @@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var funcionarioLogado = ViewBag.FuncionarioLogado as ProjetoInter.Models.Funcionario;
+    var listaInstituicoes = ViewBag.ListaInstituicoesCadastradas as List<ProjetoInter.Models.Instituicao>;
+    var statusfuncionarios = ViewBag.StatusLista as List<ProjetoInter.Models.StatusFuncionario>;
 }
 
 @section Styles
@@ -12,30 +16,148 @@
 @section Scripts
 {
     <script src="~/js/Modais/Modais.js"></script>
+    <script src="~/js/Colaboradores/Colaboradores.js"></script>
+
+    <script>
+        window.onload = function () {
+            var mostrarModal = '@(ViewBag.MostrarModal ?? "false")';
+            if (mostrarModal === "True") {
+                ModalNovo(); 
+            }
+        };
+
+        function verificarSelecao(checkbox) {
+            var checkboxes = document.querySelectorAll('.select-checkbox');
+            checkboxes.forEach(function(cb) {
+                if (cb !== checkbox) {
+                    cb.checked = false;
+                }
+            });
+        }
+
+        function abrirModalEditar() {
+            var checkboxes = document.querySelectorAll('.select-checkbox');
+            var selecionado = Array.from(checkboxes).find(cb => cb.checked);
+
+            if (selecionado) {
+                document.querySelector('.area-modal-editar .inputTexto[name="_nome"]').value = selecionado.getAttribute('data-nome');
+                document.querySelector('.area-modal-editar .inputTexto[name="_cargo"]').value = selecionado.getAttribute('data-cargo');
+                document.querySelector('.area-modal-editar .inputTexto[name="_cpf"]').value = selecionado.getAttribute('data-cpf');
+                document.querySelector('.area-modal-editar .inputTexto[name="_telefone"]').value = selecionado.getAttribute('data-telefone');
+                document.querySelector('.area-modal-editar input[name="_funcionarioId"]').value = selecionado.getAttribute('data-id');
+
+                var status = selecionado.getAttribute('data-status');
+                document.querySelector('.area-modal-editar select[name="_status"]').value = status ? status.toLowerCase() : 'ativo';
+
+                var instituicaoId = selecionado.getAttribute('data-instituicaoId');
+                document.querySelector('.area-modal-editar select[name="_instituicao"]').value = instituicaoId;
+
+                document.querySelector('.area-modal-editar').style.display = 'flex';
+
+                var overlay = document.createElement('div');
+                overlay.classList.add('overlay');
+                document.body.appendChild(overlay);
+            } else {
+                alert("Por favor, selecione um colaborador antes de editar.");
+            }
+        }
+
+        function mostrarPreviewEditar(event) {
+            var file = event.target.files[0];
+            var preview = document.getElementById('previewEditar');
+            var previewText = document.getElementById('previewTextEditar');
+
+            if (file && file.type.startsWith('image/')) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    if (previewText) previewText.style.display = 'none';
+                };
+
+                reader.onerror = function() {
+                    alert("Erro ao ler o arquivo. Tente novamente.");
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+                if (previewText) previewText.style.display = 'block';
+            }
+        }
+
+        function FecharModalEditar() {
+            document.querySelector('.area-modal-editar').style.display = 'none';
+            var overlay = document.querySelector('.overlay');
+            if (overlay) overlay.remove();
+        }
+
+        function mostrarPreviewNovo(event) {
+            var file = event.target.files[0];
+            var container = event.target.closest('.form-imagem');
+            var preview = container.querySelector('.preview-imagem');
+            var previewText = container.querySelector('.preview-text');
+
+            if (file && file.type.startsWith('image/')) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    previewText.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+                previewText.style.display = 'block';
+            }
+        }
+    </script>
 }
 
 @section HeaderBarras {
     <div class="Header">
         <div class="ConteudoHeader">
             <h1 class="NomePagina">Colaboradores</h1>
-            
-                <form method="get" asp-controller="Colaborador" asp-action="Colaboradores" class="Barrabusca">
-                    <input type="text" name="busca" placeholder="Pesquisar..." class="TextoPesquisa" value="@(Context.Request.Query["busca"])">
-                    <button class="BotaoIconePesquisa" aria-label="Pesquisar">
-                        <i class="fas fa-search" aria-hidden="true"></i>
-                    </button>
-                </form>
-            
-            <div class="BotoesAcoes">
-                <button class="BotaoExcluir">Excluir</button>
-                <button onclick="ModalEditarNovo()" class="BotaoEditar">Editar</button>
-                <button onclick="ModalNovo()" class="BotaoNovo">Novo</button>
-            </div>
+
+            <form method="get" asp-controller="Colaborador" asp-action="Colaboradores" class="Barrabusca">
+                <input type="text" name="busca" placeholder="Pesquisar..." class="TextoPesquisa" value="@(Context.Request.Query["busca"])">
+                <button class="BotaoIconePesquisa" aria-label="Pesquisar">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                </button>
+            </form>
+
+            @if (funcionarioLogado != null && funcionarioLogado.IsAdmin == true)
+            {
+                <div class="BotoesAcoes">
+                    <button class="BotaoExcluir">Excluir</button>
+                    <button onclick="abrirModalEditar()" class="BotaoEditar">Editar</button>
+                    <button onclick="ModalNovo()" class="BotaoNovo">Novo</button>
+                </div>
+            }
         </div>
     </div>
 }
+
 <section>
-    
+    @if (ViewBag.Sucesso != null)
+    {
+        <section class="Mensagem show sucesso" role="alert">
+            <p id="mensagemTexto">
+                <i class="fa fa-check-square" style="color: green; margin-right: 8px; padding-left: 20px; font-size: 20px;"></i>@ViewBag.Sucesso</p>
+        </section>
+    }
+
+    @if (ViewBag.Erro != null)
+    {
+        <section class="Mensagem show erro" role="alert">
+            <p id="mensagemTexto">
+                <i class="fas fa-exclamation-circle" style="color: red; margin-right: 8px; padding-left: 20px; font-size: 20px;"></i>@ViewBag.Erro</p>
+        </section>
+    }
+
     <div class="colaboradores-list">
         @if (Model != null && Model.Any())
         {
@@ -43,13 +165,13 @@
             {
                 <div class="colaborador-card">
                     <div class="colaborador-foto">
-                        <img src="/images/default-user.png" alt="Foto" />
+                        <img src="~/@funcionario.ImagemUrl" alt="Foto" />
                     </div>
-    
+
                     <div class="colaborador-info">
                         <p>@funcionario.Cargo</p>
                         <div class="colaborador-descricao">
-                            <div style="display: flex; gap: 10px; align-items: center;">
+                            <div style="display: flex; gap: 30px; align-items: center;">
                                 <strong>@funcionario.Nome</strong>
                                 <span>Id: @funcionario.FuncionarioId</span>
                             </div>
@@ -57,17 +179,21 @@
                                 <span>@funcionario.Cpf |</span>
                                 <span> @funcionario.Telefone</span>
                             </div>
-                           
                         </div>
                     </div>
-    
-                    
-                <div class="colaborador-select">
-                    <input type="checkbox" id="select-@funcionario.FuncionarioId" class="select-checkbox" />
-                    <label for="select-@funcionario.FuncionarioId" aria-label="Selecionar colaborador"></label>
-                </div>
-                    
-                    
+
+                    <div class="colaborador-select">
+                        <input type="checkbox" 
+                               class="select-checkbox"
+                               data-id="@funcionario.FuncionarioId"
+                               data-nome="@funcionario.Nome"
+                               data-cargo="@funcionario.Cargo"
+                               data-cpf="@funcionario.Cpf"
+                               data-telefone="@funcionario.Telefone"
+                               data-status="@funcionario.StatusFuncionarioId"
+                               data-instituicaoId="@funcionario.InstituicaoId"
+                               onclick="verificarSelecao(this)" />
+                    </div>
                 </div>
             }
         }
@@ -78,7 +204,6 @@
     </div>
 </section>
 
-
 <section class="area-modal-editar">
     <div class="modal-base">
         <button class="modal-close" onclick="FecharModalEditar()">
@@ -87,54 +212,162 @@
 
         <h1>Editar Colaboradores</h1>
 
-        <div class="secaoAcao">
-            <label>Nome:</label>
-            <input type="text" class="inputTexto" />
-        </div>
+        <form asp-action="EditarUsuario" asp-controller="Colaborador" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="_funcionarioId" class="inputTexto" />
 
-        <div class="secaoAcao">
-            <label>Descrição:</label>
-            <input type="text" class="inputTexto" />
-        </div>
+            <div class="divisaoDiv">
+                <div class="secaoAcao">
+                    <label for="_nome">Nome:</label>
+                    <input type="text" name="_nome" class="inputTexto" required />
+                </div>
 
-        <div class="secaoAcao">
-            <label for="editar-status">Status:</label>
-            <select id="editar-status" name="editar-status">
-                <option value="ativo">Ativo</option>
-                <option value="inativo">Inativo</option>
-            </select>
-        </div>
+                <div class="secaoAcao">
+                    <label for="_cpf">CPF:</label>
+                    <input type="text" name="_cpf" class="inputTexto" required />
+                </div>
+            </div>
 
-        <button onclick="">Salvar Alterações</button>
+            <div class="divisaoDiv">
+                <div class="secaoAcao">
+                    <label for="_cargo">Cargo:</label>
+                    <input type="text" name="_cargo" class="inputTexto" required />
+                </div>
+
+                <div class="secaoAcao">
+                    <label for="_telefone">Telefone:</label>
+                    <input type="text" name="_telefone" class="inputTexto" required />
+                </div>
+            </div>
+
+            <div class="divisaoDiv">
+                <div class="secaoAcao">
+                    <label for="_status">Status:</label>
+                    <select name="_status" class="inputTexto" required>
+                        @if (statusfuncionarios != null)
+                        {
+                            <option value="">Selecione um Status</option>
+                            @foreach (var status in statusfuncionarios)
+                            {
+                                <option value="@status.StatusFuncionarioId">@status.Descricao</option>
+                            }
+                        }
+                        else
+                        {
+                            <option value="" disabled>Erro ao carregar lista de status.</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="secaoAcao">
+                <label for="_instituicao">Instituição:</label>
+                @if (listaInstituicoes != null)
+                {
+                    <select name="_instituicao" class="inputTexto" required>
+                        <option value="">Selecione uma Instituição</option>
+                        @foreach (var instituicao in listaInstituicoes)
+                        {
+                            <option value="@instituicao.InstituicaoId">@instituicao.Nome</option>
+                        }
+                    </select>
+                }
+                else
+                {
+                    <p style="color:red;">Erro ao carregar lista de instituições.</p>
+                }
+            </div>
+
+            <div id="previewContainerEditar" onclick="document.getElementById('imagemInputEditar').click();">
+                <span id="previewTextEditar">Clique para selecionar uma imagem</span>
+                <img id="previewEditar" style="display:none;" />
+            </div>
+            <input type="file" id="imagemInputEditar" name="_imagem" onchange="mostrarPreviewEditar(event)" style="display: none;" />
+
+            <div class="DivBotao">
+                <button type="submit" id="BotaoEditar">CADASTRAR</button>
+            </div>
+        </form>
     </div>
 </section>
 
-<section class="area-modal-novo">
+<section class="area-modal-novo" id="modal-novo">
     <div class="modal-base">
-        <button class="modal-close" onclick="FecharModalNovo()">
+        <button class="modal-close" onclick="FecharModalNovo()" type="button">
             <i class="fas fa-times"></i>
         </button>
 
-        <h1>Adicionar Setor</h1>
+        <h1>Cadastrar Novo Usuário</h1>
 
-        <div class="secaoAcao">
-            <label>Nome:</label>
-            <input type="text" class="inputTexto" />
-        </div>
+        <form asp-action="NovoUsuario" asp-controller="Colaborador" method="post" enctype="multipart/form-data" id="formImagem">
+            <div class="divisaoDiv">
+                <div class="secaoAcao">
+                    <label for="_email">Email:</label>
+                    <input type="email" name="_email" class="inputTexto" placeholder="exemplo@gmail.com" required />
+                </div>
+                <div class="secaoAcao">
+                    <label for="_password">Senha:</label>
+                    <input type="password" name="_password" class="inputTexto" placeholder="******" required />
+                </div>
+            </div>
 
-        <div class="secaoAcao">
-            <label>Descrição:</label>
-            <input type="text" class="inputTexto" />
-        </div>
+            <div class="divisaoDiv">
+                <div class="secaoAcao">
+                    <label for="_nome">Nome:</label>
+                    <input type="text" name="_nome" class="inputTexto" placeholder="Exemplo" required />
+                </div>
+                <div class="secaoAcao">
+                    <label for="_cpf">CPF:</label>
+                    <input type="text" name="_cpf" class="inputTexto" placeholder="000.000.000-00" required />
+                </div>
+            </div>
 
-        <div class="secaoAcao">
-            <label for="novo-status">Status:</label>
-            <select id="novo-status" name="novo-status">
-                <option value="ativo">Ativo</option>
-                <option value="inativo">Inativo</option>
-            </select>
-        </div>
+            <div class="divisaoDiv">
+                <div class="secaoAcao">
+                    <label for="_cargo">Cargo:</label>
+                    <input type="text" name="_cargo" class="inputTexto" placeholder="Cuidador" required />
+                </div>
+                <div class="secaoAcao">
+                    <label for="_telefone">Telefone:</label>
+                    <input type="text" name="_telefone" class="inputTexto" placeholder="(00) 0000-0000" required />
+                </div>
+            </div>
 
-        <button onclick="">Adicionar</button>
+            <div class="divisaoDiv">
+                <div class="secaoAcao">
+                    <label for="_adm">Administrador?</label>
+                    <input type="checkbox" name="_adm" value="true" class="inputTexto" />
+                </div>
+                <div class="secaoAcao">
+                    <label for="_instituicao">Instituição:</label>
+                    @if (listaInstituicoes != null)
+                    {
+                        <select name="_instituicao" class="inputTexto" required>
+                            <option value="">Selecione uma Instituição</option>
+                            @foreach (var instituicao in listaInstituicoes)
+                            {
+                                <option value="@instituicao.InstituicaoId">@instituicao.Nome</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <p style="color:red;">Erro ao carregar lista de instituições.</p>
+                    }
+                </div>
+            </div>
+
+            <div class="form-linha form-imagem">
+                <label for="imagemInputNovo">Imagem:</label>
+                <div class="preview-container" onclick="document.getElementById('imagemInputNovo').click();">
+                    <span class="preview-text">Clique para selecionar uma imagem</span>
+                    <img class="preview-imagem" style="display:none;" />
+                </div>
+                <input type="file" id="imagemInputNovo" name="_imagem" onchange="mostrarPreviewNovo(event)" style="display: none;" />
+            </div>
+
+            <div class="DivBotao">
+                <button type="submit" id="BotaoCadastrar">CADASTRAR</button>
+            </div>
+        </form>
     </div>
 </section>
