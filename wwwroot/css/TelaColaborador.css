@@ -176,6 +176,35 @@
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
+
+#BotaoEditar
+{
+    background-color: var(--cor-verde-botao);
+    
+    color: var(--cor-branco-texto);
+
+    font-size: 16px;
+    
+    font-weight: bold;
+
+    padding: 12px 24px;
+
+    border: none;
+
+    border-radius: 10px;
+    
+    cursor: pointer;
+    
+    transition: all 0.3s ease;
+}
+
+#BotaoEditar:hover
+{
+    background-color: var(--cor-verde-escuro-botao);
+    
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
 #previewContainer 
 {
     display: flex;

@@ -186,7 +186,6 @@ public class ColaboradorController : BaseController
         ViewBag.FuncionarioLogado = _funcionarioLogado;
 
         ViewBag.ListaInstituicoesCadastradas = await InstituicoesCadastradas();
-
         ViewBag.StatusLista = await CarregarStatusFuncionario();
 
         var funcionarios = await context.Funcionarios
@@ -195,27 +194,5 @@ public class ColaboradorController : BaseController
             .ToListAsync();
 
         return View("Colaboradores", funcionarios);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> EditarFuncionario(int id, string nome, string cargo, int StatusFuncionarioId)
-    {
-        var funcionario = await context.Funcionarios.FindAsync(id);
-
-        if (funcionario == null)
-        {
-            ViewBag.Erro = "Funcionário não encontrado.";
-            return await CarregarViewColaboradoresComMensagem();
-        }
-
-        funcionario.Nome = nome;
-        funcionario.Cargo = cargo;
-        funcionario.StatusFuncionarioId = StatusFuncionarioId;
-
-        context.Funcionarios.Update(funcionario);
-        await context.SaveChangesAsync();
-
-        ViewBag.Sucesso = "Funcionário atualizado com sucesso!";
-        return await CarregarViewColaboradoresComMensagem();
     }
 }
