@@ -8,6 +8,7 @@
 @section Scripts
 {
     <script src="~/js/Modais/Modais.js"></script>
+    <script src="~/js/Setor/SetorScript.js"></script>
 }
 
 @{
@@ -30,9 +31,9 @@
             </div>
 
             <div class="BotoesAcoes">
-                <button class="BotaoExcluir">Excluir</button>
-                <button onclick="ModalEditarNovo()" class="BotaoEditar">Editar</button>
-                <button onclick="ModalNovo()" class="BotaoNovo">Novo</button>
+                <button class="BotaoExcluir" onclick="excluirSetoresSelecionados()" disabled>Excluir</button>
+                <button onclick="abrirModalEditarSetor()" class="BotaoEditar" disabled>Editar</button>
+                <button onclick="abrirModalNovoSetor()" class="BotaoNovo">Novo</button>
             </div>
 
         </div>
@@ -52,59 +53,55 @@
                     </div>
                     <div class="card-end">
                         <h3>ID: @setor.SetorId</h3>
-                        <input type="checkbox">
+                        <input type="checkbox" class="setor-checkbox" data-setorid="@setor.SetorId" onclick="verificaCheckboxesSetor()">
                     </div>
                 </div>
             }
         }
     </div>
 
-    <!--Classe não usada-->
+    
     <div>
-        <!-- O ~ é o que permite o acesso as imagens-->
-        <img src="/@Model.FirstOrDefault().InstituicaoPertence.ImagemUrl" alt="Mapa do Zoobotânico de Rio Preto">
+        <img src="/@(Model?.FirstOrDefault()?.InstituicaoPertence?.ImagemUrl ?? "caminho/para/imagem/padrao.png")" alt="Mapa da Instituição">
         <div class="legenda">
-            @* colocar descricao da instituicao na Table *@
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi sint, sed possimus dolorum laboriosam
             laborum vero ut officia maiores eum corporis quisquam in, iusto delectus sit! Odio at eligendi laborum.
         </div>
     </div>
+    
 </div>
-</div>
-
-<section class="area-modal-editar">
+</div> <section class="area-modal-editar">
     <div class="modal-base">
-        <button class="modal-close" onclick="FecharModalEditar()">
+        <button class="modal-close" onclick="FecharModalEditarSetor()">
             <i class="fas fa-times"></i>
         </button>
 
         <h1>Editar Setor</h1>
+        <input type="hidden" id="inputSetorIdEditar" value="0" />
 
         <div class="secaoAcao">
             <label>Nome:</label>
-            <input type="text" class="inputTexto" />
+            <input type="text" id="inputSetorNomeEditar" class="inputTexto" />
         </div>
 
         <div class="secaoAcao">
             <label>Descrição:</label>
-            <input type="text" class="inputTexto" />
+            <input type="text" id="inputSetorDescricaoEditar" class="inputTexto" />
         </div>
 
         <div class="secaoAcao">
-            <label for="editar-status">Status:</label>
-            <select id="editar-status" name="editar-status">
-                <option value="ativo">Ativo</option>
-                <option value="inativo">Inativo</option>
-            </select>
+            <label for="selectSetorStatusEditar">Status:</label>
+            <select id="selectSetorStatusEditar" name="selectSetorStatusEditar">
+                <option value="true">Ativo</option> <option value="false">Inativo</option> </select>
         </div>
 
-        <button onclick="">Salvar Alterações</button>
+        <button class="btn-concluir" onclick="submeterEditarSetor()">Salvar Alterações</button>
     </div>
 </section>
 
 <section class="area-modal-novo">
     <div class="modal-base">
-        <button class="modal-close" onclick="FecharModalNovo()">
+        <button class="modal-close" onclick="FecharModalNovoSetor()">
             <i class="fas fa-times"></i>
         </button>
 
@@ -112,22 +109,20 @@
 
         <div class="secaoAcao">
             <label>Nome:</label>
-            <input type="text" class="inputTexto" />
+            <input type="text" id="inputSetorNomeNovo" class="inputTexto" />
         </div>
 
         <div class="secaoAcao">
             <label>Descrição:</label>
-            <input type="text" class="inputTexto" />
+            <input type="text" id="inputSetorDescricaoNovo" class="inputTexto" />
         </div>
 
         <div class="secaoAcao">
-            <label for="novo-status">Status:</label>
-            <select id="novo-status" name="novo-status">
-                <option value="ativo">Ativo</option>
-                <option value="inativo">Inativo</option>
-            </select>
+            <label for="selectSetorStatusNovo">Status:</label>
+            <select id="selectSetorStatusNovo" name="selectSetorStatusNovo">
+                <option value="true">Ativo</option> <option value="false">Inativo</option> </select>
         </div>
 
-        <button onclick="">Adicionar</button>
+        <button class="btn-concluir" onclick="submeterNovoSetor()">Adicionar</button>
     </div>
 </section>

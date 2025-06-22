@@ -1,6 +1,6 @@
 @using ProjetoInter.Models
 @model IEnumerable<ProjetoInter.Models.Transferencia>
-    
+
 @section Styles
 {
     <link rel="stylesheet" href="/css/TelaAtendimentoVeterinario.css">
@@ -9,10 +9,11 @@
 @section Scripts
 {
     <script src="~/js/Modais/Modais.js"></script>
+    <script src="~/js/Transferencia/TransferenciaScript.js"></script>
 }
 
 @{
-    Layout="~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @section HeaderBarras
@@ -21,20 +22,20 @@
         <div class="ConteudoHeader">
 
             <h1 class="NomePagina">Transferências</h1>
-            
+
             <div class="Barrabusca">
                 <input type="text" placeholder="Pesquisar..." class="TextoPesquisa">
                 <button class="BotaoIconePesquisa" aria-label="Pesquisar">
                     <i class="fas fa-search" aria-hidden="true"></i>
-                </button>    
+                </button>
             </div>
-            
+
             <div class="BotoesAcoes">
                 <button class="BotaoExcluir">Excluir</button>
-                <button onclick="ModalEditarNovo()" class="BotaoEditar">Editar</button>
-                <button onclick="ModalNovo()" class="BotaoNovo">Novo</button>
+                <button onclick="abrirModalEdicaoTransferencia()" class="BotaoEditar">Editar</button>
+                <button onclick="abrirModalNovoTransferencia()" class="BotaoNovo">Novo</button>
             </div>
-        
+
         </div>
     </div>
 }
@@ -50,67 +51,67 @@
         </div>
         <div class="container-carrossel">
             <div class="carrossel-cards-verticais">
-                @if (Model != null)
+                @if (ViewBag.TransferenciasPendentes != null)
                 {
-                    foreach (var transferencia in Model)
+                    foreach (var transferencia in ViewBag.TransferenciasPendentes)
                     {
-                       <div>
-                                <div class="card-vertical">
-                                    
-                                    <input
-                                    type="checkbox" 
-                                    class="atendimento-checkbox"
-                                    data-atendimentoid="@transferencia.TransferenciaId" 
-                                    onclick="verificaCheckboxes()"
-                                    />
-                                    <div style="display: flex; height: fit-content; margin-top: -24px">
-                                        <div class="topo-esquerda">
-                                            <h4><strong></strong> @transferencia.Animal.Nome</h4>
-                                            <p><small>@transferencia.Animal.Especie?.Descricao |
+                        <div>
+                            <div class="card-vertical">
+
+                                <input type="checkbox" class="atendimento-checkbox"
+                                    data-atendimentoid="@transferencia.TransferenciaId" onclick="verificaCheckboxes()" />
+                                <div style="display: flex; height: fit-content; margin-top: -24px">
+                                    <div class="topo-esquerda">
+                                        <h4><strong></strong> @transferencia.Animal.Nome</h4>
+                                        <p><small>@transferencia.Animal.Especie?.Descricao |
                                                     @transferencia.Animal.Setor?.Descricao</small></p>
-                                        </div>
                                     </div>
-                                    <div class="descricao">
-                                        <h4>Origem: <span style="font-weight: normal;">@transferencia.InstituicaoOrigem.Nome</span></h4>
-                                        <h4>Destino: <span style="font-weight: normal;">@transferencia.InstituicaoDestino.Nome</span></h4>
-                                        <small><strong>Saída:</strong> @transferencia.DataSaida</small>
-                                        <small><strong>Entrada:</strong> @transferencia.DataEntrada</small>
-                                    </div>
-                                    <button class="btn-concluir">Concluir</button>
                                 </div>
+                                <div class="descricao">
+                                    <h4>Origem: <span style="font-weight: normal;">@transferencia.InstituicaoOrigem.Nome</span>
+                                    </h4>
+                                    <h4>Destino: <span
+                                                    style="font-weight: normal;">@transferencia.InstituicaoDestino.Nome</span></h4>
+                                    <small><strong>Saída:</strong> @transferencia.DataSaida.ToString("dd/MM/yyyy")</small>
+                                    @* --- INCLUA ESTA LINHA PARA EXIBIR A DATA DE ENTRADA --- *@
+                                    <small><strong>Entrada:</strong> @(transferencia.DataEntrada?.ToString("dd/MM/yyyy") ?? "Pendente")</small>
+                                    @* --- FECHE A DIV DESCRICAO AQUI --- *@
+                                </div> <button class="btn-concluir" onclick="concluirTransferencia(@transferencia.TransferenciaId)">Concluir</button>
                             </div>
+                        </div>
 
                     }
                 }
             </div>
-
         </div>
-
     </div>
 </div>
+
 <div class="inferior">
-    <h2>Atendimentos Anteriores</h2>
+    <h2>Transferências Anteriores</h2>
     <div class="cards-horizontais">
-        @if (Model != null)
+        @* --- MUDANÇA AQUI: USA ViewBag.TransferenciasConcluidas --- *@
+        @if (ViewBag.TransferenciasConcluidas != null)
         {
-            foreach (var transferencia in Model)
+            foreach (var concluida  in ViewBag.TransferenciasConcluidas)
             {
                 @* <a style="text-decoration: none;" asp-controller="AtendimentoVeterinario" asp-action="AtendimentoInfo" asp-route-id="@transferencia.TransferenciaId" class="card-link"> *@
-                    <div style="display: flex; justify-content: space-between;" class="card-horizontal" id="@transferencia.TransferenciaId">
-                        <div>
-                            <small>@transferencia.Animal.Especie.Descricao</small>
-                            <h4>@transferencia.Animal.Nome</h4>
+                <div style="display: flex; justify-content: space-between;" class="card-horizontal"
+                    id="@concluida.TransferenciaId">
+                    <div>
+                        <small>@concluida.Animal.Especie.Descricao</small>
+                        <h4>@concluida.Animal.Nome</h4>
 
-                            <small><strong>Origem:</strong> @transferencia.InstituicaoOrigem.Nome</small>
-                            <small><strong> | Destino:</strong> @transferencia.DataSaida</small>
-                            <br>
-                            <small><strong>Saída:</strong> @transferencia.InstituicaoOrigem.Nome</small>
-                            <small><strong> | Chegada:</strong> @transferencia.DataEntrada</small>
-                        </div>
-                        <div>
-                            <small>Colocar Status</small>
-                        </div>
+                        <small><strong>Origem:</strong> @concluida.InstituicaoOrigem.Nome</small>
+                        <small><strong> | Destino:</strong> @concluida.InstituicaoDestino.Nome</small> @* Correção: estava DataSaida aqui *@
+                        <br>
+                        <small><strong>Saída:</strong> @concluida.DataSaida.ToString("dd/MM/yyyy")</small>
+                        <small><strong> | Chegada:</strong> @(concluida.DataEntrada?.ToString("dd/MM/yyyy") ?? "N/A")</small>
                     </div>
+                    <div>
+                        <small>Concluído</small>
+                    </div>
+                </div>
                 @* </a> *@
             }
         }
@@ -118,62 +119,64 @@
     </div>
 </div>
 
-<section class="area-modal-editar">
-    <div class="modal-base">
-        <button class="modal-close" onclick="FecharModalEditar()">
-            <i class="fas fa-times"></i>
-        </button>
-
-        <h1>Editar Setor</h1>
-
-        <div class="secaoAcao">
-            <label>Nome:</label>
-            <input type="text" class="inputTexto" />
-        </div>
-
-        <div class="secaoAcao">
-            <label>Descrição:</label>
-            <input type="text" class="inputTexto" />
-        </div>
-
-        <div class="secaoAcao">
-            <label for="editar-status">Status:</label>
-            <select id="editar-status" name="editar-status">
-                <option value="ativo">Ativo</option>
-                <option value="inativo">Inativo</option>
-            </select>
-        </div>
-
-        <button onclick="">Salvar Alterações</button>
-    </div>
-</section>
-
 <section class="area-modal-novo">
     <div class="modal-base">
         <button class="modal-close" onclick="FecharModalNovo()">
             <i class="fas fa-times"></i>
         </button>
 
-        <h1>Adicionar Setor</h1>
+        <h1 id="modalTitle">Adicionar Transferência</h1>
+
+        <input type="hidden" id="transferenciaIdHidden" value="0" />
 
         <div class="secaoAcao">
-            <label>Nome:</label>
-            <input type="text" class="inputTexto" />
-        </div>
-
-        <div class="secaoAcao">
-            <label>Descrição:</label>
-            <input type="text" class="inputTexto" />
-        </div>
-
-        <div class="secaoAcao">
-            <label for="novo-status">Status:</label>
-            <select id="novo-status" name="novo-status">
-                <option value="ativo">Ativo</option>
-                <option value="inativo">Inativo</option>
+            <label>Animal:</label>
+            <select style="width: 100%;" id="newTransferAnimalId" class="inputTexto">
+                @foreach (var animal in ViewBag.Animais)
+                {
+                    <option value="@animal.AnimalId">
+                        @animal.Nome - @animal.Especie?.Descricao (@animal.Setor?.Descricao)
+                    </option>
+                }
             </select>
         </div>
 
-        <button onclick="">Adicionar</button>
+        <div class="secaoAcao">
+            <label>Local de Origem:</label>
+            <select style="width: 100%;" id="newTransferOrigemId" class="inputTexto">
+                @foreach (var instituicao in ViewBag.Instituicoes)
+                {
+                    <option value="@instituicao.InstituicaoId">
+                        @instituicao.Nome
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="secaoAcao">
+            <label>Local de Destino:</label>
+            <select style="width: 100%;" id="newTransferDestinoId" class="inputTexto">
+                @foreach (var instituicao in ViewBag.Instituicoes)
+                {
+                    <option value="@instituicao.InstituicaoId">
+                        @instituicao.Nome
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div style="flex-direction: row; gap: 16px" class="secaoAcao">
+            <div class="secaoAcao">
+                <label>Data de Saída:</label>
+                <input style="width: 250px;" id="newTransferDataSaida" type="date" class="inputTexto" />
+            </div>
+
+            <div class="secaoAcao">
+                <label>Data de Entrada:</label>
+                <input style="width: 250px;" id="newTransferDataEntrada" type="date" class="inputTexto" />
+            </div>
+        </div>
+
+        <button class="btn-concluir" id="modalSubmitButton" onclick="handleTransferenciaSubmit()">Adicionar</button>
     </div>
 </section>

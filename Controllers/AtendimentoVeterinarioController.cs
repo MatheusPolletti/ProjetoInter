@@ -181,8 +181,6 @@ public class AtendimentoVeterinarioController : BaseController
         }
     }
 
-
-    // --- NOVO MÉTODO PARA DESATIVAR ATENDIMENTO ---
     [HttpPost("/AtendimentoVeterinario/ConcluirAtendimento")] // Rota convencional: /AtendimentoVeterinario/ConcluirAtendimento
     public async Task<IActionResult> ConcluirAtendimento([FromBody] int id)
     {
@@ -213,7 +211,6 @@ public class AtendimentoVeterinarioController : BaseController
         }
     }
 
-    // NOVO MÉTODO para EXCLUIR atendimento (REMOVE DO BANCO DE DADOS)
     [HttpPost("/AtendimentoVeterinario/ExcluirAtendimento")]
     public async Task<IActionResult> ExcluirAtendimento([FromBody] int id)
     {

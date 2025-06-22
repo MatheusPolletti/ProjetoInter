@@ -1,6 +1,41 @@
+// Arquivo: wwwroot/js/Atendimento/AtendimentoScript.js
+
+// --- NOVO: Função para abrir o modal de "Novo Atendimento" e preencher o solicitante ---
+function abrirModalNovoAtendimento() {
+    // Obter o ID e o Nome do funcionário logado dos campos hidden (do HTML)
+    const loggedInFuncionarioId = document.getElementById('loggedInFuncionarioId')?.value;
+    const loggedInFuncionarioNome = document.getElementById('loggedInFuncionarioNome')?.value;
+
+    // Referência ao select de Funcionário Solicitante no modal de NOVO Atendimento
+    // Assumo que o ID do select é "FuncionarioSolicitanteId" no modal de criação
+    const selectFuncionarioSolicitante = document.getElementById('FuncionarioSolicitanteId');
+
+    // Limpar campos do modal antes de abrir (boa prática para "Novo")
+    // Certifique-se de que esses IDs correspondem aos campos do seu modal de NOVO atendimento
+    document.getElementById("AnimalId").value = "";
+    document.getElementById("FuncionarioSolicitanteId").value = ""; // Será preenchido abaixo
+    document.getElementById("VeterinarioResponsavel").value = "";
+    document.getElementById("DataAtendimento").value = "";
+    document.getElementById("Descricao").value = "";
+
+    if (selectFuncionarioSolicitante && loggedInFuncionarioId) {
+        // Encontra a opção com o valor correspondente ao ID do funcionário logado e a seleciona
+        selectFuncionarioSolicitante.value = loggedInFuncionarioId;
+        
+        // Opcional: Se quiser que o campo não possa ser alterado depois de preenchido automaticamente
+        // selectFuncionarioSolicitante.disabled = true; 
+    } else {
+        console.warn("Elemento 'FuncionarioSolicitanteId' não encontrado ou ID do funcionário logado não disponível. Verifique os campos hidden e o ID do select.");
+    }
+
+    // Abre o modal. Assumo que seu modal de "Novo Atendimento" tem o seletor '.area-modal-novo'
+    // Se for outro seletor para o modal de novo, AJUSTE AQUI.
+    abrirModal('.area-modal-novo');
+}
+
+// --- Outras funções do seu script atual ---
+
 async function solicitarAtendimento() {
-  // Coleta dos valores
-  const especieId = document.getElementById("EspecieId").value;
   const animalId = document.getElementById("AnimalId").value;
   const funcionarioSolicitanteId = document.getElementById(
     "FuncionarioSolicitanteId"
@@ -10,7 +45,6 @@ async function solicitarAtendimento() {
   const descricao = document.getElementById("Descricao").value;
 
   const dadosDoAtendimento = {
-    EspecieId: especieId ? parseInt(especieId) : null,
     AnimalId: animalId ? parseInt(animalId) : null,
     FuncionarioSolicitanteId: funcionarioSolicitanteId
       ? parseInt(funcionarioSolicitanteId)
@@ -32,12 +66,13 @@ async function solicitarAtendimento() {
       }
     );
 
-    const responseData = await response.json(); // Mova esta linha para fora do if
+    const responseData = await response.json(); // Mova esta linha para fora do if (JÁ ESTAVA ASSIM NO SEU CÓDIGO)
 
     if (response.ok) {
       console.log("Sucesso:", responseData);
       alert(responseData.message || "Atendimento solicitado com sucesso!");
-      FecharModalNovo();
+      // Chame a função correta para fechar o modal de NOVO atendimento
+      fecharModal('.area-modal-novo'); // Use a sua função genérica fecharModal com o seletor correto
       window.location.reload();
     } else {
       console.error("Erro:", responseData);
@@ -67,7 +102,7 @@ function verificaCheckboxes() {
   });
 
   if (botaoEditar) {
-    if (qtdMarcada <= 1) {
+    if (qtdMarcada <= 1) { // Mudança para <= 1 para habilitar se 0 ou 1 estiverem marcados
       botaoEditar.disabled = false;
       botaoEditar.classList.remove("desabilitado");
       botaoEditar.dataset.atendimentoid = idAtendimentoSelecionado;
@@ -84,8 +119,6 @@ function verificaCheckboxes() {
 
 document.addEventListener("DOMContentLoaded", verificaCheckboxes);
 
-// *** FUNÇÃO CENTRAL PARA ABRIR O MODAL DE EDIÇÃO/CONCLUSÃO ***
-// purpose: 'edit' ou 'concluir'
 async function abrirModalAtendimento(atendimentoId, purpose) {
   const modalTitulo = document.getElementById("modalEditarTitulo");
   const modalActionBtn = document.getElementById("modalActionBtn");
@@ -117,8 +150,6 @@ async function abrirModalAtendimento(atendimentoId, purpose) {
     // Preencher o modal com os dados
     document.getElementById("editAtendimentoId").value =
       atendimento.atendimentoVeterinarioId;
-    document.getElementById("editEspecieId").value =
-      atendimento.animal?.especieId || "";
     document.getElementById("editAnimalId").value = atendimento.animalId || "";
     document.getElementById("editFuncionarioSolicitanteId").value =
       atendimento.funcionarioSolicitanteId || "";
@@ -143,7 +174,6 @@ async function abrirModalAtendimento(atendimentoId, purpose) {
       modalActionBtn.textContent = "Salvar Edição";
       modalActionBtn.onclick = salvarEdicaoAtendimento; // Atribui a função de salvar
       // Habilita/Desabilita campos conforme a necessidade de edição
-      document.getElementById("editEspecieId").disabled = false;
       document.getElementById("editAnimalId").disabled = false;
       document.getElementById("editFuncionarioSolicitanteId").disabled = false;
       document.getElementById("editVeterinarioResponsavel").disabled = false;
@@ -155,18 +185,16 @@ async function abrirModalAtendimento(atendimentoId, purpose) {
       modalTitulo.textContent = "Concluir Atendimento";
       modalActionBtn.textContent = "Finalizar Atendimento";
       modalActionBtn.onclick = finalizarAtendimento; // Atribui a função de finalizar
-      // Desabilita campos se for apenas para conclusão (o usuário não deve editar ao concluir)
-      document.getElementById("editEspecieId").disabled = true;
       document.getElementById("editAnimalId").disabled = true;
       document.getElementById("editFuncionarioSolicitanteId").disabled = true;
       document.getElementById("editVeterinarioResponsavel").disabled = true;
       document.getElementById("editDataAtendimento").disabled = true;
-      document.getElementById("editDescricao").disabled = true;
-      document.getElementById("editObservacoes").disabled = true;
-      document.getElementById("editResultado").disabled = true;
+      // document.getElementById("editDescricao").disabled = true; // Removi o disable desses para permitir edição na conclusão
+      // document.getElementById("editObservacoes").disabled = true;
+      // document.getElementById("editResultado").disabled = true;
     }
 
-    // Abre o modal
+    // Abre o modal (assumo que este é o modal de edição)
     abrirModal(".area-modal-editar");
   } catch (error) {
     console.error("Erro ao abrir modal:", error);
@@ -239,7 +267,8 @@ async function salvarEdicaoAtendimento() {
     const responseData = await response.json();
     if (response.ok && responseData.success) {
       alert(responseData.message || "Atendimento atualizado com sucesso!");
-      FecharModalEditar();
+      // FecharModalEditar(); // Esta função não existe, use fecharModal com o seletor
+      fecharModal('.area-modal-editar'); // Assumindo que este é o seletor do modal de edição
       window.location.reload();
     } else {
       alert(
@@ -285,7 +314,8 @@ async function finalizarAtendimento() {
     const responseData = await response.json();
     if (response.ok && responseData.success) {
       alert(responseData.message || "Atendimento finalizado com sucesso!");
-      FecharModalEditar();
+      // FecharModalEditar(); // Esta função não existe, use fecharModal com o seletor
+      fecharModal('.area-modal-editar'); // Assumindo que este é o seletor do modal de edição
       window.location.reload();
     } else {
       alert(
@@ -381,6 +411,11 @@ function fecharModal(selector) {
 
   if (!modal || !main || !overlay) return;
 
-  main.removeChild(overlay);
+  if (overlay && main.contains(overlay)) { // Verifica se o overlay ainda existe antes de tentar remover
+      main.removeChild(overlay);
+  }
   modal.style.display = "none";
 }
+
+// --- Listener para habilitar/desabilitar botão "Editar" ao carregar a página ---
+document.addEventListener("DOMContentLoaded", verificaCheckboxes);

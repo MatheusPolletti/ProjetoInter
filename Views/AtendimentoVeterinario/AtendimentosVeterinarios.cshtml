@@ -1,5 +1,6 @@
 @using ProjetoInter.Models
 @model IEnumerable<ProjetoInter.Models.AtendimentoVeterinario>
+@using System.Security.Claims
 
 @section Styles {
     <link rel="stylesheet" href="/css/TelaAtendimentoVeterinario.css">
@@ -35,13 +36,15 @@
             <div class="BotoesAcoes">
                 <button class="BotaoExcluir" onclick="excluirAtendimentosSelecionados()">Excluir</button>
                 <button onclick="abrirModalEdicao()" class="BotaoEditar" disabled>Editar</button>
-                <button onclick="ModalNovo('.area-modal-novo')" class="BotaoNovo">Novo</button>
+                <button onclick="abrirModalNovoAtendimento()" class="BotaoNovo">Novo</button>
             </div>
 
         </div>
     </div>
 }
 
+<input type="hidden" id="loggedInFuncionarioId" value="@User.FindFirst(ClaimTypes.NameIdentifier)?.Value" />
+<input type="hidden" id="loggedInFuncionarioNome" value="@User.FindFirst(ClaimTypes.Name)?.Value" />
 <div class="container-atendimentos">
     <div class="topo">
         <h2>Pendentes</h2>
@@ -71,12 +74,8 @@
                             <div>
                                 <div class="card-vertical">
 
-                                    <input
-                                    type="checkbox" 
-                                    class="atendimento-checkbox"
-                                    data-atendimentoid="@atendimento.AtendimentoVeterinarioId" 
-                                    onclick="verificaCheckboxes()"
-                                    >
+                                    <input type="checkbox" class="atendimento-checkbox"
+                                        data-atendimentoid="@atendimento.AtendimentoVeterinarioId" onclick="verificaCheckboxes()">
 
                                     <div style="margin-top: -24px" class="topo-card">
                                         <div class="topo-esquerda">
@@ -152,23 +151,13 @@
 
         <h1>Solicitar Atendimento</h1>
         <div style="grid-template-columns: 1fr;" class="grid">
-            @* <div class="secaoAcao">
-                <label>Espécie:</label>
-                <select id="EspecieId" name="EspecieId" class="inputTexto" required>
-                    <option value="" disabled selected hidden>Selecionar Espécie</option>
-                    @foreach (var especie in ViewBag.Especies)
-                    {
-                        <option value="@especie.AnimalEspecieId">@especie.Descricao</option>
-                    }
-                </select>
-            </div> *@
             <div class="secaoAcao">
                 <label>Animal:</label>
                 <select style="width: 100%;" id="AnimalId" name="AnimalId" class="inputTexto">
                     <option value="" disabled selected hidden>Selecionar Animal</option>
                     @foreach (var animal in ViewBag.Animais)
                     {
-                        
+
                         <option value="@animal.AnimalId">
                             @animal.Nome - @animal.Especie?.Descricao (@animal.Setor?.Descricao)
                         </option>
@@ -181,13 +170,9 @@
         <div class="secaoAcao">
             <label for="novo-status">Funcionário Solicitante:</label>
             <select id="FuncionarioSolicitanteId" style="width: 100%;" class="inputTexto">
-                <option value="" disabled selected hidden>Selecionar Funcionário</option>
-                @foreach (var funcionario in ViewBag.Funcionarios)
-                {
-                    <option value="@funcionario.FuncionarioId">
-                        @funcionario.Nome
-                    </option>
-                }
+                <option value="@User.FindFirst(ClaimTypes.NameIdentifier)?.Value" selected>
+                    @User.FindFirst(ClaimTypes.Name)?.Value
+                </option>
             </select>
         </div>
 
@@ -228,19 +213,10 @@
         </button>
         <h1 id="modalEditarTitulo">Editar Atendimento</h1> <input type="hidden" id="editAtendimentoId" />
         <input type="hidden" id="modalPurpose" value="edit" />
-        <div class="grid">
-            <div class="secaoAcao">
-                <label>Espécie:</label>
-                <select id="editEspecieId" name="EspecieId" class="inputTexto" required>
-                    @foreach (var especie in ViewBag.Especies)
-                    {
-                        <option value="@especie.AnimalEspecieId">@especie.Descricao</option>
-                    }
-                </select>
-            </div>
+        <div style="grid-template-columns: 1fr;" class="grid">
             <div class="secaoAcao">
                 <label>Animal:</label>
-                <select id="editAnimalId" name="AnimalId" class="inputTexto">
+                <select style="width: 100%" id="editAnimalId" name="AnimalId" class="inputTexto">
                     @foreach (var animal in ViewBag.Animais)
                     {
                         <option value="@animal.AnimalId">
