@@ -9,14 +9,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="~/css/TelaLoginCadastro.css">
     <link rel="shortcut icon" href="~/img/Logos/LogoCapivara.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <title>GerenciaZoo</title>
 </head>
 <body>
-    <section class="MensagemErro" role="alert">
-        @if (!string.IsNullOrEmpty(mensagemDeErro))
-        {
-            <p>@mensagemDeErro</p>
-        }
+    <section class="MensagemErro @(!string.IsNullOrEmpty(mensagemDeErro) ? "show" : "")" role="alert">
+    @if (!string.IsNullOrEmpty(mensagemDeErro))
+    {
+        <p><i class="fas fa-exclamation-circle" style="color: red; margin-right: 8px; font-size: 20px;"></i>@mensagemDeErro</p>
+    }
     </section>
     
     <main>

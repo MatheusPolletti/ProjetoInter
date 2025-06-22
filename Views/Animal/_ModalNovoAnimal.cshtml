@@ -59,7 +59,16 @@
                     <input type="date" id="DataNascimento" name="DataNascimento" required />
                 </div>
 
-                 
+                <div class="form-grupo">
+                    <label for="SetorId">Setor:</label>
+                    <select id="SetorId" name="SetorId" required>
+                        @foreach (var setor in ViewBag.Setores)
+                        {
+                            <option value="@setor.SetorId">@setor.Nome</option>
+                        }
+                    </select>
+                </div>
+            </div>
 
             <input type="hidden" name="StatusId" value="1" />
 

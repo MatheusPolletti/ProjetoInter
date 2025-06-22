@@ -11,7 +11,6 @@
     background-color: var(--colaborador-bg-color);
 }
 
-
 .colaborador-card {
     display: flex;
     align-items: center;
@@ -28,8 +27,7 @@
     width: 60px;
     height: 60px;
     
-    object-fit: cover;
-   
+    object-fit: cover;  
  
     transition: transform 0.2s;
 }
@@ -43,7 +41,6 @@
     margin-left: 20px;
     padding: 5px 10px;
     border-radius: 5px;
-   
 }
 
 .colaborador-Id {

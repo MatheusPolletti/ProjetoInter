@@ -1,0 +1,39 @@
+@model List<ProjetoInter.Models.Procedimento>
+
+<div class="inferior">
+    <h2>Concluídas</h2>
+    <div class="cards-horizontais">
+        @if (Model != null && Model.Count > 0)
+        {
+            foreach (var tarefa in Model)
+            {
+                <div class="card-link">
+                    <div class="card-horizontal">
+                        <div>
+                            <h4>@tarefa.Descricao</h4>
+                            @if (!string.IsNullOrEmpty(tarefa.Observacoes))
+                            {
+                                <small><strong>Observações:</strong> @tarefa.Observacoes</small>
+                            }
+                        </div>
+                        <div>
+                            <small><strong>Concluído por:</strong> @tarefa.FuncionarioTarefa?.Nome</small>
+                            <small><strong>Concluído em:</strong> @DateTime.Now.ToString("dd/MM/yyyy")</small>
+                        </div>
+                        <div>
+                            <small>Data: @tarefa.DataProcedimento.ToString("dd/MM/yyyy")</small>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="card-horizontal">
+                <div class="mensagem-vazia">
+                    Nenhuma tarefa concluída
+                </div>
+            </div>
+        }
+    </div>
+</div>
