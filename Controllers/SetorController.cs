@@ -2,11 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProjetoInter.Data; 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-using ProjetoInter.Models; // Certifique-se de que a model Setor está aqui
-using System.Linq; // Adicionado para usar .Where()
-using System.Threading.Tasks; // Adicionado para Task
 using ProjetoInter.Models;
-
 
 [Authorize] 
 public class SetorController : BaseController 

@@ -246,7 +246,7 @@ async function salvarEdicaoAtendimento() {
     ).value
       ? parseInt(document.getElementById("editVeterinarioResponsavel").value)
       : null,
-    Data: document.getElementById("editDataAtendimento").value,
+    Data: document.getElementById("editDataAtendimento").value || null,
     Descricao: document.getElementById("editDescricao").value,
     Observacoes: document.getElementById("editObservacoes").value || null,
     Resultado: document.getElementById("editResultado").value || null,

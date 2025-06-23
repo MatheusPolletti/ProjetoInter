@@ -35,4 +35,5 @@ public class DbZoologico : DbContext
         // Data Procedimento
         modelBuilder.Entity<Procedimento>().Property(a => a.DataProcedimento).HasConversion(dateOnlyConverter);
     }
+    
 }

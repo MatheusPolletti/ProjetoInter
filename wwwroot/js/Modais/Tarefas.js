@@ -17,78 +17,45 @@ function setFuncionarioId() {
     }
 }
 
-// Configuração do Modal Nova Tarefa (versão definitiva)
-function setupModalNovaTarefa() {
-    const btnNovaTarefa = document.getElementById('btn-nova-tarefa');
-    const modalNovaTarefa = document.getElementById('modalNovaTarefa');
-    const formNovaTarefa = document.getElementById('formNovaTarefa');
-    const closeBtn = modalNovaTarefa?.querySelector('.modal-close');
-
-    // Verificação rigorosa dos elementos
-    if (!btnNovaTarefa) {
-        console.error('Botão "Nova Tarefa" não encontrado!');
-        return;
-    }
-    
-    if (!modalNovaTarefa) {
-        console.error('Modal "modalNovaTarefa" não encontrado!');
-        return;
-    }
-
-    // Abrir modal com verificação adicional
-    btnNovaTarefa.addEventListener('click', function() {
-        console.log('Botão clicado - tentando abrir modal');
-        modalNovaTarefa.style.display = "flex";
-        console.log('Modal deve estar visível agora');
-    });
-
-    // Fechar modal - versão onclick HTML
-    window.FecharModalNovaTarefa = function() {
-        modalNovaTarefa.style.display = "none";
-    };
-
-    // Fechar modal - versão JavaScript
-    if (closeBtn) {
-        closeBtn.addEventListener('click', function() {
-            modalNovaTarefa.style.display = "none";
-        });
-    }
-
-    // Submeter formulário
-    if (formNovaTarefa) {
-        formNovaTarefa.addEventListener('submit', function(e) {
-            e.preventDefault();
-            submitNovaTarefa(this);
-        });
-    }
-}
-
 function submitNovaTarefa(form) {
+    // Garanta que os valores numéricos são inteiros
     const formData = {
         Descricao: form.Descricao.value,
-        Observacoes: form.Observacoes.value,
         AnimalId: parseInt(form.AnimalId.value),
         DataProcedimento: form.DataProcedimento.value,
-        Status: false // Nova tarefa geralmente começa como não concluída
+        Observacoes: form.Observacoes.value,
+        Status: false
     };
 
-    fetch("/Tarefa/CriarTarefa", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+    // Debug: verifique os dados antes de enviar
+    console.log("Dados a serem enviados:", formData);
+
+    fetch('/Tarefa/CriarTarefa', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+        },
         body: JSON.stringify(formData)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => { throw new Error(JSON.stringify(err)) });
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
-            alert("Tarefa criada com sucesso!");
+            alert('Tarefa criada com sucesso!');
+            document.getElementById('modalNovaTarefa').style.display = "none";
             location.reload();
         } else {
-            alert("Erro: " + (data.message || "Erro desconhecido"));
+            alert('Erro: ' + (data.message || 'Erro desconhecido'));
         }
     })
     .catch(error => {
-        console.error("Erro:", error);
-        alert("Erro ao criar tarefa");
+        console.error('Erro detalhado:', error);
+        alert('Erro ao criar tarefa: ' + error.message);
     });
 }
 
@@ -220,21 +187,46 @@ function showFeedback(message, isSuccess) {
 }
 
 // Função de Exclusão
-function excluirTarefa(id) {
-    if (!confirm("Deseja realmente excluir esta tarefa?")) return;
+function excluirTarefasSelecionadas() {
+    const checkboxes = document.querySelectorAll('.selecionar-tarefa:checked');
+    
+    if (checkboxes.length === 0) {
+        alert('Selecione pelo menos uma tarefa para excluir');
+        return;
+    }
+    
+    if (!confirm(`Deseja realmente excluir ${checkboxes.length} tarefa(s)?`)) {
+        return;
+    }
 
-    fetch("/Tarefa/ExcluirTarefa", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `id=${id}`
+    const ids = Array.from(checkboxes).map(checkbox => parseInt(checkbox.getAttribute('data-id')));
+    const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+    fetch('/Tarefa/ExcluirTarefas', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'RequestVerificationToken': token
+        },
+        body: JSON.stringify(ids)
     })
-    .then(handleResponse)
     .then(response => {
-        showFeedback(response.success ? "Tarefa excluída!" : response.message, response.success);
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error(text) });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            alert(`${data.count} tarefa(s) excluída(s) com sucesso!`);
+            location.reload();
+        } else {
+            alert('Erro: ' + (data.message || 'Erro ao excluir tarefas'));
+        }
     })
     .catch(error => {
-        showFeedback("Erro ao excluir tarefa", false);
-        console.error("Erro:", error);
+        console.error('Erro:', error);
+        alert('Erro ao excluir tarefas: ' + error.message);
     });
 }
 

@@ -40,4 +40,9 @@ app.MapControllerRoute(
     pattern: "ResetarSenha",
     defaults: new { controller = "ResetarSenha", action = "Index" });
 
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+});
+
 app.Run();

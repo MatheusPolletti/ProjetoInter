@@ -11,7 +11,8 @@
         <span class="modal-close">×</span>
         <h2>Nova Tarefa</h2>
 
-        <form id="formNovaTarefa">
+        <form id="formNovaTarefa" onsubmit="event.preventDefault(); submitNovaTarefa(this);">
+            @Html.AntiForgeryToken()
             <div class="grupo-input">
                 <label for="Descricao">Descrição</label>
                 <input class="inputTexto" type="text" id="Descricao" name="Descricao" required />

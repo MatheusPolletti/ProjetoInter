@@ -72,6 +72,7 @@ namespace ProjetoInter.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CriarTarefa([FromBody] Procedimento model)
         {
             try
@@ -79,29 +80,40 @@ namespace ProjetoInter.Controllers
                 var funcionario = ObterFuncionarioLogado();
                 if (funcionario == null)
                 {
-                    return Json(new { success = false, message = "Funcionário não encontrado." });
+                    return Unauthorized(new { success = false, message = "Funcionário não autenticado" });
                 }
 
                 var tarefa = new Procedimento
                 {
                     Descricao = model.Descricao,
-                    Observacoes = model.Observacoes,
                     AnimalId = model.AnimalId,
                     DataProcedimento = model.DataProcedimento,
-                    Status = model.Status,
-                    FuncionarioTarefaId = funcionario.FuncionarioId
+                    Observacoes = model.Observacoes,
+                    Status = false,
+                    FuncionarioTarefaId = funcionario.FuncionarioId // Definido pelo servidor
                 };
 
                 context.Procedimentos.Add(tarefa);
                 await context.SaveChangesAsync();
 
-                return Json(new { success = true, message = "Tarefa criada com sucesso!" });
+                return Ok(new { 
+                    success = true, 
+                    message = "Tarefa criada com sucesso!",
+                    tarefaId = tarefa.ProcedimentoId
+                });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                return StatusCode(500, new {
+                    success = false,
+                    message = "Erro interno",
+                    error = ex.Message
+                });
             }
         }
+
+// Adicione esta classe em seu projeto
+
 
         [HttpGet("Tarefa/Editar/{id}")]
         public async Task<IActionResult> Editar(int id)
