@@ -19,101 +19,176 @@
     <script src="~/js/Colaboradores/Colaboradores.js"></script>
 
     <script>
-        window.onload = function () {
+        document.addEventListener("DOMContentLoaded", function () {
+
             var mostrarModal = '@(ViewBag.MostrarModal ?? "false")';
             if (mostrarModal === "True") {
                 ModalNovo(); 
             }
-        };
 
-        function verificarSelecao(checkbox) {
-            var checkboxes = document.querySelectorAll('.select-checkbox');
-            checkboxes.forEach(function(cb) {
-                if (cb !== checkbox) {
-                    cb.checked = false;
+            function verificarSelecao(checkbox) {
+                var checkboxes = document.querySelectorAll('.select-checkbox');
+                checkboxes.forEach(function(cb) {
+                    if (cb !== checkbox) {
+                        cb.checked = false;
+                    }
+                });
+            }
+
+            window.verificarSelecao = verificarSelecao;  // Expõe para o onclick inline
+
+            function abrirModalEditar() {
+                var checkboxes = document.querySelectorAll('.select-checkbox');
+                var selecionado = Array.from(checkboxes).find(cb => cb.checked);
+
+                if (selecionado) {
+                    var statusss = selecionado.getAttribute('data-status');
+                    console.log("Status capturado do checkbox:", statusss);
+
+                    document.querySelector('.area-modal-editar .inputTexto[name="_nome"]').value = selecionado.getAttribute('data-nome') || '';
+                    document.querySelector('.area-modal-editar .inputTexto[name="_cargo"]').value = selecionado.getAttribute('data-cargo') || '';
+                    document.querySelector('.area-modal-editar .inputTexto[name="_cpf"]').value = selecionado.getAttribute('data-cpf') || '';
+                    document.querySelector('.area-modal-editar .inputTexto[name="_telefone"]').value = selecionado.getAttribute('data-telefone') || '';
+                    document.querySelector('.area-modal-editar input[name="_funcionarioId"]').value = selecionado.getAttribute('data-id') || '';
+
+                    var status = selecionado.getAttribute('data-status');
+                    document.querySelector('.area-modal-editar select[name="_statusFuncionario"]').value = status;
+
+                    var isAdmin = selecionado.getAttribute('data-isAdmin') === 'True';
+                    document.querySelector('.area-modal-editar input[name="_adm"]').checked = isAdmin;  
+
+                    var imagemUrl = selecionado.getAttribute('data-imagemUrl');
+                    var preview = document.querySelector('#previewEditar');
+                    var previewText = document.querySelector('#previewTextEditar');
+
+                    console.log("Imagem URL:", imagemUrl);
+                    if (imagemUrl && imagemUrl !== '') {
+                        var baseUrl = window.location.origin;
+                        var fullImageUrl = imagemUrl.startsWith('/') ? baseUrl + imagemUrl : baseUrl + '/' + imagemUrl;
+                        
+                        var imgTest = new Image();
+                        imgTest.onload = function() {
+                            preview.src = fullImageUrl;
+                            preview.style.display = 'block';
+                            previewText.style.display = 'none';
+                        };
+                        imgTest.onerror = function() {
+                            console.error("Imagem não encontrada:", fullImageUrl);
+                            preview.src = '';
+                            preview.style.display = 'none';
+                            previewText.style.display = 'block';
+                        };
+                        imgTest.src = fullImageUrl;
+                    } else {
+                        preview.src = '';
+                        preview.style.display = 'none';
+                        previewText.style.display = 'block';
+                    }
+                    
+                    document.querySelector('.area-modal-editar').style.display = 'flex';
+
+                    var overlay = document.createElement('div');
+                    overlay.classList.add('overlay');
+                    document.body.appendChild(overlay);
+                } else {
+                    alert("Por favor, selecione um colaborador antes de editar.");
                 }
-            });
-        }
-
-        function abrirModalEditar() {
-            var checkboxes = document.querySelectorAll('.select-checkbox');
-            var selecionado = Array.from(checkboxes).find(cb => cb.checked);
-
-            if (selecionado) {
-                document.querySelector('.area-modal-editar .inputTexto[name="_nome"]').value = selecionado.getAttribute('data-nome');
-                document.querySelector('.area-modal-editar .inputTexto[name="_cargo"]').value = selecionado.getAttribute('data-cargo');
-                document.querySelector('.area-modal-editar .inputTexto[name="_cpf"]').value = selecionado.getAttribute('data-cpf');
-                document.querySelector('.area-modal-editar .inputTexto[name="_telefone"]').value = selecionado.getAttribute('data-telefone');
-                document.querySelector('.area-modal-editar input[name="_funcionarioId"]').value = selecionado.getAttribute('data-id');
-
-                var status = selecionado.getAttribute('data-status');
-                document.querySelector('.area-modal-editar select[name="_status"]').value = status ? status.toLowerCase() : 'ativo';
-
-                var instituicaoId = selecionado.getAttribute('data-instituicaoId');
-                document.querySelector('.area-modal-editar select[name="_instituicao"]').value = instituicaoId;
-
-                document.querySelector('.area-modal-editar').style.display = 'flex';
-
-                var overlay = document.createElement('div');
-                overlay.classList.add('overlay');
-                document.body.appendChild(overlay);
-            } else {
-                alert("Por favor, selecione um colaborador antes de editar.");
             }
-        }
 
-        function mostrarPreviewEditar(event) {
-            var file = event.target.files[0];
-            var preview = document.getElementById('previewEditar');
-            var previewText = document.getElementById('previewTextEditar');
+            window.abrirModalEditar = abrirModalEditar;  // Expõe para o onclick inline
 
-            if (file && file.type.startsWith('image/')) {
-                var reader = new FileReader();
+            function mostrarPreviewEditar(event) {
+                var file = event.target.files[0];
+                var container = event.target.closest('.form-imagem');
+                var preview = container.querySelector('.preview-imagem');
+                var previewText = container.querySelector('.preview-text');
 
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                    if (previewText) previewText.style.display = 'none';
-                };
+                if (!preview || !previewText) {
+                    console.error("Elementos de preview não encontrados");
+                    return;
+                }
 
-                reader.onerror = function() {
-                    alert("Erro ao ler o arquivo. Tente novamente.");
-                };
+                if (file && file.type.startsWith('image/')) {
+                    var reader = new FileReader();
 
-                reader.readAsDataURL(file);
-            } else {
-                preview.src = '';
-                preview.style.display = 'none';
-                if (previewText) previewText.style.display = 'block';
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                        previewText.style.display = 'none';
+                    };
+
+                    reader.onerror = function() {
+                        alert("Erro ao ler o arquivo. Tente novamente.");
+                    };
+
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.src = '';
+                    preview.style.display = 'none';
+                    previewText.style.display = 'block';
+                }
             }
-        }
 
-        function FecharModalEditar() {
-            document.querySelector('.area-modal-editar').style.display = 'none';
-            var overlay = document.querySelector('.overlay');
-            if (overlay) overlay.remove();
-        }
+            window.mostrarPreviewEditar = mostrarPreviewEditar; // Expor
 
-        function mostrarPreviewNovo(event) {
-            var file = event.target.files[0];
-            var container = event.target.closest('.form-imagem');
-            var preview = container.querySelector('.preview-imagem');
-            var previewText = container.querySelector('.preview-text');
-
-            if (file && file.type.startsWith('image/')) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                    previewText.style.display = 'none';
-                };
-                reader.readAsDataURL(file);
-            } else {
-                preview.src = '';
-                preview.style.display = 'none';
-                previewText.style.display = 'block';
+            function FecharModalEditar() {
+                document.querySelector('.area-modal-editar').style.display = 'none';
+                var overlay = document.querySelector('.overlay');
+                if (overlay) overlay.remove();
             }
-        }
+
+            window.FecharModalEditar = FecharModalEditar;
+
+            function mostrarPreviewNovo(event) {
+                var file = event.target.files[0];
+                var container = event.target.closest('.form-imagem');
+                var preview = container.querySelector('.preview-imagem');
+                var previewText = container.querySelector('.preview-text');
+
+                if (file && file.type.startsWith('image/')) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                        previewText.style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.src = '';
+                    preview.style.display = 'none';
+                    previewText.style.display = 'block';
+                }
+            }
+
+            window.mostrarPreviewNovo = mostrarPreviewNovo;
+
+            function excluirColaborador() {
+                const selecionado = document.querySelector('.select-checkbox:checked');
+
+                if (!selecionado) {
+                    alert("Selecione um colaborador para excluir.");
+                    return;
+                }
+
+                const confirmar = confirm("Tem certeza que deseja excluir este colaborador?");
+                if (!confirmar) return;
+
+                const id = selecionado.getAttribute('data-id');
+
+                const inputExcluir = document.getElementById('idFuncionarioExcluir');
+
+                if (!inputExcluir) {
+                    alert("Erro: formulário de exclusão não encontrado na página.");
+                    console.error("Input de exclusão não encontrado");
+                    return;
+                }
+
+                inputExcluir.value = id;
+                document.getElementById('formExcluir').submit();
+            }
+
+            window.excluirColaborador = excluirColaborador; // Adicione esta linha
+        });
     </script>
 }
 
@@ -132,7 +207,7 @@
             @if (funcionarioLogado != null && funcionarioLogado.IsAdmin == true)
             {
                 <div class="BotoesAcoes">
-                    <button class="BotaoExcluir">Excluir</button>
+                    <button onclick="excluirColaborador()" class="BotaoExcluir">Excluir</button>
                     <button onclick="abrirModalEditar()" class="BotaoEditar">Editar</button>
                     <button onclick="ModalNovo()" class="BotaoNovo">Novo</button>
                 </div>
@@ -184,15 +259,16 @@
 
                     <div class="colaborador-select">
                         <input type="checkbox" 
-                               class="select-checkbox"
-                               data-id="@funcionario.FuncionarioId"
-                               data-nome="@funcionario.Nome"
-                               data-cargo="@funcionario.Cargo"
-                               data-cpf="@funcionario.Cpf"
-                               data-telefone="@funcionario.Telefone"
-                               data-status="@funcionario.StatusFuncionarioId"
-                               data-instituicaoId="@funcionario.InstituicaoId"
-                               onclick="verificarSelecao(this)" />
+                            class="select-checkbox"
+                            data-id="@funcionario.FuncionarioId"
+                            data-nome="@funcionario.Nome"
+                            data-cargo="@funcionario.Cargo"
+                            data-cpf="@funcionario.Cpf"
+                            data-telefone="@funcionario.Telefone"
+                            data-status="@funcionario.StatusFuncionarioId"
+                            data-isAdmin="@funcionario.IsAdmin"
+                            data-imagemUrl="@(funcionario.ImagemUrl != null ? Url.Content(funcionario.ImagemUrl) : "")"
+                            onclick="verificarSelecao(this)" />
                     </div>
                 </div>
             }
@@ -238,53 +314,34 @@
                     <input type="text" name="_telefone" class="inputTexto" required />
                 </div>
             </div>
-
             <div class="divisaoDiv">
                 <div class="secaoAcao">
-                    <label for="_status">Status:</label>
-                    <select name="_status" class="inputTexto" required>
-                        @if (statusfuncionarios != null)
+                    <label for="_statusFuncionario">Status:</label>
+                    <select name="_statusFuncionario" class="inputTexto" required>
+                        <option value="">Selecione um Status</option>
+                        @foreach (var status in statusfuncionarios)
                         {
-                            <option value="">Selecione um Status</option>
-                            @foreach (var status in statusfuncionarios)
-                            {
-                                <option value="@status.StatusFuncionarioId">@status.Descricao</option>
-                            }
-                        }
-                        else
-                        {
-                            <option value="" disabled>Erro ao carregar lista de status.</option>
+                            <option value="@status.StatusFuncionarioId">@status.Descricao</option>
                         }
                     </select>
                 </div>
             </div>
-
             <div class="secaoAcao">
-                <label for="_instituicao">Instituição:</label>
-                @if (listaInstituicoes != null)
-                {
-                    <select name="_instituicao" class="inputTexto" required>
-                        <option value="">Selecione uma Instituição</option>
-                        @foreach (var instituicao in listaInstituicoes)
-                        {
-                            <option value="@instituicao.InstituicaoId">@instituicao.Nome</option>
-                        }
-                    </select>
-                }
-                else
-                {
-                    <p style="color:red;">Erro ao carregar lista de instituições.</p>
-                }
+                <label for="_adm">Administrador?</label>
+                <input type="checkbox" name="_adm" id="_adm" class="inputTexto" />
             </div>
 
-            <div id="previewContainerEditar" onclick="document.getElementById('imagemInputEditar').click();">
-                <span id="previewTextEditar">Clique para selecionar uma imagem</span>
-                <img id="previewEditar" style="display:none;" />
+            <div class="form-linha form-imagem">
+                <label for="imagemInputEditar">Imagem:</label>
+                <div class="preview-container" onclick="document.getElementById('imagemInputEditar').click();">
+                    <span class="preview-text" id="previewTextEditar">Clique para selecionar uma imagem</span>
+                    <img class="preview-imagem" id="previewEditar" style="display:none;" />
+                </div>
+                <input type="file" id="imagemInputEditar" name="_imagem" onchange="mostrarPreviewEditar(event)" style="display: none;" />
             </div>
-            <input type="file" id="imagemInputEditar" name="_imagem" onchange="mostrarPreviewEditar(event)" style="display: none;" />
 
             <div class="DivBotao">
-                <button type="submit" id="BotaoEditar">CADASTRAR</button>
+                <button type="submit" id="BotaoEditar">EDITAR</button>
             </div>
         </form>
     </div>
@@ -371,3 +428,8 @@
         </form>
     </div>
 </section>
+
+<!-- Deletar -->
+<form id="formExcluir" method="post" asp-action="ExcluirUsuario" asp-controller="Colaborador">
+    <input type="hidden" name="_funcionarioId" id="idFuncionarioExcluir" />
+</form>

@@ -17,12 +17,6 @@ public class ColaboradorController : BaseController
         configuration = _configuration;
     }
 
-    [HttpPost]
-    public IActionResult AcessarTarefa()
-    {
-        return RedirectToAction("Tarefas", "Tarefa");
-    }
-
     private async Task<List<StatusFuncionario>> CarregarStatusFuncionario()
     {
         return await context.StatusFuncionarios.ToListAsync();
@@ -43,7 +37,8 @@ public class ColaboradorController : BaseController
 
         var query = context.Funcionarios
             .Include(f => f.StatusFuncionario)
-            .Where(f => f.InstituicaoId == _funcionarioLogado.InstituicaoId);
+            .Where(f => f.InstituicaoId == _funcionarioLogado.InstituicaoId)
+            .Where(f => f.StatusFuncionarioId == 1 || f.StatusFuncionarioId == 2);
 
         if (!string.IsNullOrEmpty(busca))
         {
@@ -56,6 +51,23 @@ public class ColaboradorController : BaseController
         var funcionarios = await query.ToListAsync();
 
         return View(funcionarios);
+    }
+
+    public async Task<IActionResult> CarregarViewColaboradoresComMensagem()
+    {
+        var _funcionarioLogado = ObterFuncionarioLogado();
+        ViewBag.FuncionarioLogado = _funcionarioLogado;
+
+        ViewBag.ListaInstituicoesCadastradas = await InstituicoesCadastradas();
+        ViewBag.StatusLista = await CarregarStatusFuncionario();
+
+        var funcionarios = await context.Funcionarios
+            .Include(f => f.StatusFuncionario)
+            .Where(f => f.InstituicaoId == _funcionarioLogado.InstituicaoId)
+            .Where(f => f.StatusFuncionarioId == 1 || f.StatusFuncionarioId == 2)
+            .ToListAsync();
+
+        return View("Colaboradores", funcionarios);
     }
 
     [HttpPost]
@@ -180,19 +192,123 @@ public class ColaboradorController : BaseController
         }
     }
 
-    private async Task<IActionResult> CarregarViewColaboradoresComMensagem()
+    [HttpPost]
+    public async Task<IActionResult> EditarUsuario(int _funcionarioId, string _nome, string _cpf, string _cargo, string _telefone, int _statusFuncionario, IFormFile _imagem, bool _adm = false)
     {
-        var _funcionarioLogado = ObterFuncionarioLogado();
-        ViewBag.FuncionarioLogado = _funcionarioLogado;
+        try
+        {
+            if (_nome.Length < 2 || _nome.Any(char.IsDigit) || _nome.Any(ch => !char.IsLetter(ch) && !char.IsWhiteSpace(ch)))
+            {
+                ViewBag.Erro = "O nome deve ter pelo menos 2 caracteres e não pode conter números ou caracteres especiais.";
 
-        ViewBag.ListaInstituicoesCadastradas = await InstituicoesCadastradas();
-        ViewBag.StatusLista = await CarregarStatusFuncionario();
+                return await CarregarViewColaboradoresComMensagem();
+            }
 
-        var funcionarios = await context.Funcionarios
-            .Include(f => f.StatusFuncionario)
-            .Where(f => f.InstituicaoId == _funcionarioLogado.InstituicaoId)
-            .ToListAsync();
+            if (!Regex.IsMatch(_cpf, @"^\d{3}\.\d{3}\.\d{3}-\d{2}$"))
+            {
+                ViewBag.Erro = "O CPF deve estar no formato 000.000.000-00.";
 
-        return View("Colaboradores", funcionarios);
+                return await CarregarViewColaboradoresComMensagem();
+            }
+
+            if (_cargo.Length < 3 || _cargo.Length > 50 || _cargo.Any(c => !char.IsLetter(c) && !char.IsWhiteSpace(c)))
+            {
+                ViewBag.Erro = "O cargo deve ter entre 3 e 50 letras, sem caracteres especiais.";
+
+                return await CarregarViewColaboradoresComMensagem();
+            }
+
+            if (!Regex.IsMatch(_telefone, @"^\(\d{2}\) \d{4}-\d{4}$"))
+            {
+                ViewBag.Erro = "O telefone deve estar no formato (00) 0000-0000.";
+
+                return await CarregarViewColaboradoresComMensagem();
+            }
+
+            var funcionario = await context.Funcionarios.FindAsync(_funcionarioId);
+
+            if (funcionario == null)
+            {
+                ViewBag.Erro = "Funcionário não encontrado.";
+
+                return await CarregarViewColaboradoresComMensagem();
+            }
+
+            funcionario.Nome = _nome;
+            funcionario.Cpf = _cpf;
+            funcionario.Cargo = _cargo;
+            funcionario.Telefone = _telefone;
+            funcionario.IsAdmin = _adm;
+            funcionario.StatusFuncionarioId = _statusFuncionario;
+
+            // Tratamento da imagem
+            if (_imagem != null && _imagem.Length > 0)
+            {
+                // Remove a imagem antiga se existir
+                if (!string.IsNullOrEmpty(funcionario.ImagemUrl) && funcionario.ImagemUrl != "img/Funcionarios/Padrao.png")
+                {
+                    var caminhoImagemAntiga = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", funcionario.ImagemUrl);
+                    if (System.IO.File.Exists(caminhoImagemAntiga))
+                    {
+                        System.IO.File.Delete(caminhoImagemAntiga);
+                    }
+                }
+
+                // Salva a nova imagem
+                var imagemNome = $"{Guid.NewGuid()}{Path.GetExtension(_imagem.FileName)}";
+                var caminhoImagem = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "Funcionarios", imagemNome);
+
+                using (var stream = new FileStream(caminhoImagem, FileMode.Create))
+                {
+                    await _imagem.CopyToAsync(stream);
+                }
+
+                funcionario.ImagemUrl = $"img/Funcionarios/{imagemNome}";
+            }
+
+            context.Funcionarios.Update(funcionario);
+            await context.SaveChangesAsync();
+
+            ViewBag.Sucesso = "Funcionário atualizado com sucesso!";
+
+            return await CarregarViewColaboradoresComMensagem();
+        }
+        catch (Exception ex)
+        {
+            ViewBag.Erro = "Erro inesperado: " + ex.Message;
+
+            return await CarregarViewColaboradoresComMensagem();
+        }
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> ExcluirUsuario(int _funcionarioId)
+    {
+        try
+        {
+            var funcionario = await context.Funcionarios.FindAsync(_funcionarioId);
+
+            if (funcionario == null)
+            {
+                ViewBag.Erro = "Funcionário não encontrado.";
+
+                return await CarregarViewColaboradoresComMensagem();
+            }
+
+            funcionario.StatusFuncionarioId = 5;
+
+            context.Funcionarios.Update(funcionario);
+            await context.SaveChangesAsync();
+
+            ViewBag.Sucesso = "Funcionário excluído com sucesso!";
+
+            return await CarregarViewColaboradoresComMensagem();
+        }
+        catch (Exception ex)
+        {
+            ViewBag.Erro = "Erro ao excluir: " + ex.Message;
+            
+            return await CarregarViewColaboradoresComMensagem();
+        }
     }
 }

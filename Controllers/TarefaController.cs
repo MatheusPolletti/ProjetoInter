@@ -3,6 +3,8 @@ using ProjetoInter.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using ProjetoInter.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace ProjetoInter.Controllers
 {
