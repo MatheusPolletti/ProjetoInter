@@ -2,7 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using ProjetoInter.Data; 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using ProjetoInter.Models; // Certifique-se de que a model Setor está aqui
+using System.Linq; // Adicionado para usar .Where()
+using System.Threading.Tasks; // Adicionado para Task
 using ProjetoInter.Models;
+
 
 [Authorize] 
 public class SetorController : BaseController 
@@ -14,13 +18,27 @@ public class SetorController : BaseController
         _context = context;
     }
 
-    public async Task<IActionResult> Setores()
+    [HttpGet] // Adicionado para indicar que esta action responde a requisições GET (do formulário de busca)
+    public async Task<IActionResult> Setores(string busca) // <--- MUDANÇA AQUI: Adicionado o parâmetro 'busca'
     {
-        var setores = await _context.Setores
+        // Inicia a query com todos os setores e inclui a instituição pertinente
+        var query = _context.Setores
             .Include(s => s.InstituicaoPertence)
-            .OrderBy(s => s.Nome)
-            .ToListAsync();
-        
+            .AsQueryable(); // Converte para IQueryable para permitir a construção da query
+
+        // Aplica o filtro de busca se um termo for fornecido
+        if (!string.IsNullOrWhiteSpace(busca))
+        {
+            busca = busca.ToLower(); // Converte para minúsculas para busca case-insensitive
+            query = query.Where(s => s.Nome.ToLower().Contains(busca) ||
+                                     s.Descricao.ToLower().Contains(busca));
+        }
+
+        // Aplica a ordenação, se desejar
+        query = query.OrderBy(s => s.Nome);
+
+        var setores = await query.ToListAsync(); // Executa a query e obtém a lista
+
         return View(setores);
     }
 

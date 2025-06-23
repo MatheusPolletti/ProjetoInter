@@ -4,52 +4,72 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Linq;
 using ProjetoInter.Models;
+using System.Threading.Tasks; // Adicione este using para Task
 
 [Authorize]
 public class TransferenciaController : BaseController
 {
-    private readonly DbZoologico _context;
+    private readonly DbZoologico _context; // Use _context para consistência
 
     public TransferenciaController(DbZoologico context) : base(context)
     {
-        _context = context;
+        _context = context; // Atribua o contexto injetado
     }
 
-    public async Task<IActionResult> Transferencias()
+    // Renomeie esta Action de 'Index' para 'Transferencias'
+    [HttpGet] // A requisição do formulário de busca é GET
+    public async Task<IActionResult> Transferencias(string busca) // <--- MUDANÇA AQUI: Nome da Action para Transferencias
     {
-        var todasTransferencias = await _context.Transferencias
-            .Include(t => t.Animal)
-                .ThenInclude(animal => animal.Setor)
-            .Include(t => t.Animal)
-                .ThenInclude(animal => animal.Especie)
-            .Include(t => t.InstituicaoOrigem)
-            .Include(t => t.InstituicaoDestino)
-            .OrderByDescending(t => t.DataSaida)
-            .ToListAsync();
+        // Inicia a query com todas as transferências e inclui as entidades relacionadas
+        var query = _context.Transferencias // Use _context aqui
+                           .Include(t => t.Animal)
+                               .ThenInclude(a => a.Especie)
+                           .Include(t => t.Animal)
+                               .ThenInclude(a => a.Setor)
+                           .Include(t => t.InstituicaoOrigem)
+                           .Include(t => t.InstituicaoDestino)
+                           .AsQueryable();
 
-        // --- MUDANÇA AQUI: FILTRA AS TRANSFERÊNCIAS POR STATUS ---
-        // Assumindo que Status == true significa "pendente" e Status == false significa "concluído"
-        ViewBag.TransferenciasPendentes = todasTransferencias.Where(t => t.Status == true).ToList();
-        ViewBag.TransferenciasConcluidas = todasTransferencias.Where(t => t.Status == false).ToList();
+        // Aplica o filtro de busca se um termo for fornecido
+        if (!string.IsNullOrWhiteSpace(busca))
+        {
+            busca = busca.ToLower();
 
-        ViewBag.Animais = await _context.Animais
-            .Include(a => a.Especie)
-            .Include(a => a.Setor)
-            .Where(a => a.StatusId == 1) // Supondo que 1 seja para animais ativos
-            .OrderBy(a => a.Nome)
-            .ToListAsync();
+            query = query.Where(t => t.Animal.Nome.ToLower().Contains(busca) ||
+                                     t.InstituicaoOrigem.Nome.ToLower().Contains(busca) ||
+                                     t.InstituicaoDestino.Nome.ToLower().Contains(busca));
+        }
 
-        ViewBag.Instituicoes = await _context.Instituicoes
-            .OrderBy(i => i.Nome)
-            .ToListAsync();
+        query = query.OrderByDescending(t => t.DataSaida);
 
-        // Retorna a view sem um modelo específico, pois agora usamos ViewBags para as listas
-        // ou, se preferir manter o @model IEnumerable<Transferencia>, pode retornar ViewBag.TransferenciasPendentes
-        return View(); // ou return View(ViewBag.TransferenciasPendentes); se quiser que o `Model` da view seja as pendentes.
-                       // Para manter o que você tinha e evitar quebrar outros lugares que possam usar `Model`,
-                       // manter `return View(ViewBag.TransferenciasPendentes);` é mais seguro.
-                       // Ou idealmente, crie um ViewModel para a página.
+        var transferencias = await query.ToListAsync();
+
+        // Carregar dados para os dropdowns dos modais
+        await CarregarDadosParaDropdowns(); // Chama o método auxiliar
+
+        // Retorna a view 'Transferencias.cshtml' passando a lista filtrada como Model
+        return View(transferencias); // <--- MUDANÇA AQUI: Passando o Model para a View
     }
+
+    // Método auxiliar para carregar os dados dos dropdowns
+    private async Task CarregarDadosParaDropdowns()
+    {
+        ViewBag.Animais = await _context.Animais
+                                       .Include(a => a.Especie)
+                                       .Include(a => a.Setor)
+                                       .Where(a => a.StatusId == 1) // Exemplo de filtro: animais ativos
+                                       .OrderBy(a => a.Nome)
+                                       .ToListAsync();
+        ViewBag.Instituicoes = await _context.Instituicoes
+                                            .OrderBy(i => i.Nome)
+                                            .ToListAsync();
+    }
+
+
+    // SEUS OUTROS MÉTODOS FICAM AQUI: CriarTransferencia, ObterTransferenciaPorId, AtualizarTransferencia, ExcluirTransferencia, ConcluirTransferencia
+    // Certifique-se de que eles estão usando _context e não 'context' (erro de cópia e cola)
+
+    // Exemplo do método CriarTransferencia
     [HttpPost]
     public async Task<IActionResult> CriarTransferencia([FromBody] Transferencia model)
     {
@@ -58,17 +78,14 @@ public class TransferenciaController : BaseController
             return BadRequest(new { success = false, message = "Dados de transferência inválidos." });
         }
 
-        // Validação adicional (ex: verificar se IDs existem, datas são válidas)
-        // A validação agora deve ser para InstituicaoOrigemId e InstituicaoDestinoId
-        if (model.AnimalId <= 0 || model.InstituicaoOrigemId <= 0 || model.InstituicaoDestinoId <= 0
-        // || model.DataSaida == default(DateOnly)
-        )
+        if (model.AnimalId <= 0 || model.InstituicaoOrigemId <= 0 || model.InstituicaoDestinoId <= 0)
         {
             return BadRequest(new { success = false, message = "Dados obrigatórios faltando ou inválidos." });
         }
 
         try
         {
+            model.Status = true; // Exemplo: Nova transferência é Pendente por padrão
             _context.Transferencias.Add(model);
             await _context.SaveChangesAsync();
 
@@ -81,30 +98,28 @@ public class TransferenciaController : BaseController
         }
     }
 
-    // Adicione aqui métodos para Editar, Excluir, etc. para Transferências
-    // Exemplo de como seria o método para obter uma transferência por ID para edição:
-    [HttpGet] // Rota convencional: /Transferencia/ObterTransferenciaPorId/{id}
+    // Exemplo do método ObterTransferenciaPorId:
+    [HttpGet]
     public async Task<IActionResult> ObterTransferenciaPorId(int id)
     {
         var transferencia = await _context.Transferencias
-            .Include(t => t.Animal)
-                .ThenInclude(animal => animal.Especie)
-            .Include(t => t.Animal)
-                .ThenInclude(animal => animal.Setor)
-            .Include(t => t.InstituicaoOrigem)
-            .Include(t => t.InstituicaoDestino)
-            .FirstOrDefaultAsync(t => t.TransferenciaId == id);
+                                         .Include(t => t.Animal)
+                                             .ThenInclude(a => a.Especie)
+                                         .Include(t => t.Animal)
+                                             .ThenInclude(a => a.Setor)
+                                         .Include(t => t.InstituicaoOrigem)
+                                         .Include(t => t.InstituicaoDestino)
+                                         .FirstOrDefaultAsync(t => t.TransferenciaId == id);
 
         if (transferencia == null)
         {
             return NotFound(new { success = false, message = "Transferência não encontrada." });
         }
-
         return Ok(transferencia);
     }
-
-    // Exemplo de como seria o método para Atualizar uma transferência
-    [HttpPost] // Rota convencional: /Transferencia/AtualizarTransferencia
+    
+    // Exemplo do método para Atualizar uma transferência
+    [HttpPost]
     public async Task<IActionResult> AtualizarTransferencia([FromBody] Transferencia model)
     {
         if (model == null || model.TransferenciaId <= 0)
@@ -126,6 +141,8 @@ public class TransferenciaController : BaseController
             transferenciaExistente.InstituicaoDestinoId = model.InstituicaoDestinoId;
             transferenciaExistente.DataSaida = model.DataSaida;
             transferenciaExistente.DataEntrada = model.DataEntrada;
+            // Não se esqueça de atualizar o status se for relevante aqui, ex:
+            // transferenciaExistente.Status = model.Status;
 
             _context.Transferencias.Update(transferenciaExistente);
             await _context.SaveChangesAsync();
@@ -139,8 +156,8 @@ public class TransferenciaController : BaseController
         }
     }
 
-    // Exemplo de como seria o método para Excluir (remover permanentemente)
-    [HttpPost] // Rota convencional: /Transferencia/ExcluirTransferencia
+    // Exemplo do método para Excluir (remover permanentemente)
+    [HttpPost]
     public async Task<IActionResult> ExcluirTransferencia([FromBody] int id)
     {
         if (id <= 0)
@@ -169,6 +186,7 @@ public class TransferenciaController : BaseController
         }
     }
 
+    // Método para Concluir Transferência
     [HttpPost]
     public async Task<IActionResult> ConcluirTransferencia([FromBody] int id)
     {
@@ -186,8 +204,13 @@ public class TransferenciaController : BaseController
                 return NotFound(new { success = false, message = "Transferência não encontrada." });
             }
 
-            // Define o status como 'concluído' (false)
-            transferencia.Status = false;
+            transferencia.Status = false; // Define o status como 'concluído' (false, como você tinha)
+            
+            // Certifique-se de que DataEntrada seja preenchida ao concluir!
+            if (transferencia.DataEntrada == null) 
+            {
+                transferencia.DataEntrada = DateTime.Now; 
+            }
 
             _context.Transferencias.Update(transferencia);
             await _context.SaveChangesAsync();

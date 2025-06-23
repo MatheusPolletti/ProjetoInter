@@ -177,13 +177,13 @@ position: absolute;
 }
 
 .desabilitado{
-    cursor: unset;
-    border-color: #b1b1b1;
-    color: #b1b1b1;
-    transition: unset;
+    cursor: unset !important;
+    border-color: #b1b1b1 !important;
+    color: #b1b1b1 !important;
+    transition: unset !important;
 }
 .desabilitado:hover{
-    transform: unset;
+    transform: unset !important;
 }
 
 

@@ -56,7 +56,7 @@
         </div>
         <div class="container-carrossel">
             <div class="carrossel-cards-verticais">
-                @* Fazer validacao de data pegar consultas do dia em diante *@
+                @* Fazer validacao de data pegar consultas do dia em diante *@ 
                 @{
                     var atendimentosAntigos = new List<ProjetoInter.Models.AtendimentoVeterinario>();
                 }
@@ -80,16 +80,20 @@
                                     <div style="margin-top: -24px" class="topo-card">
                                         <div class="topo-esquerda">
                                             <h4>@atendimento.Animal.Nome</h4>
-                                            <p><small>@atendimento.Animal.Especie?.Descricao |
-                                                    @atendimento.Animal.Setor?.Descricao</small></p>
+                                            <p>
+                                                <small>@atendimento.Animal.Especie?.Descricao |
+                                                    @atendimento.Animal.Setor?.Descricao</small>
+                                            </p>
                                         </div>
                                         <small>Data: @atendimento.Data</small>
 
                                     </div>
                                     <div class="descricao">
                                         <h4>Descrição: <span style="font-weight: normal;">@atendimento.Descricao</span></h4>
-                                        <small><strong>Obs:</strong> @atendimento.Observacoes</small>
-                                        <small><strong>Responsável:</strong> @atendimento.FuncionarioVeterinario.Nome</small>
+                                        <small><strong>Obs:</strong>
+                                            @atendimento.Observacoes</small>
+                                        <small><strong>Responsável:</strong>
+                                            @atendimento.FuncionarioVeterinario.Nome</small>
                                     </div>
                                     <button class="BotaoConcluir btn-concluir"
                                         onclick="abrirModalConcluir(@atendimento.AtendimentoVeterinarioId)">Concluir</button>
@@ -105,8 +109,9 @@
 
     </div>
 </div>
+
 <div class="inferior">
-    @* Fazer validacao de data pegar consultas dos dias anteriores *@
+    @* Fazer validacao de data pegar consultas dos dias anteriores *@ 
     <h2>Atendimentos Anteriores</h2>
     <div class="cards-horizontais">
         @{
@@ -128,7 +133,8 @@
                         </div>
                         <div>
                             <small><strong>Resultado:</strong> @atendimento.Resultado</small>
-                            <small><strong>Responsáveis:</strong> @atendimento.FuncionarioVeterinario.Nome</small>
+                            <small><strong>Responsáveis:</strong>
+                                @atendimento.FuncionarioVeterinario.Nome</small>
                         </div>
                         <div>
                             <small>Data: @atendimento.Data</small>

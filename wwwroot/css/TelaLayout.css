@@ -384,7 +384,7 @@ main
     background-position: right 8px center;
 }
 
-.modal-base > button:last-child 
+/*.modal-base > button:last-child 
 {
     align-self: center;
 
@@ -403,6 +403,9 @@ main
     transition: opacity 0.5s;
     
     opacity: 0.5;
+}*/
+.modal-base > .btn-concluir{
+    align-self: center;
 }
 
 .overlay 
