@@ -199,7 +199,7 @@ function verificaCheckboxes() {
   checkboxes.forEach((checkbox) => {
     if (checkbox.checked) {
       qtdMarcada++;
-      idTransferenciaSelecionada = parseInt(checkbox.dataset.atendimentoid);
+      idTransferenciaSelecionada = parseInt(checkbox.dataset.transferenciaid);
     }
   });
 
@@ -220,6 +220,10 @@ function verificaCheckboxes() {
 }
 
 document.addEventListener("DOMContentLoaded", verificaCheckboxes);
+
+document.querySelectorAll(".atendimento-checkbox").forEach((checkbox) => {
+  checkbox.addEventListener("change", verificaCheckboxes);
+});
 
 function abreModalInstituicao() {
   document.querySelector(".area-modal-editar").style.display = "flex";
@@ -309,7 +313,7 @@ async function salvarNovaInstituicao() {
 
   // Cria um objeto FormData para enviar os dados, incluindo o arquivo
   const formData = new FormData();
-  formData.append("Nome", nome); // O nome 'Nome' deve corresponder à sua propriedade na Model C#
+  formData.append("Nome", nome); // O nome 'Nome' deve corresponder à sua p opriedade na Model C#
   formData.append("Endereco", endereco); // O nome 'Endereco' deve corresponder à sua propriedade na Model C#
   formData.append("Contato", contato || ""); // O nome 'Contato' deve corresponder à sua propriedade na Model C#
 
@@ -360,3 +364,41 @@ function mostrarPreviewEditar(event) {
     reader.readAsDataURL(input.files[0]);
   }
 }
+
+document.querySelector(".BotaoExcluir").addEventListener("click", async function () {
+    const checkboxes = document.querySelectorAll(".atendimento-checkbox:checked");
+
+    if (checkboxes.length === 0) {
+        alert("Selecione ao menos uma transferência para excluir.");
+        return;
+    }
+
+    if (!confirm(`Deseja excluir ${checkboxes.length} transferência(s)?`)) {
+        return;
+    }
+
+    for (const cb of checkboxes) {
+        const id = parseInt(cb.dataset.transferenciaid);
+
+        try {
+            const response = await fetch("/Transferencia/ExcluirTransferencia", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(id)
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                alert(`Erro ao excluir ID ${id}: ${result.message || response.statusText}`);
+            }
+        } catch (error) {
+            alert(`Erro ao excluir ID ${id}: ${error.message}`);
+        }
+    }
+
+    alert("Transferência(s) excluída(s) com sucesso!");
+    window.location.reload();
+});

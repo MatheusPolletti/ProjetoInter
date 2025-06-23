@@ -189,13 +189,13 @@ function verificaCheckboxesSetor() {
   });
 
   // Gerencia o botão "Excluir"
-  // if (botaoExcluir) {
-  //   if (qtdMarcada > 0) {
-  //     botaoExcluir.disabled = false;
-  //   } else {
-  //     botaoExcluir.disabled = true;
-  //   }
-  // }
+  if (botaoExcluir) {
+    if (qtdMarcada > 0) {
+      botaoExcluir.disabled = false;
+     } else {
+       botaoExcluir.disabled = true;
+     }
+}
 
   // Gerencia o botão "Editar"
   if (botaoEditar) {

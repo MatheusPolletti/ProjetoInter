@@ -4,6 +4,11 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+});
+
 builder.Services.AddControllersWithViews();
 
 // Session
@@ -39,10 +44,5 @@ app.MapControllerRoute(
     name: "resetarSenha",
     pattern: "ResetarSenha",
     defaults: new { controller = "ResetarSenha", action = "Index" });
-
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
-});
 
 app.Run();
