@@ -1,0 +1,399 @@
+/* Estilos gerais para tela de Tarefas */
+.container-tarefas {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: hidden;
+    padding: 16px;
+}
+
+.topo {
+    border-bottom: solid 1px #e0e0e0;
+    padding: 32px 0 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.container-carrossel {
+    position: relative;
+    padding: 8px;
+    overflow: hidden;
+}
+
+.container-botoes {
+    position: relative;
+    height: 100%;
+    min-height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.botoes-carrossel {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    width: calc(100% + 24px);
+    margin-left: 8px;
+    justify-content: space-between;
+    justify-self: center;
+}
+
+.botoes-carrossel > i {
+    opacity: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 50px;
+    height: 50px;
+    background-color:var(--cor-linhas);
+    color: white !important;
+    border-radius: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease-in-out;
+}
+
+.botoes-carrossel > i:hover {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.carrossel-cards-verticais {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    transition: transform 1s ease-in-out;
+}
+
+.card-vertical {
+    min-height: 100%;
+    width: 320px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s;
+    cursor: pointer;
+    padding: 24px;
+    display: grid;
+    grid-template-rows: 80px 1fr auto;
+    row-gap: 16px;
+    position: relative;
+}
+
+.selecionar-tarefa{
+    position: absolute;
+    z-index: 99;
+    top: 10px;
+    right: 10px;
+}
+
+.topo-card {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.topo-esquerda {
+    display: flex;
+    flex-direction: column;
+}
+
+.descricao {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: space-between;
+}
+
+.btn-concluir {
+    border: 2px solid var(--cor-linhas);
+    padding: 8px 24px;
+    width: fit-content;
+    align-self: flex-end;
+    border-radius: 40px;
+    background-color: transparent;
+    margin-top: 8px;
+    justify-self: flex-end;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-concluir:hover {
+    transform: scale(1.08);
+    cursor: pointer;
+    background-color:var(--cor-linhas);
+    color: white;
+}
+
+.inferior {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 32px 0;
+}
+
+.cards-horizontais {
+    display: grid;
+    grid-auto-rows: 1fr;
+    row-gap: 8px;
+    padding: 16px 0;
+}
+
+.card-horizontal {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr;
+    align-items: center;
+    padding: 24px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    gap: 16px;
+    height: 100%;
+    transition: all 0.3s ease;
+    border: 1px solid #eee;
+}
+
+.card-horizontal:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-horizontal > div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.card-horizontal h4 {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.card-horizontal small {
+    display: block;
+    color: #555;
+}
+
+.card-horizontal strong {
+    color: #333;
+}
+
+.card-horizontal > div:last-child {
+    align-items: flex-end;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .card-horizontal {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .card-horizontal > div:last-child {
+        align-items: flex-start;
+    }
+}
+
+/* Estilos para os modais */
+.area-modal-editar, 
+.area-modal-novo {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-base {
+    background-color: white;
+    border-radius: 10px;
+    padding: 30px;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.secaoAcao {
+    margin-bottom: 20px;
+}
+
+.secaoAcao label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+}
+
+.inputTexto, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 16px;
+}
+
+.btn-concluir-modal {
+    border: 2px solid var(--cor-linhas);
+    padding: 8px 24px;
+    width: fit-content;
+    align-self: flex-end;
+    border-radius: 40px;
+    background-color: transparent;
+    margin-top: 8px;
+    justify-self: flex-end;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-concluir-modal:hover {
+    transform: scale(1.08);
+    cursor: pointer;
+    background-color: var(--cor-linhas);
+    color: var(--cor-branca);
+}
+
+/* Estilos adicionais para organização */
+.card-vazio {
+    min-width: 320px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+}
+
+.mensagem-vazia {
+    text-align: center;
+    padding: 20px;
+    width: 100%;
+}
+
+/* Melhorar aparência do card vazio no carrossel */
+.carrossel-cards-verticais > .card-vazio {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+
+.area-modal-editar, 
+.area-modal-novo {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.area-modal-editar[style*="display: flex"],
+.area-modal-novo[style*="display: flex"] {
+    display: flex !important;
+}
+
+#modal-editar-tarefa,
+#modal-nova-tarefa {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-base {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.modal-conteudo {
+    position: relative;
+    background-color: #f9f9f9;
+    padding: 32px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.modal-close, .fechar{
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #777;
+}
+
+#formNovaTarefa{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+#formNovaTarefa input{
+    min-width: 300px;
+}
+
+
+#Observacoes {
+    min-height: 120px; /* Altura mínima */
+    resize: vertical; /* Permite redimensionar apenas na vertical */
+    padding: 12px;
+    line-height: 1.5;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: border-color 0.3s;
+}
+
+#Observacoes:focus {
+    border-color: var(--cor-linhas);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(var(--cor-linhas-rgb), 0.2);
+}
+
+.btn-salvar {
+    padding: 10px 24px;
+    background-color: #fff;
+    color: #000;
+    border: 2px solid #000;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+    display: inline-block;
+    align-self: center;
+}
+
+.btn-salvar:hover {
+  transform: scale(1.05);
+}

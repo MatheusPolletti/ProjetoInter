@@ -38,6 +38,11 @@ public class BaseController : Controller
 
         var funcionario = context.Funcionarios.FirstOrDefault(f => f.AuthUserId.ToString() == uid);
 
+        if (funcionario?.StatusFuncionarioId == 3 || funcionario?.StatusFuncionarioId == 5)
+        {
+            return null; // Retorna null se o status for 3 ou 5
+        }
+
         return funcionario;
     }
 }

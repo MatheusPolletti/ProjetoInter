@@ -47,8 +47,9 @@
             <div class="form-linha">
                 <div class="form-grupo">
                     <label for="EditarPeso">Peso (kg):</label>
-                    <input type="number" id="EditarPeso" name="Peso" 
-                           value="@Model.Peso.ToString().Replace(",", ".")" step="0.01" />
+                    <input type="text" id="EditarPeso" name="Peso" 
+                        value="@Model.Peso.ToString("N2", System.Globalization.CultureInfo.InvariantCulture)" 
+                        class="input-peso" />
                 </div>
 
                 <div class="form-grupo">
@@ -105,8 +106,7 @@
                         <img id="EditarPreview" style="display: none;" />
                     }
                 </div>
-                <input id="EditarImagem" name="Imagem" type="file" style="display:none;" 
-                       onchange="mostrarPreviewEditar(event)" />
+                <input id="EditarImagem" name="Imagem" id="imagemInput" type="file" style="display:none;" onchange="mostrarPreviewEditar(event)" />
             </div>
 
             <div class="form-linha" style="justify-content: center; margin-top: 20px">

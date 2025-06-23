@@ -46,5 +46,4 @@ namespace ProjetoInter.Models
         [ForeignKey("FuncionarioVeterinarioId")]
         public Funcionario FuncionarioVeterinario { get; set; }
     }
-
 }

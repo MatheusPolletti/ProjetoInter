@@ -26,7 +26,7 @@
             </form>
                                 
             <div class="BotoesAcoes">
-                <button class="BotaoExcluir">Excluir</button>
+                <button class="BotaoExcluir" onclick="excluirAnimais()">Excluir</button>
                 <button id="btnEditar" class="BotaoEditar">Editar</button>
                 <button onclick="ModalNovo()" class="BotaoNovo">Novo</button>
             </div>        
@@ -40,18 +40,19 @@
         {
             foreach (var animal in Model)
             {
+                
                 var idade = animal.DataNascimento.HasValue
                     ? DateTime.Now - animal.DataNascimento.Value.ToDateTime(TimeOnly.MinValue)
                     : TimeSpan.Zero;
 
                 var anos = (int)(idade.Days / 365.25);
                 var meses = (int)((idade.Days % 365.25) / 30.44);
+                
+                <div class="card-animal" onclick="window.location.href='@Url.Action("Detalhes", "Animal", new { id = animal.AnimalId })'">
+                     <input type="checkbox" class="selecionar-animal" data-id="@animal.AnimalId" onclick="event.stopPropagation();" />
 
-                <div class="card-animal">
-                    <input type="checkbox" class="selecionar-animal" data-id="@animal.AnimalId" />
 
-
-                    <img src="~/@animal.ImagemUrl" alt="Imagem do animal" class="foto-animal" />
+                    <img src="@animal.ImagemUrl" alt="Imagem do animal" class="foto-animal" />
 
                     <div class="info-animal">
                         <div class="linha-info">
@@ -81,3 +82,4 @@
 </div>
 
 @Html.Partial("_ModalNovoAnimal")
+@Html.Partial("_ModalExcluirAnimal", null)
