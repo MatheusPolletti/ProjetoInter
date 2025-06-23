@@ -8,15 +8,12 @@ using System.Text;
 using ProjetoInter.Data;
 using Microsoft.EntityFrameworkCore;
 
-public class HomeController : Controller
+public class HomeController : BaseController
 {
     private readonly IConfiguration configuration;
-    private readonly DbZoologico _context;
-
-    public HomeController(IConfiguration _configuration, DbZoologico context)
+    public HomeController(IConfiguration _configuration, DbZoologico _context) : base(_context)
     {
         configuration = _configuration;
-        _context = context;
     }
 
     [HttpGet]
@@ -72,12 +69,20 @@ public class HomeController : Controller
                     return RedirectToAction("LoginCadastro");
                 }
 
-                var funcionario = await _context.Funcionarios
+                var funcionario = await context.Funcionarios
                                                 .FirstOrDefaultAsync(f => f.AuthUserId == supabaseUid);
 
                 if (funcionario == null)
                 {
                     TempData["Erro"] = "Erro: Usuário autenticado, mas não encontrado em nosso registro de funcionários.";
+                    return RedirectToAction("LoginCadastro");
+                }
+
+                // Verifique o status do funcionário
+                if (funcionario.StatusFuncionarioId == 3 || funcionario.StatusFuncionarioId == 5)
+                {
+                    TempData["Erro"] = "Erro: Usuário inativo";
+
                     return RedirectToAction("LoginCadastro");
                 }
 
@@ -87,16 +92,13 @@ public class HomeController : Controller
 
                 // Cria o cookie de autenticação com os claims do usuário
                 var claims = new List<Claim>
-                {
-                    // --- MUDANÇAS AQUI: ---
-                    new Claim(ClaimTypes.NameIdentifier, funcionario.FuncionarioId.ToString()), // ID do funcionário
-                    new Claim(ClaimTypes.Name, funcionario.Nome), // Nome do funcionário para exibição
-                    // --- FIM DAS MUDANÇAS ---
-
-                    new Claim(ClaimTypes.Email, email), // Email do funcionário
-                    new Claim("uid", uidString!), // UID do Supabase, se precisar para outras operações
-                    new Claim("InstituicaoId", funcionario.InstituicaoId.ToString()) // ID da instituição
-                };
+            {
+                new Claim(ClaimTypes.NameIdentifier, funcionario.FuncionarioId.ToString()), // ID do funcionário
+                new Claim(ClaimTypes.Name, funcionario.Nome), // Nome do funcionário para exibição
+                new Claim(ClaimTypes.Email, email), // Email do funcionário
+                new Claim("uid", uidString!), // UID do Supabase, se precisar para outras operações
+                new Claim("InstituicaoId", funcionario.InstituicaoId.ToString()) // ID da instituição
+            };
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);
@@ -107,19 +109,18 @@ public class HomeController : Controller
             }
             else
             {
-                // Oculta detalhes do erro do Supabase para o usuário final, mostra mensagem genérica.
                 TempData["Erro"] = "Usuário ou senha inválidos.";
                 return RedirectToAction("LoginCadastro");
             }
         }
         catch (Exception ex)
         {
-            // Logar o erro completo para depuração, mas mostrar mensagem genérica para o usuário.
             Console.WriteLine($"Erro ao tentar acessar o sistema: {ex.Message}");
             TempData["Erro"] = "Erro ao tentar acessar o sistema. Por favor, tente novamente.";
             return RedirectToAction("LoginCadastro");
         }
     }
+
     [HttpPost]
     public async Task<IActionResult> Deslogar()
     {

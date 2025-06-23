@@ -35,7 +35,7 @@
                 });
             }
 
-            window.verificarSelecao = verificarSelecao;  // Expõe para o onclick inline
+            window.verificarSelecao = verificarSelecao; 
 
             function abrirModalEditar() {
                 var checkboxes = document.querySelectorAll('.select-checkbox');
@@ -95,7 +95,7 @@
                 }
             }
 
-            window.abrirModalEditar = abrirModalEditar;  // Expõe para o onclick inline
+            window.abrirModalEditar = abrirModalEditar;
 
             function mostrarPreviewEditar(event) {
                 var file = event.target.files[0];
@@ -257,7 +257,9 @@
                         </div>
                     </div>
 
-                    <div class="colaborador-select">
+                    @if (funcionarioLogado != null && funcionarioLogado.IsAdmin == true)
+                    {
+                        <div class="colaborador-select">
                         <input type="checkbox" 
                             class="select-checkbox"
                             data-id="@funcionario.FuncionarioId"
@@ -270,6 +272,7 @@
                             data-imagemUrl="@(funcionario.ImagemUrl != null ? Url.Content(funcionario.ImagemUrl) : "")"
                             onclick="verificarSelecao(this)" />
                     </div>
+                    }                  
                 </div>
             }
         }

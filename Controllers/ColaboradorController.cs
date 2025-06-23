@@ -241,10 +241,8 @@ public class ColaboradorController : BaseController
             funcionario.IsAdmin = _adm;
             funcionario.StatusFuncionarioId = _statusFuncionario;
 
-            // Tratamento da imagem
             if (_imagem != null && _imagem.Length > 0)
             {
-                // Remove a imagem antiga se existir
                 if (!string.IsNullOrEmpty(funcionario.ImagemUrl) && funcionario.ImagemUrl != "img/Funcionarios/Padrao.png")
                 {
                     var caminhoImagemAntiga = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", funcionario.ImagemUrl);
@@ -254,7 +252,6 @@ public class ColaboradorController : BaseController
                     }
                 }
 
-                // Salva a nova imagem
                 var imagemNome = $"{Guid.NewGuid()}{Path.GetExtension(_imagem.FileName)}";
                 var caminhoImagem = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "Funcionarios", imagemNome);
 
