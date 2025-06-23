@@ -1,4 +1,5 @@
 @model ProjetoInter.Models.Procedimento
+
 @{
     Layout = null;
     var animais = ViewBag.Animais as List<ProjetoInter.Models.Animal> ?? new List<ProjetoInter.Models.Animal>();
@@ -16,30 +17,26 @@
 
             <input type="hidden" asp-for="ProcedimentoId" />
 
-            <div class="form-linha">
-                <div class="form-input">
-                    <label asp-for="Descricao">Descrição:</label>
-                    <input asp-for="Descricao" class="inputTexto" required/>
-                </div>
+            <div class="grupo-input">
+                <label asp-for="Descricao">Descrição:</label>
+                <input class="inputTexto" type="text" asp-for="Descricao" required/>
             </div>
 
-            <div class="form-linha">
-                <div class="form-input">
-                    <label asp-for="AnimalId">Animal:</label>
-                    <select asp-for="AnimalId" class="inputTexto" required>
-                        <option value="">Selecione um animal</option>
-                        @foreach (var animal in animais)
-                        {
-                            <option value="@animal.AnimalId">@animal.Nome - @animal.Especie?.Descricao</option>
-                        }
-                    </select>
-                </div>
+            <div class="grupo-input">
+                <label asp-for="AnimalId">Animal:</label>
+                <select class="inputTexto" asp-for="AnimalId" required>
+                    <option value="">Selecione um animal</option>
+                    @foreach (var animal in animais)
+                    {
+                        <option value="@animal.AnimalId">@animal.Nome - @animal.Especie?.Descricao</option>
+                    }
+                </select>
+            </div>
 
-                <div class="form-input">
-                    <label asp-for="DataProcedimento">Data:</label>
-                    <input asp-for="DataProcedimento" type="date" class="inputTexto" required 
-                           value="@Model.DataProcedimento.ToString("yyyy-MM-dd")" />
-                </div>
+            <div class="grupo-input">
+                <label asp-for="DataProcedimento">Data:</label>
+                <input asp-for="DataProcedimento" type="date" class="inputTexto" required 
+                       value="@Model.DataProcedimento.ToString("yyyy-MM-dd")" />
             </div>
 
             <div style="display: flex; flex-direction: column;">
@@ -62,4 +59,3 @@
         </form>
     </div>
 </div>
-
