@@ -181,28 +181,32 @@ public class AtendimentoVeterinarioController : BaseController
         }
     }
 
-    [HttpPost("/AtendimentoVeterinario/ConcluirAtendimento")] // Rota convencional: /AtendimentoVeterinario/ConcluirAtendimento
-    public async Task<IActionResult> ConcluirAtendimento([FromBody] int id)
+    [HttpPost("/AtendimentoVeterinario/ConcluirAtendimento")]
+    public async Task<IActionResult> ConcluirAtendimento([FromBody] AtendimentoVeterinario model) // Mude o tipo do parâmetro
     {
-        if (id <= 0)
+        if (model == null || model.AtendimentoVeterinarioId <= 0)
         {
-            return BadRequest(new { success = false, message = "ID de atendimento inválido." });
+            return BadRequest(new { success = false, message = "Dados de atendimento inválidos." });
+        }
+
+        var atendimentoExistente = await context.AtendimentosVeterinarios.FirstOrDefaultAsync(a => a.AtendimentoVeterinarioId == model.AtendimentoVeterinarioId);
+
+        if (atendimentoExistente == null)
+        {
+            return NotFound(new { success = false, message = "Atendimento não encontrado para conclusão." });
         }
 
         try
         {
-            var atendimento = await context.AtendimentosVeterinarios.FirstOrDefaultAsync(a => a.AtendimentoVeterinarioId == id);
+            // Atualize os campos relevantes do atendimento existente
+            atendimentoExistente.Resultado = model.Resultado; // Exemplo: atualiza resultado
+            atendimentoExistente.Observacoes = model.Observacoes; // Exemplo: atualiza observações
+            atendimentoExistente.Status = false; // Define o status como false para "concluir"
 
-            if (atendimento == null)
-            {
-                return NotFound(new { success = false, message = "Atendimento não encontrado." });
-            }
-
-            atendimento.Status = false; // Define o status como false (concluído)
-            context.AtendimentosVeterinarios.Update(atendimento);
+            context.AtendimentosVeterinarios.Update(atendimentoExistente);
             await context.SaveChangesAsync();
 
-            return Ok(new { success = true, message = "Atendimento concluído com sucesso!" });
+            return Ok(new { success = true, message = "Atendimento concluído e atualizado com sucesso!" });
         }
         catch (Exception ex)
         {

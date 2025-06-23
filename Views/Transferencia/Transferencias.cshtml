@@ -4,12 +4,15 @@
 @section Styles
 {
     <link rel="stylesheet" href="/css/TelaAtendimentoVeterinario.css">
+    <link rel="stylesheet" href="/css/TelaLayout.css">
+    <link rel="stylesheet" href="/css/TelaAnimal.css">
 }
 
 @section Scripts
 {
     <script src="~/js/Modais/Modais.js"></script>
     <script src="~/js/Transferencia/TransferenciaScript.js"></script>
+    <script src="~/js/Atendimento/Carrossel.js"></script>
 }
 
 @{
@@ -23,12 +26,13 @@
 
             <h1 class="NomePagina">Transferências</h1>
 
-            <div class="Barrabusca">
-                <input type="text" placeholder="Pesquisar..." class="TextoPesquisa">
-                <button class="BotaoIconePesquisa" aria-label="Pesquisar">
+            <form method="get" asp-action="Transferencias" asp-controller="Transferencia" class="Barrabusca">
+                <input type="text" name="busca" placeholder="Pesquisar..." class="TextoPesquisa"
+                    value="@(Context.Request.Query["busca"])" />
+                <button type="submit" class="BotaoIconePesquisa" aria-label="Pesquisar">
                     <i class="fas fa-search" aria-hidden="true"></i>
                 </button>
-            </div>
+            </form>
 
             <div class="BotoesAcoes">
                 <button class="BotaoExcluir">Excluir</button>
@@ -51,9 +55,10 @@
         </div>
         <div class="container-carrossel">
             <div class="carrossel-cards-verticais">
-                @if (ViewBag.TransferenciasPendentes != null)
+                @* MUDANÇA AQUI: Usa o @Model e filtra por Status == false ou DataEntrada == null para pendentes *@
+                @if (Model != null)
                 {
-                    foreach (var transferencia in ViewBag.TransferenciasPendentes)
+                    foreach (var transferencia in Model.Where(t => t.Status == true || t.DataEntrada == null)) // Ajuste a condição de pendente conforme sua lógica de Status
                     {
                         <div>
                             <div class="card-vertical">
@@ -64,22 +69,22 @@
                                     <div class="topo-esquerda">
                                         <h4><strong></strong> @transferencia.Animal.Nome</h4>
                                         <p><small>@transferencia.Animal.Especie?.Descricao |
-                                                    @transferencia.Animal.Setor?.Descricao</small></p>
+                                                @transferencia.Animal.Setor?.Descricao</small></p>
                                     </div>
                                 </div>
                                 <div class="descricao">
                                     <h4>Origem: <span style="font-weight: normal;">@transferencia.InstituicaoOrigem.Nome</span>
                                     </h4>
                                     <h4>Destino: <span
-                                                    style="font-weight: normal;">@transferencia.InstituicaoDestino.Nome</span></h4>
-                                    <small><strong>Saída:</strong> @transferencia.DataSaida.ToString("dd/MM/yyyy")</small>
-                                    @* --- INCLUA ESTA LINHA PARA EXIBIR A DATA DE ENTRADA --- *@
-                                    <small><strong>Entrada:</strong> @(transferencia.DataEntrada?.ToString("dd/MM/yyyy") ?? "Pendente")</small>
-                                    @* --- FECHE A DIV DESCRICAO AQUI --- *@
-                                </div> <button class="btn-concluir" onclick="concluirTransferencia(@transferencia.TransferenciaId)">Concluir</button>
-                            </div>
+                                            style="font-weight: normal;">@transferencia.InstituicaoDestino.Nome</span></h4>
+                                    <small><strong>Saída:</strong> @transferencia.DataSaida?.ToString("dd/MM/yyyy")</small>
+                                    <small><strong>Entrada:</strong> @(transferencia.DataEntrada?.ToString("dd/MM/yyyy") ??
+                                                                        "Pendente")</small>
+                            </div> 
+                            <button class="btn-concluir"
+                                onclick="concluirTransferencia(@transferencia.TransferenciaId)">Concluir</button>
                         </div>
-
+                    </div>
                     }
                 }
             </div>
@@ -90,12 +95,11 @@
 <div class="inferior">
     <h2>Transferências Anteriores</h2>
     <div class="cards-horizontais">
-        @* --- MUDANÇA AQUI: USA ViewBag.TransferenciasConcluidas --- *@
-        @if (ViewBag.TransferenciasConcluidas != null)
+        @* MUDANÇA AQUI: Usa o @Model e filtra por Status == true e DataEntrada != null para concluídas *@
+        @if (Model != null)
         {
-            foreach (var concluida  in ViewBag.TransferenciasConcluidas)
+            foreach (var concluida in Model.Where(t => t.Status == false && t.DataEntrada != null)) // Ajuste a condição de concluído
             {
-                @* <a style="text-decoration: none;" asp-controller="AtendimentoVeterinario" asp-action="AtendimentoInfo" asp-route-id="@transferencia.TransferenciaId" class="card-link"> *@
                 <div style="display: flex; justify-content: space-between;" class="card-horizontal"
                     id="@concluida.TransferenciaId">
                     <div>
@@ -103,19 +107,17 @@
                         <h4>@concluida.Animal.Nome</h4>
 
                         <small><strong>Origem:</strong> @concluida.InstituicaoOrigem.Nome</small>
-                        <small><strong> | Destino:</strong> @concluida.InstituicaoDestino.Nome</small> @* Correção: estava DataSaida aqui *@
+                        <small><strong> | Destino:</strong> @concluida.InstituicaoDestino.Nome</small> 
                         <br>
-                        <small><strong>Saída:</strong> @concluida.DataSaida.ToString("dd/MM/yyyy")</small>
+                        <small><strong>Saída:</strong> @concluida.DataSaida?.ToString("dd/MM/yyyy")</small>
                         <small><strong> | Chegada:</strong> @(concluida.DataEntrada?.ToString("dd/MM/yyyy") ?? "N/A")</small>
                     </div>
                     <div>
                         <small>Concluído</small>
                     </div>
                 </div>
-                @* </a> *@
             }
         }
-
     </div>
 </div>
 
@@ -131,38 +133,82 @@
 
         <div class="secaoAcao">
             <label>Animal:</label>
-            <select style="width: 100%;" id="newTransferAnimalId" class="inputTexto">
-                @foreach (var animal in ViewBag.Animais)
-                {
-                    <option value="@animal.AnimalId">
-                        @animal.Nome - @animal.Especie?.Descricao (@animal.Setor?.Descricao)
-                    </option>
-                }
-            </select>
+            <div>
+                <select style="width: 100%;" id="newTransferAnimalId" class="inputTexto">
+                    @* MUDANÇA AQUI: Ainda usa ViewBag para dropdowns, pois eles não vêm do Model principal *@
+                    @if (ViewBag.Animais != null)
+                    {
+                        foreach (var animal in ViewBag.Animais)
+                        {
+                            <option value="@animal.AnimalId">
+                                @animal.Nome - @animal.Especie?.Descricao (@animal.Setor?.Descricao)
+                            </option>
+                        }
+                    }
+                </select>
+
+            </div>
         </div>
 
         <div class="secaoAcao">
             <label>Local de Origem:</label>
-            <select style="width: 100%;" id="newTransferOrigemId" class="inputTexto">
-                @foreach (var instituicao in ViewBag.Instituicoes)
-                {
-                    <option value="@instituicao.InstituicaoId">
-                        @instituicao.Nome
-                    </option>
-                }
-            </select>
+            <div style="display: flex; gap: 8px">
+                <select style="width: 100%;" id="newTransferOrigemId" class="inputTexto">
+                    @* MUDANÇA AQUI: Ainda usa ViewBag para dropdowns *@
+                    @if (ViewBag.Instituicoes != null)
+                    {
+                        foreach (var instituicao in ViewBag.Instituicoes)
+                        {
+                            <option value="@instituicao.InstituicaoId">
+                                @instituicao.Nome
+                            </option>
+                        }
+                    }
+                </select>
+                <button style="
+                padding: 10px 14px;
+                border: 1px solid black;
+                background-color: white;
+                border-radius: 50%;
+                font-weight: bold;
+                cursor: pointer;
+                font-size: 1.1rem;
+                line-height: 1;" onclick="abrirModal('.area-modal-editar')">
+                    +
+                </button>
+            </div>
+
         </div>
 
         <div class="secaoAcao">
+
             <label>Local de Destino:</label>
-            <select style="width: 100%;" id="newTransferDestinoId" class="inputTexto">
-                @foreach (var instituicao in ViewBag.Instituicoes)
-                {
-                    <option value="@instituicao.InstituicaoId">
-                        @instituicao.Nome
-                    </option>
-                }
-            </select>
+            <div style="display: flex; gap: 8px">
+                <select style="width: 100%;" id="newTransferDestinoId" class="inputTexto">
+                    @* MUDANÇA AQUI: Ainda usa ViewBag para dropdowns *@
+                    @if (ViewBag.Instituicoes != null)
+                    {
+                        foreach (var instituicao in ViewBag.Instituicoes)
+                        {
+                            <option value="@instituicao.InstituicaoId">
+                                @instituicao.Nome
+                            </option>
+                        }
+                    }
+                </select>
+                <button style="
+                padding: 10px 14px;
+                border: 1px solid black;
+                background-color: white;
+                border-radius: 50%;
+                font-weight: bold;
+                cursor: pointer;
+                font-size: 1.1rem;
+                line-height: 1;" onclick="abreModalInstituicao()">
+                    +
+                </button>
+            </div>
+
         </div>
 
         <div style="flex-direction: row; gap: 16px" class="secaoAcao">
@@ -178,5 +224,36 @@
         </div>
 
         <button class="btn-concluir" id="modalSubmitButton" onclick="handleTransferenciaSubmit()">Adicionar</button>
+    </div>
+</section>
+
+<section class="area-modal-editar">
+    <div style="z-index:901" class="modal-base">
+        <button style="z-index:902" class="modal-close" onclick="fecharModalInstituicao()">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <h1>Adicionar Instituição</h1>
+
+        <label for="instituicaoNome">Nome da Instituição</label>
+        <input type="text" id="instituicaoNome" class="inputTexto">
+
+        <label for="instituicaoEndereco">Endereço</label>
+        <input type="text" id="instituicaoEndereco" class="inputTexto">
+
+        <label for="instituicaoContato">Contato</label>
+        <input type="text" id="instituicaoContato" class="inputTexto">
+
+        <div class="form-linha form-imagem">
+            <label for="imagemInput">Imagem:</label>
+            <div id="previewContainer" onclick="document.getElementById('imagemInput').click();">
+                <span id="previewText">Clique para selecionar uma imagem</span>
+                <img id="preview" />
+            </div>
+            <input type="file" name="Imagem" id="imagemInput" style="display:none;"
+                onchange="mostrarPreviewEditar(event)" />
+        </div>
+
+        <button class="btn-concluir" id="modalSubmitButton" onclick="salvarNovaInstituicao()">Adicionar</button>
     </div>
 </section>

@@ -3,6 +3,8 @@
 @section Styles
 {
     <link rel="stylesheet" href="/css/TelaSetor.css">
+    <link rel="stylesheet" href="/css/TelaLayout.css">
+    <link rel="stylesheet" href="/css/TelaAtendimentoVeterinario.css">
 }
 
 @section Scripts
@@ -23,12 +25,14 @@
 
             <h1 class="NomePagina">Setores</h1>
 
-            <div class="Barrabusca">
-                <input type="text" placeholder="Pesquisar..." class="TextoPesquisa">
-                <button class="BotaoIconePesquisa" aria-label="Pesquisar">
+            @* SUBSTITUA ESTA DIV Barrabusca ANTIGA PELA NOVA FORM DE BUSCA *@
+            <form method="get" asp-action="Setores" asp-controller="Setor" class="Barrabusca">
+                <input type="text" name="busca" placeholder="Pesquisar..." class="TextoPesquisa"
+                    value="@(Context.Request.Query["busca"])" />
+                <button type="submit" class="BotaoIconePesquisa" aria-label="Pesquisar">
                     <i class="fas fa-search" aria-hidden="true"></i>
                 </button>
-            </div>
+            </form>
 
             <div class="BotoesAcoes">
                 <button class="BotaoExcluir" onclick="excluirSetoresSelecionados()" disabled>Excluir</button>
@@ -42,7 +46,7 @@
 
 <div class="container-setores">
     <div class="esquerda">
-        @if (Model != null)
+        @if (Model != null && Model.Any()) // Adicionado .Any() para verificar se há itens
         {
             foreach (var setor in Model)
             {
@@ -53,76 +57,57 @@
                     </div>
                     <div class="card-end">
                         <h3>ID: @setor.SetorId</h3>
-                        <input type="checkbox" class="setor-checkbox" data-setorid="@setor.SetorId" onclick="verificaCheckboxesSetor()">
+                        <input type="checkbox" class="setor-checkbox" data-setorid="@setor.SetorId"
+                            onclick="verificaCheckboxesSetor()">
                     </div>
                 </div>
             }
         }
+        else
+        {
+            <p>Nenhum setor encontrado.</p>
+        }
     </div>
 
-    
     <div>
-        <img src="/@(Model?.FirstOrDefault()?.InstituicaoPertence?.ImagemUrl ?? "caminho/para/imagem/padrao.png")" alt="Mapa da Instituição">
+        <img src="/@(Model?.FirstOrDefault()?.InstituicaoPertence?.ImagemUrl ?? "/images/mapa_padrao.png")"
+            alt="Mapa da Instituição">
         <div class="legenda">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi sint, sed possimus dolorum laboriosam
             laborum vero ut officia maiores eum corporis quisquam in, iusto delectus sit! Odio at eligendi laborum.
         </div>
     </div>
-    
+
 </div>
-</div> <section class="area-modal-editar">
-    <div class="modal-base">
-        <button class="modal-close" onclick="FecharModalEditarSetor()">
-            <i class="fas fa-times"></i>
-        </button>
-
-        <h1>Editar Setor</h1>
-        <input type="hidden" id="inputSetorIdEditar" value="0" />
-
-        <div class="secaoAcao">
-            <label>Nome:</label>
-            <input type="text" id="inputSetorNomeEditar" class="inputTexto" />
-        </div>
-
-        <div class="secaoAcao">
-            <label>Descrição:</label>
-            <input type="text" id="inputSetorDescricaoEditar" class="inputTexto" />
-        </div>
-
-        <div class="secaoAcao">
-            <label for="selectSetorStatusEditar">Status:</label>
-            <select id="selectSetorStatusEditar" name="selectSetorStatusEditar">
-                <option value="true">Ativo</option> <option value="false">Inativo</option> </select>
-        </div>
-
-        <button class="btn-concluir" onclick="submeterEditarSetor()">Salvar Alterações</button>
-    </div>
-</section>
 
 <section class="area-modal-novo">
     <div class="modal-base">
-        <button class="modal-close" onclick="FecharModalNovoSetor()">
+        <button class="modal-close" onclick="FecharModalSetor()">
             <i class="fas fa-times"></i>
         </button>
 
-        <h1>Adicionar Setor</h1>
+        <h1 id="modalSetorTitle">Adicionar Setor</h1> @* <-- MUDANÇA AQUI: Adicionado ID para o título *@
+
+        <input type="hidden" id="inputSetorId" value="0" /> @* <-- MUDANÇA AQUI: Campo oculto para o ID do setor *@
 
         <div class="secaoAcao">
             <label>Nome:</label>
-            <input type="text" id="inputSetorNomeNovo" class="inputTexto" />
+            <input type="text" id="inputSetorNome" class="inputTexto" /> @* <-- MUDANÇA AQUI: Renomeado ID para ser genérico *@
         </div>
 
         <div class="secaoAcao">
             <label>Descrição:</label>
-            <input type="text" id="inputSetorDescricaoNovo" class="inputTexto" />
+            <input type="text" id="inputSetorDescricao" class="inputTexto" /> @* <-- MUDANÇA AQUI: Renomeado ID para ser genérico *@
         </div>
 
         <div class="secaoAcao">
-            <label for="selectSetorStatusNovo">Status:</label>
-            <select id="selectSetorStatusNovo" name="selectSetorStatusNovo">
-                <option value="true">Ativo</option> <option value="false">Inativo</option> </select>
+            <label for="selectSetorStatus">Status:</label>
+            <select id="selectSetorStatus" name="selectSetorStatus" class="inputTexto"> @* <-- MUDANÇA AQUI: Renomeado ID para ser genérico *@
+                <option value="true">Ativo</option>
+                <option value="false">Inativo</option>
+            </select>
         </div>
 
-        <button class="btn-concluir" onclick="submeterNovoSetor()">Adicionar</button>
+        <button class="btn-concluir" id="modalSetorSubmitButton" onclick="handleSetorSubmit()">Adicionar</button> @* <-- MUDANÇA AQUI: Adicionado ID e nova função de tratamento *@
     </div>
 </section>

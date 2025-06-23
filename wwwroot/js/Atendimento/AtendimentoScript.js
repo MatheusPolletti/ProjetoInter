@@ -70,7 +70,6 @@ async function solicitarAtendimento() {
 
     if (response.ok) {
       console.log("Sucesso:", responseData);
-      alert(responseData.message || "Atendimento solicitado com sucesso!");
       // Chame a função correta para fechar o modal de NOVO atendimento
       fecharModal('.area-modal-novo'); // Use a sua função genérica fecharModal com o seletor correto
       window.location.reload();
@@ -285,51 +284,61 @@ async function salvarEdicaoAtendimento() {
   }
 }
 
-// *** FUNÇÃO PARA FINALIZAR ATENDIMENTO (chamada pelo botão "Finalizar Atendimento" no modal) ***
 async function finalizarAtendimento() {
-  const atendimentoId = document.getElementById("editAtendimentoId").value; // Pega o ID do campo oculto
-  if (!atendimentoId) {
-    alert("Erro: ID do atendimento para finalizar não encontrado.");
-    return;
-  }
-
-  const confirmacao = confirm(
-    "Tem certeza que deseja finalizar este atendimento? O status será alterado para inativo."
-  );
-  if (!confirmacao) {
-    return; // Usuário cancelou
-  }
-
-  try {
-    const response = await fetch(
-      `/AtendimentoVeterinario/ConcluirAtendimento`,
-      {
-        // Chama o novo método no Controller
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(parseInt(atendimentoId)), // Envia apenas o ID como corpo
-      }
-    );
-
-    const responseData = await response.json();
-    if (response.ok && responseData.success) {
-      alert(responseData.message || "Atendimento finalizado com sucesso!");
-      // FecharModalEditar(); // Esta função não existe, use fecharModal com o seletor
-      fecharModal('.area-modal-editar'); // Assumindo que este é o seletor do modal de edição
-      window.location.reload();
-    } else {
-      alert(
-        "Erro ao finalizar atendimento: " +
-          (responseData.message || response.statusText)
-      );
+    const atendimentoId = document.getElementById("editAtendimentoId").value; // Pega o ID do campo oculto
+    if (!atendimentoId) {
+        alert("Erro: ID do atendimento para finalizar não encontrado.");
+        return;
     }
-  } catch (error) {
-    console.error("Erro na requisição de finalização:", error);
-    alert(
-      "Ocorreu um erro ao conectar com o servidor para finalizar: " +
-        error.message
+
+    const confirmacao = confirm(
+        "Tem certeza que deseja finalizar este atendimento? O status será alterado para inativo."
     );
-  }
+    if (!confirmacao) {
+        return; // Usuário cancelou
+    }
+
+    // Coleta TODOS os dados do modal de edição/conclusão
+    const dadosParaFinalizar = {
+        AtendimentoVeterinarioId: parseInt(atendimentoId),
+        AnimalId: document.getElementById("editAnimalId").value ? parseInt(document.getElementById("editAnimalId").value) : null,
+        FuncionarioSolicitanteId: document.getElementById("editFuncionarioSolicitanteId").value ? parseInt(document.getElementById("editFuncionarioSolicitanteId").value) : null,
+        FuncionarioVeterinarioId: document.getElementById("editVeterinarioResponsavel").value ? parseInt(document.getElementById("editVeterinarioResponsavel").value) : null,
+        Data: document.getElementById("editDataAtendimento").value,
+        Descricao: document.getElementById("editDescricao").value,
+        Observacoes: document.getElementById("editObservacoes").value || null,
+        Resultado: document.getElementById("editResultado").value || null, 
+        Status: false, 
+    };
+
+    try {
+        const response = await fetch(
+            `/AtendimentoVeterinario/ConcluirAtendimento`, // Certifique-se que essa rota está no C#
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dadosParaFinalizar), // <--- AGORA ESTAMOS ENVIANDO TODOS OS DADOS
+            }
+        );
+
+        const responseData = await response.json();
+        if (response.ok && responseData.success) {
+            alert(responseData.message || "Atendimento finalizado com sucesso!");
+            fecharModal('.area-modal-editar'); // Fecha o modal
+            window.location.reload(); // Recarrega a página para atualizar os cards
+        } else {
+            alert(
+                "Erro ao finalizar atendimento: " +
+                (responseData.message || response.statusText)
+            );
+        }
+    } catch (error) {
+        console.error("Erro na requisição de finalização:", error);
+        alert(
+            "Ocorreu um erro ao conectar com o servidor para finalizar: " +
+            error.message
+        );
+    }
 }
 
 // *** FUNÇÃO PARA EXCLUIR ATENDIMENTOS SELECIONADOS (chamada pelo botão "Excluir" na barra de ações) ***
