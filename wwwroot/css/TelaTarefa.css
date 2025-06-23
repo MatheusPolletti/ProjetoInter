@@ -225,14 +225,14 @@
     margin-bottom: 20px;
 }
 
-.secaoAcao label {
+.secaoAcao label, label asp-for {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
     color: #555;
 }
 
-.inputTexto, select {
+.inputTexto, select, select asp-for {
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
@@ -355,12 +355,12 @@
     color: #777;
 }
 
-#formNovaTarefa{
+#formNovaTarefa, #formEditarTarefa{
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
-#formNovaTarefa input{
+#formNovaTarefa, #formEditarTarefa input{
     min-width: 300px;
 }
 

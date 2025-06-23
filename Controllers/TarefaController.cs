@@ -26,7 +26,8 @@ namespace ProjetoInter.Controllers
             return RedirectToAction("Tarefas");
         }
 
-        public async Task<IActionResult> Tarefas()
+        [HttpGet] // Adicione este atributo
+        public async Task<IActionResult> Tarefas(string busca) // Adicione o parâmetro busca aqui
         {
             var funcionario = ObterFuncionarioLogado();
             if (funcionario == null)
@@ -35,12 +36,23 @@ namespace ProjetoInter.Controllers
                 return RedirectToAction("LoginCadastro", "Home");
             }
 
-            var tarefas = await context.Procedimentos
+            var query = context.Procedimentos
                 .Include(p => p.Animal)
                 .ThenInclude(a => a.Especie)
                 .Include(p => p.FuncionarioTarefa)
                 .Where(p => p.FuncionarioTarefaId == funcionario.FuncionarioId)
-                .ToListAsync();
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(busca))
+            {
+                busca = busca.ToLower();
+                query = query.Where(p => 
+                    p.Descricao.ToLower().Contains(busca) ||
+                    (p.Animal != null && p.Animal.Nome.ToLower().Contains(busca))
+                );
+            }
+
+            var tarefas = await query.ToListAsync();
 
             ViewBag.Animais = await context.Animais
                 .Include(a => a.Especie)
