@@ -4,24 +4,22 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Linq;
 using ProjetoInter.Models;
-using System.Threading.Tasks; // Adicione este using para Task
+using System.Threading.Tasks;
 
 [Authorize]
 public class TransferenciaController : BaseController
 {
-    private readonly DbZoologico _context; // Use _context para consistência
+    private readonly DbZoologico _context;
 
     public TransferenciaController(DbZoologico context) : base(context)
     {
-        _context = context; // Atribua o contexto injetado
+        _context = context;
     }
 
-    // Renomeie esta Action de 'Index' para 'Transferencias'
-    [HttpGet] // A requisição do formulário de busca é GET
-    public async Task<IActionResult> Transferencias(string busca) // <--- MUDANÇA AQUI: Nome da Action para Transferencias
+    [HttpGet]
+    public async Task<IActionResult> Transferencias(string busca)
     {
-        // Inicia a query com todas as transferências e inclui as entidades relacionadas
-        var query = _context.Transferencias // Use _context aqui
+        var query = _context.Transferencias
                            .Include(t => t.Animal)
                                .ThenInclude(a => a.Especie)
                            .Include(t => t.Animal)
@@ -30,11 +28,9 @@ public class TransferenciaController : BaseController
                            .Include(t => t.InstituicaoDestino)
                            .AsQueryable();
 
-        // Aplica o filtro de busca se um termo for fornecido
         if (!string.IsNullOrWhiteSpace(busca))
         {
             busca = busca.ToLower();
-
             query = query.Where(t => t.Animal.Nome.ToLower().Contains(busca) ||
                                      t.InstituicaoOrigem.Nome.ToLower().Contains(busca) ||
                                      t.InstituicaoDestino.Nome.ToLower().Contains(busca));
@@ -43,21 +39,17 @@ public class TransferenciaController : BaseController
         query = query.OrderByDescending(t => t.DataSaida);
 
         var transferencias = await query.ToListAsync();
+        await CarregarDadosParaDropdowns();
 
-        // Carregar dados para os dropdowns dos modais
-        await CarregarDadosParaDropdowns(); // Chama o método auxiliar
-
-        // Retorna a view 'Transferencias.cshtml' passando a lista filtrada como Model
-        return View(transferencias); // <--- MUDANÇA AQUI: Passando o Model para a View
+        return View(transferencias);
     }
 
-    // Método auxiliar para carregar os dados dos dropdowns
     private async Task CarregarDadosParaDropdowns()
     {
         ViewBag.Animais = await _context.Animais
                                        .Include(a => a.Especie)
                                        .Include(a => a.Setor)
-                                       .Where(a => a.StatusId == 1) // Exemplo de filtro: animais ativos
+                                       .Where(a => a.StatusId == 1)
                                        .OrderBy(a => a.Nome)
                                        .ToListAsync();
         ViewBag.Instituicoes = await _context.Instituicoes
@@ -65,11 +57,6 @@ public class TransferenciaController : BaseController
                                             .ToListAsync();
     }
 
-
-    // SEUS OUTROS MÉTODOS FICAM AQUI: CriarTransferencia, ObterTransferenciaPorId, AtualizarTransferencia, ExcluirTransferencia, ConcluirTransferencia
-    // Certifique-se de que eles estão usando _context e não 'context' (erro de cópia e cola)
-
-    // Exemplo do método CriarTransferencia
     [HttpPost]
     public async Task<IActionResult> CriarTransferencia([FromBody] Transferencia model)
     {
@@ -85,7 +72,7 @@ public class TransferenciaController : BaseController
 
         try
         {
-            model.Status = true; // Exemplo: Nova transferência é Pendente por padrão
+            model.Status = true;
             _context.Transferencias.Add(model);
             await _context.SaveChangesAsync();
 
@@ -93,12 +80,10 @@ public class TransferenciaController : BaseController
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro ao criar transferência: {ex.Message}");
-            return StatusCode(500, new { success = false, message = $"Erro interno do servidor ao criar a transferência: {ex.Message}" });
+            return StatusCode(500, new { success = false, message = $"Erro interno do servidor: {ex.Message}" });
         }
     }
 
-    // Exemplo do método ObterTransferenciaPorId:
     [HttpGet]
     public async Task<IActionResult> ObterTransferenciaPorId(int id)
     {
@@ -118,7 +103,6 @@ public class TransferenciaController : BaseController
         return Ok(transferencia);
     }
     
-    // Exemplo do método para Atualizar uma transferência
     [HttpPost]
     public async Task<IActionResult> AtualizarTransferencia([FromBody] Transferencia model)
     {
@@ -141,8 +125,6 @@ public class TransferenciaController : BaseController
             transferenciaExistente.InstituicaoDestinoId = model.InstituicaoDestinoId;
             transferenciaExistente.DataSaida = model.DataSaida;
             transferenciaExistente.DataEntrada = model.DataEntrada;
-            // Não se esqueça de atualizar o status se for relevante aqui, ex:
-            // transferenciaExistente.Status = model.Status;
 
             _context.Transferencias.Update(transferenciaExistente);
             await _context.SaveChangesAsync();
@@ -151,12 +133,10 @@ public class TransferenciaController : BaseController
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro ao atualizar transferência: {ex.Message}");
-            return StatusCode(500, new { success = false, message = $"Erro interno do servidor ao atualizar a transferência: {ex.Message}" });
+            return StatusCode(500, new { success = false, message = $"Erro interno do servidor: {ex.Message}" });
         }
     }
 
-    // Exemplo do método para Excluir (remover permanentemente)
     [HttpPost]
     public async Task<IActionResult> ExcluirTransferencia([FromBody] int id)
     {
@@ -181,12 +161,10 @@ public class TransferenciaController : BaseController
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro ao excluir transferência: {ex.Message}");
             return StatusCode(500, new { success = false, message = "Erro interno do servidor ao excluir a transferência." });
         }
     }
 
-    // Método para Concluir Transferência
     [HttpPost]
     public async Task<IActionResult> ConcluirTransferencia([FromBody] int id)
     {
@@ -204,23 +182,24 @@ public class TransferenciaController : BaseController
                 return NotFound(new { success = false, message = "Transferência não encontrada." });
             }
 
-            transferencia.Status = false; // Define o status como 'concluído' (false, como você tinha)
-            
-            // Certifique-se de que DataEntrada seja preenchida ao concluir!
-            if (transferencia.DataEntrada == null) 
+            transferencia.Status = false;
+            transferencia.DataEntrada = DateTime.Now;
+
+            // Inativar o animal após a transferência
+            var animal = await _context.Animais.FindAsync(transferencia.AnimalId);
+            if (animal != null)
             {
-                transferencia.DataEntrada = DateTime.Now; 
+                animal.StatusId = 6; // Status "Inativo"
+                _context.Animais.Update(animal);
             }
 
-            _context.Transferencias.Update(transferencia);
             await _context.SaveChangesAsync();
 
-            return Ok(new { success = true, message = "Transferência concluída com sucesso!" });
+            return Ok(new { success = true, message = "Transferência concluída com sucesso e animal inativado!" });
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro ao concluir transferência: {ex.Message}");
-            return StatusCode(500, new { success = false, message = $"Erro interno do servidor ao concluir a transferência: {ex.Message}" });
+            return StatusCode(500, new { success = false, message = $"Erro interno do servidor: {ex.Message}" });
         }
     }
 }

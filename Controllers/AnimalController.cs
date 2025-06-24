@@ -69,31 +69,25 @@ public class AnimalController : BaseController
         {
             var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "img", "Animais");
 
-            // Criar pasta se não existir
             if (!Directory.Exists(uploads))
             {
                 try
                 {
                     Directory.CreateDirectory(uploads);
-                    Console.WriteLine($"Pasta criada: {uploads}");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Erro ao criar pasta: {ex.Message}");
                     erros.Add("Erro no servidor ao processar imagem");
                     return Json(new { success = false, errors = erros });
                 }
             }
 
-            // Nome único para o arquivo
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Imagem.FileName);
             var filePath = Path.Combine(uploads, fileName);
 
-            // Salvar arquivo
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await Imagem.CopyToAsync(stream);
-                Console.WriteLine($"Imagem salva em: {filePath}");
             }
 
             novoAnimal.ImagemUrl = "/img/Animais/" + fileName;
@@ -156,14 +150,13 @@ public class AnimalController : BaseController
 
         try
         {
-            var animalExistente = await context.Animais.FindAsync(animal.AnimalId); // Corrigido para AnimalId
+            var animalExistente = await context.Animais.FindAsync(animal.AnimalId);
             if (animalExistente == null)
             {
                 erros.Add("Animal não encontrado");
                 return Json(new { success = false, errors = erros });
             }
 
-            // Atualiza propriedades
             animalExistente.Nome = animal.Nome;
             animalExistente.EspecieId = animal.EspecieId;
             animalExistente.Peso = animal.Peso;
@@ -171,7 +164,6 @@ public class AnimalController : BaseController
             animalExistente.DataNascimento = animal.DataNascimento;
             animalExistente.SetorId = animal.SetorId;
 
-            // Tratamento de imagem
             if (Imagem != null && Imagem.Length > 0)
             {
                 var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "img", "Animais");
@@ -186,7 +178,6 @@ public class AnimalController : BaseController
                     await Imagem.CopyToAsync(stream);
                 }
 
-                // Remove imagem antiga se existir
                 if (!string.IsNullOrEmpty(animalExistente.ImagemUrl))
                 {
                     var oldFilePath = Path.Combine(
@@ -200,7 +191,6 @@ public class AnimalController : BaseController
                     }
                 }
 
-                // URL correta: /img/animals/
                 animalExistente.ImagemUrl = "/img/Animais/" + fileName;
             }
 
@@ -230,9 +220,42 @@ public class AnimalController : BaseController
 
             foreach (var animal in animais)
             {
+                // Verificar se existem tarefas pendentes para o animal
+                var tarefasPendentes = await context.Procedimentos
+                    .AnyAsync(p => p.AnimalId == animal.AnimalId && !p.Status);
+
+                if (tarefasPendentes)
+                {
+                    return Json(new { 
+                        success = false, 
+                        message = $"Não é possível excluir o animal {animal.Nome} pois existem tarefas pendentes associadas a ele." 
+                    });
+                }
+
+                // Verificar se existem transferências pendentes para o animal
+                var transferenciasPendentes = await context.Transferencias
+                    .AnyAsync(t => t.AnimalId == animal.AnimalId && t.Status);
+
+                if (transferenciasPendentes)
+                {
+                    return Json(new { 
+                        success = false, 
+                        message = $"Não é possível excluir o animal {animal.Nome} pois existem transferências pendentes associadas a ele." 
+                    });
+                }
+
+                // Excluir tarefas concluídas associadas ao animal
+                var tarefasConcluidas = await context.Procedimentos
+                    .Where(p => p.AnimalId == animal.AnimalId && p.Status)
+                    .ToListAsync();
+
+                if (tarefasConcluidas.Any())
+                {
+                    context.Procedimentos.RemoveRange(tarefasConcluidas);
+                }
+
                 animal.StatusId = STATUS_INATIVO; // Marca como inativo
 
-                // Apenas para exclusão individual com data válida
                 if (model.AnimalIds.Count == 1 &&
                     !string.IsNullOrEmpty(model.DataFalecimento) &&
                     DateOnly.TryParse(model.DataFalecimento, out DateOnly dataFalec))
@@ -249,15 +272,9 @@ public class AnimalController : BaseController
             return Json(new { success = false, message = ex.Message });
         }
     }
-    public class ExcluirAnimaisModel
-    {
-        public List<int> AnimalIds { get; set; }
-        public string DataFalecimento { get; set; } // Alterado para string
-    }
-    
+
     public async Task<IActionResult> Detalhes(int id)
     {
-        // Carrega o animal
         var animal = await context.Animais
             .Include(a => a.Especie)
             .Include(a => a.Setor)
@@ -266,7 +283,6 @@ public class AnimalController : BaseController
 
         if (animal == null) return NotFound();
 
-        // Carrega os atendimentos veterinários relacionados
         var atendimentos = await context.AtendimentosVeterinarios
             .Include(a => a.FuncionarioVeterinario)
             .Include(a => a.FuncionarioSolicitante)
@@ -274,10 +290,15 @@ public class AnimalController : BaseController
             .OrderByDescending(a => a.Data)
             .ToListAsync();
 
-        // Passa os dados para a view
         ViewBag.Animal = animal;
         ViewBag.Atendimentos = atendimentos;
 
         return View("DetalheAnimal");
+    }
+
+    public class ExcluirAnimaisModel
+    {
+        public List<int> AnimalIds { get; set; }
+        public string DataFalecimento { get; set; }
     }
 }

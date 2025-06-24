@@ -8,7 +8,7 @@
 }
 
 .topo {
-    border-bottom: solid 1px #e0e0e0;
+    border-bottom: solid 1px grey;
     padding: 32px 0 16px 0;
     display: flex;
     flex-direction: column;
@@ -44,8 +44,8 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     width: 50px;
     height: 50px;
-    background-color:var(--cor-linhas);
-    color: white !important;
+    background-color: var(--cor-linhas);
+    color: var(--cor-branca) !important;
     border-radius: 40px;
     display: flex;
     justify-content: center;
@@ -57,7 +57,9 @@
     opacity: 1;
     cursor: pointer;
 }
-
+.botoes-carrossel > i:before{
+    color: var(--cor-branca);
+}
 .carrossel-cards-verticais {
     display: flex;
     flex-direction: row;
@@ -275,12 +277,15 @@
     border-radius: 10px;
     padding: 20px;
     text-align: center;
+    position: center;
 }
 
 .mensagem-vazia {
     text-align: center;
     padding: 20px;
     width: 100%;
+    justify-content: center;
+    position: relative;
 }
 
 /* Melhorar aparência do card vazio no carrossel */

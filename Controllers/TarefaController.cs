@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using ProjetoInter.Models;
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ProjetoInter.Controllers
 {
@@ -44,6 +46,7 @@ namespace ProjetoInter.Controllers
 
             ViewBag.Animais = await context.Animais
                 .Include(a => a.Especie)
+                .Where(a => a.StatusId >= 1 && a.StatusId <= 4)
                 .ToListAsync();
 
             return View(tarefas);
@@ -83,6 +86,11 @@ namespace ProjetoInter.Controllers
                     return Unauthorized(new { success = false, message = "Funcionário não autenticado" });
                 }
 
+                if (model.AnimalId <= 0)
+                {
+                    return BadRequest(new { success = false, message = "Animal inválido." });
+                }
+
                 var tarefa = new Procedimento
                 {
                     Descricao = model.Descricao,
@@ -90,7 +98,7 @@ namespace ProjetoInter.Controllers
                     DataProcedimento = model.DataProcedimento,
                     Observacoes = model.Observacoes,
                     Status = false,
-                    FuncionarioTarefaId = funcionario.FuncionarioId // Definido pelo servidor
+                    FuncionarioTarefaId = funcionario.FuncionarioId
                 };
 
                 context.Procedimentos.Add(tarefa);
@@ -112,9 +120,6 @@ namespace ProjetoInter.Controllers
             }
         }
 
-// Adicione esta classe em seu projeto
-
-
         [HttpGet("Tarefa/Editar/{id}")]
         public async Task<IActionResult> Editar(int id)
         {
@@ -133,6 +138,7 @@ namespace ProjetoInter.Controllers
 
                 ViewBag.Animais = await context.Animais
                     .Include(a => a.Especie)
+                    .Where(a => a.StatusId >= 1 && a.StatusId <= 4)
                     .ToListAsync();
 
                 return PartialView("_ModalEditarTarefa", tarefa);
@@ -191,7 +197,6 @@ namespace ProjetoInter.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro ao concluir tarefa: {ex.Message}");
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
@@ -213,7 +218,7 @@ namespace ProjetoInter.Controllers
 
                 if (tarefas.Count == 0)
                 {
-                    return Json(new { success = false, message = "Tarefas não encontradas" });
+                    return Json(new { success = false, message = "Nenhuma tarefa encontrada para exclusão" });
                 }
 
                 context.Procedimentos.RemoveRange(tarefas);
@@ -223,7 +228,6 @@ namespace ProjetoInter.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Erro ao excluir tarefas: {ex.Message}");
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
