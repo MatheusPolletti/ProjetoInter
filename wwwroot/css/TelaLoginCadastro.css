@@ -4,8 +4,9 @@
 {
     --cor-preta: #000000;
     --cor-vermelha: #ff0000;
-    --cor-fundo: #F9F7F1;
+    --cor-fundo: #BBDFB6;
     --cor-branco: #FFFFFF;
+    --cor-botao-login: #317034;
     
     --cor-fundo-erro: #FFE1DD;
     --cor-texto-aviso: #333333;
@@ -82,14 +83,26 @@ main
     border-radius: 5px;
 }
 
+#DivBotao
+{
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
 .Botao
 {
     font-size: 16px;
     
-    border: 2px solid var(--cor-preta);
     border-radius: 999px;
+
+    height: 4vh;
+    width: 14vw;
     
-    background-color: var(--cor-branco);
+    background-color: var(--cor-botao-login);
+
+    color: var(--cor-branco);
 
     cursor: pointer;
 
@@ -100,7 +113,7 @@ main
 
 .Botao:hover
 {
-    transform: scale(1.2);
+    transform: scale(1.08);
 }
 
 .DadosLogin a
