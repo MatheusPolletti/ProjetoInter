@@ -2,115 +2,224 @@ using Microsoft.AspNetCore.Mvc;
 using ProjetoInter.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-using System.Linq;
 using ProjetoInter.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting; // Adicione este
-using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Hosting;
 
 [Authorize]
-public class InstituicaoController : BaseController // Assumindo que você tem um BaseController que injeta o DbContext
+public class InstituicaoController : BaseController
 {
-    private readonly IConfiguration _configuration; // Para acessar configurações (ex: caminhos de upload)
-    private readonly IWebHostEnvironment _webHostEnvironment; // Para obter o caminho da wwwroot
+    private readonly IWebHostEnvironment _hostingEnvironment;
 
-    // INJETE IConfiguration e IWebHostEnvironment no construtor
-    public InstituicaoController(DbZoologico context, IConfiguration configuration, IWebHostEnvironment webHostEnvironment) : base(context)
+    public InstituicaoController(DbZoologico context, IWebHostEnvironment hostingEnvironment) : base(context)
     {
-        _configuration = configuration;
-        _webHostEnvironment = webHostEnvironment;
+        _hostingEnvironment = hostingEnvironment;
     }
 
-    [HttpPost]
-    public async Task<IActionResult> CriarInstituicao([FromForm] Instituicao model, IFormFile Imagem) // <--- MUDANÇA AQUI: [FromForm] e IFormFile
+    [HttpGet]
+    public async Task<IActionResult> Instituicoes(string busca)
     {
-        // 1. Validação dos dados do formulário
-        if (model == null)
+        var query = context.Instituicoes.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(busca))
         {
-            return BadRequest(new { success = false, message = "Dados da instituição inválidos." });
+            busca = busca.ToLower();
+            query = query.Where(i => i.Nome.ToLower().Contains(busca) ||
+                                     i.Endereco.ToLower().Contains(busca));
         }
 
-        if (string.IsNullOrWhiteSpace(model.Nome))
-        {
-            return BadRequest(new { success = false, message = "O nome da instituição é obrigatório." });
-        }
-        if (string.IsNullOrWhiteSpace(model.Endereco))
-        {
-            return BadRequest(new { success = false, message = "O endereço da instituição é obrigatório." });
-        }
+        var instituicoes = await query.OrderBy(i => i.Nome).ToListAsync();
+        return View(instituicoes);
+    }
 
+   [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CriarInstituicao([FromForm] Instituicao model, [FromForm] IFormFile Imagem)
+    {
         try
         {
-            // 2. Lógica para salvar a imagem no servidor
+            if (string.IsNullOrWhiteSpace(model.Nome))
+                return BadRequest(new { success = false, message = "Nome é obrigatório" });
+
+            if (string.IsNullOrWhiteSpace(model.Endereco))
+                return BadRequest(new { success = false, message = "Endereço é obrigatório" });
+
             if (Imagem != null && Imagem.Length > 0)
             {
-                // Define a pasta onde as imagens serão salvas dentro de wwwroot
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "instituicoes"); // Ex: wwwroot/uploads/instituicoes
-                
-                // Cria a pasta se ela não existir
-                if (!Directory.Exists(uploadsFolder))
+                var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "img", "Instituicao");
+                if (!Directory.Exists(uploads))
+                    Directory.CreateDirectory(uploads);
+
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Imagem.FileName);
+                var filePath = Path.Combine(uploads, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    Directory.CreateDirectory(uploadsFolder);
+                    await Imagem.CopyToAsync(stream);
                 }
 
-                // Gera um nome único para o arquivo para evitar colisões
-                string uniqueFileName = Guid.NewGuid().ToString() + "_" + Imagem.FileName;
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                // Salva o arquivo fisicamente no servidor
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await Imagem.CopyToAsync(fileStream);
-                }
-
-                // Armazena o caminho relativo (URL) da imagem no seu modelo
-                model.ImagemUrl = $"/uploads/instituicoes/{uniqueFileName}"; 
-            }
-            else
-            {
-                model.ImagemUrl = null; // Garante que a URL da imagem seja nula se nenhuma imagem for enviada
+                model.ImagemUrl = "/img/Instituicao/" + fileName;
             }
 
-            // 3. Adiciona a nova instituição (com ou sem ImagemUrl) ao DbContext
             context.Instituicoes.Add(model);
-            
-            // 4. Salva as mudanças no banco de dados
             await context.SaveChangesAsync();
 
-            // 5. Retorna uma resposta de sucesso
-            return Ok(new { success = true, message = "Instituição cadastrada com sucesso!", instituicaoId = model.InstituicaoId });
+            return Json(new { 
+                success = true, 
+                message = "Instituição cadastrada com sucesso!",
+                instituicao = new {
+                    model.InstituicaoId,
+                    model.Nome
+                }
+            });
         }
         catch (Exception ex)
         {
-            // Loga a exceção para depuração
-            Console.WriteLine($"Erro ao cadastrar instituição com imagem: {ex.Message}");
-            return StatusCode(500, new { success = false, message = "Erro interno do servidor ao cadastrar a instituição." });
+            return StatusCode(500, new { 
+                success = false, 
+                message = "Erro interno: " + ex.Message 
+            });
         }
     }
 
-    // Dentro de InstituicaoController.cs
-
-// ... (seus outros métodos, como CriarInstituicao) ...
-
-[HttpGet]
-// Se você não usa [Route] em nenhuma outra action, este pode ser apenas [HttpGet]
-// e o frontend chamaria /Instituicao/ObterTodasInstituicoes
-public async Task<IActionResult> ObterTodasInstituicoes()
-{
-    try
+    
+    [HttpGet]
+    public async Task<IActionResult> Editar(int id)
     {
-        // Busca todas as instituições, ordenadas pelo nome
+        var instituicao = await context.Instituicoes.FindAsync(id);
+        if (instituicao == null) return NotFound();
+
+        return PartialView("_ModalEditarInstituicao", instituicao);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EditarInstituicao(Instituicao model, IFormFile Imagem)
+    {
+        var erros = new List<string>();
+
+        try
+        {
+            var instituicaoExistente = await context.Instituicoes.FindAsync(model.InstituicaoId);
+            if (instituicaoExistente == null)
+            {
+                erros.Add("Instituição não encontrada");
+                return Json(new { success = false, errors = erros });
+            }
+
+            instituicaoExistente.Nome = model.Nome;
+            instituicaoExistente.Endereco = model.Endereco;
+            instituicaoExistente.Contato = model.Contato;
+
+            if (Imagem != null && Imagem.Length > 0)
+            {
+                var uploads = Path.Combine(_hostingEnvironment.WebRootPath, "img", "Instituicao");
+                if (!Directory.Exists(uploads))
+                    Directory.CreateDirectory(uploads);
+
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Imagem.FileName);
+                var filePath = Path.Combine(uploads, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await Imagem.CopyToAsync(stream);
+                }
+
+                if (!string.IsNullOrEmpty(instituicaoExistente.ImagemUrl))
+                {
+                    var oldFilePath = Path.Combine(
+                        _hostingEnvironment.WebRootPath,
+                        instituicaoExistente.ImagemUrl.TrimStart('/')
+                    );
+
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        System.IO.File.Delete(oldFilePath);
+                    }
+                }
+
+                instituicaoExistente.ImagemUrl = "/img/Instituicao/" + fileName;
+            }
+
+            context.Update(instituicaoExistente);
+            await context.SaveChangesAsync();
+
+            return Json(new { success = true });
+        }
+        catch (Exception ex)
+        {
+            erros.Add($"Erro ao atualizar: {ex.Message}");
+            return Json(new { success = false, errors = erros });
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ExcluirInstituicao(int id)
+    {
+        try
+        {
+            var instituicao = await context.Instituicoes.FindAsync(id);
+            if (instituicao == null)
+            {
+                return Json(new { success = false, message = "Instituição não encontrada." });
+            }
+
+            // Verificar se existem funcionários associados
+            var funcionariosAssociados = await context.Funcionarios
+                .AnyAsync(f => f.InstituicaoId == id);
+
+            if (funcionariosAssociados)
+            {
+                return Json(new { 
+                    success = false, 
+                    message = "Não é possível excluir a instituição pois existem funcionários associados a ela." 
+                });
+            }
+
+            // Verificar se existem transferências associadas
+            var transferenciasAssociadas = await context.Transferencias
+                .AnyAsync(t => t.InstituicaoOrigemId == id || t.InstituicaoDestinoId == id);
+
+            if (transferenciasAssociadas)
+            {
+                return Json(new { 
+                    success = false, 
+                    message = "Não é possível excluir a instituição pois existem transferências associadas a ela." 
+                });
+            }
+
+            // Excluir a imagem se existir
+            if (!string.IsNullOrEmpty(instituicao.ImagemUrl))
+            {
+                var filePath = Path.Combine(
+                    _hostingEnvironment.WebRootPath,
+                    instituicao.ImagemUrl.TrimStart('/')
+                );
+
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+            }
+
+            context.Instituicoes.Remove(instituicao);
+            await context.SaveChangesAsync();
+
+            return Json(new { success = true });
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ObterTodasInstituicoes()
+    {
         var instituicoes = await context.Instituicoes
-                                        .OrderBy(i => i.Nome)
-                                        .ToListAsync();
+            .OrderBy(i => i.Nome)
+            .ToListAsync();
 
-        // Retorna a lista de instituições como JSON
-        return Ok(instituicoes); 
+        return Ok(instituicoes);
     }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Erro ao obter instituições: {ex.Message}");
-        return StatusCode(500, new { success = false, message = "Erro interno do servidor ao obter as instituições." });
-    }
-}
 }

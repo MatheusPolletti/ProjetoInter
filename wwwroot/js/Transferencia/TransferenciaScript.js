@@ -294,58 +294,57 @@ async function atualizarDropdown(
 
 // Modifique a função salvarNovaInstituicao para chamar a nova função
 async function salvarNovaInstituicao() {
-  // Coleta os valores dos campos de texto
-  const nome = document.getElementById("instituicaoNome").value;
-  const endereco = document.getElementById("instituicaoEndereco").value;
-  const contato = document.getElementById("instituicaoContato").value;
-
-  // Obtém o elemento input do tipo 'file'
-  const imagemInput = document.getElementById("imagemInput");
-  // Pega o primeiro arquivo selecionado (se houver)
-  const imagemArquivo = imagemInput.files[0];
-
-  // Validação básica (você pode adicionar mais aqui)
-  if (!nome || !endereco) {
-    alert("Nome e Endereço são campos obrigatórios.");
-
-    return;
-  }
-
-  // Cria um objeto FormData para enviar os dados, incluindo o arquivo
-  const formData = new FormData();
-  formData.append("Nome", nome); // O nome 'Nome' deve corresponder à sua p opriedade na Model C#
-  formData.append("Endereco", endereco); // O nome 'Endereco' deve corresponder à sua propriedade na Model C#
-  formData.append("Contato", contato || ""); // O nome 'Contato' deve corresponder à sua propriedade na Model C#
-
-  // Se um arquivo de imagem foi selecionado, adicione-o ao FormData
-  // 'Imagem' aqui DEVE corresponder ao nome do parâmetro IFormFile no seu método C#
-  if (imagemArquivo) {
-    formData.append("Imagem", imagemArquivo);
-  }
-
-  try {
-    const response = await fetch("/Instituicao/CriarInstituicao", {
-      method: "POST",
-      body: formData, // Importante: Enviamos o FormData. O navegador configura o Content-Type automaticamente como 'multipart/form-data'.
-    });
-
-    const data = await response.json(); // Pega a resposta JSON do servidor
-
-    if (response.ok && data.success) {
-      fecharModalInstituicao(); // Fecha o modal de cadastro de instituição
-      window.location.reload(); // Recarrega a página para ver a atualização
-    } else {
-      alert(
-        "Erro ao cadastrar instituição: " +
-          (data.message || response.statusText)
-      );
+    // Coleta os valores
+    const nome = document.getElementById("instituicaoNome").value;
+    const endereco = document.getElementById("instituicaoEndereco").value;
+    const contato = document.getElementById("instituicaoContato").value;
+    const imagemInput = document.getElementById("imagemInput");
+    
+    // Validação
+    if (!nome || !endereco) {
+        alert("Nome e Endereço são obrigatórios");
+        return;
     }
-  } catch (error) {
-    console.error("Erro na requisição de cadastro da instituição:", error);
-    alert(
-      "Ocorreu um erro ao conectar com o servidor para cadastrar a instituição. Verifique o console para mais detalhes."
-    );
-  }
+
+    // Cria FormData
+    const formData = new FormData();
+    formData.append("Nome", nome);
+    formData.append("Endereco", endereco);
+    formData.append("Telefone", contato || "");
+    
+    if (imagemInput.files[0]) {
+        formData.append("Imagem", imagemInput.files[0]);
+    }
+
+    // Adiciona AntiForgeryToken
+    const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+    formData.append("__RequestVerificationToken", token);
+
+    try {
+        const response = await fetch("/Instituicao/CriarInstituicao", {
+            method: "POST",
+            body: formData
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || "Erro no servidor");
+        }
+
+        const data = await response.json();
+        if (data.success) {
+            fecharModalInstituicao();
+            // Atualiza os dropdowns de instituição
+            await atualizarDropdown(document.getElementById("newTransferOrigemId"));
+            await atualizarDropdown(document.getElementById("newTransferDestinoId"));
+            window.location.reload();
+        } else {
+            alert(data.message || "Erro ao cadastrar");
+        }
+    } catch (error) {
+        console.error("Erro:", error);
+        alert(`Erro: ${error.message}`);
+    }
 }
 
 function mostrarPreviewEditar(event) {
