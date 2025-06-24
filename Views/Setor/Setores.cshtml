@@ -44,66 +44,68 @@
     </div>
 }
 
-<div class="container-setores">
-    <div class="esquerda">
-        @if (Model != null && Model.Any()) // Adicionado .Any() para verificar se há itens
-        {
-            foreach (var setor in Model)
+<section id="Container-main">
+    <div class="container-setores">
+        <div class="esquerda">
+            @if (Model != null && Model.Any()) // Adicionado .Any() para verificar se há itens
             {
-                <div class="card-setores">
-                    <div class="textos">
-                        <h3 class="nomeSetor">@setor.Nome</h3>
-                        <p><strong>Descrição:</strong> @setor.Descricao</p>
+                foreach (var setor in Model)
+                {
+                    <div class="card-setores">
+                        <div class="textos">
+                            <h3 class="nomeSetor">@setor.Nome</h3>
+                            <p><strong>Descrição:</strong> @setor.Descricao</p>
+                        </div>
+                        <div class="card-end">
+                            <h3>ID: @setor.SetorId</h3>
+                            <input type="checkbox" class="setor-checkbox" data-setorid="@setor.SetorId"
+                                onclick="verificaCheckboxesSetor()">
+                        </div>
                     </div>
-                    <div class="card-end">
-                        <h3>ID: @setor.SetorId</h3>
-                        <input type="checkbox" class="setor-checkbox" data-setorid="@setor.SetorId"
-                            onclick="verificaCheckboxesSetor()">
-                    </div>
-                </div>
+                }
             }
-        }
-        else
-        {
-            <p>Nenhum setor encontrado.</p>
-        }
-    </div>
-
-    <div>
-        <img src="/@(Model?.FirstOrDefault()?.InstituicaoPertence?.ImagemUrl ?? "/images/mapa_padrao.png")"
-            alt="Mapa da Instituição">
-    </div>
-
-</div>
-
-<section class="area-modal-novo">
-    <div class="modal-base">
-        <button class="modal-close" onclick="FecharModalSetor()">
-            <i class="fas fa-times"></i>
-        </button>
-
-        <h1 id="modalSetorTitle">Adicionar Setor</h1> @* <-- MUDANÇA AQUI: Adicionado ID para o título *@
-
-        <input type="hidden" id="inputSetorId" value="0" /> @* <-- MUDANÇA AQUI: Campo oculto para o ID do setor *@
-
-        <div class="secaoAcao">
-            <label>Nome:</label>
-            <input type="text" id="inputSetorNome" class="inputTexto" /> @* <-- MUDANÇA AQUI: Renomeado ID para ser genérico *@
+            else
+            {
+                <p>Nenhum setor encontrado.</p>
+            }
         </div>
 
-        <div class="secaoAcao">
-            <label>Descrição:</label>
-            <input type="text" id="inputSetorDescricao" class="inputTexto" /> @* <-- MUDANÇA AQUI: Renomeado ID para ser genérico *@
+        <div>
+            <img src="/@(Model?.FirstOrDefault()?.InstituicaoPertence?.ImagemUrl ?? "/images/mapa_padrao.png")"
+                alt="Mapa da Instituição">
         </div>
 
-        <div class="secaoAcao">
-            <label for="selectSetorStatus">Status:</label>
-            <select id="selectSetorStatus" name="selectSetorStatus" class="inputTexto"> @* <-- MUDANÇA AQUI: Renomeado ID para ser genérico *@
-                <option value="true">Ativo</option>
-                <option value="false">Inativo</option>
-            </select>
-        </div>
-
-        <button class="btn-concluir" id="modalSetorSubmitButton" onclick="handleSetorSubmit()">Adicionar</button> @* <-- MUDANÇA AQUI: Adicionado ID e nova função de tratamento *@
     </div>
+
+    <section class="area-modal-novo">
+        <div class="modal-base">
+            <button class="modal-close" onclick="FecharModalSetor()">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <h1 id="modalSetorTitle">Adicionar Setor</h1> @* <-- MUDANÇA AQUI: Adicionado ID para o título *@
+
+            <input type="hidden" id="inputSetorId" value="0" /> @* <-- MUDANÇA AQUI: Campo oculto para o ID do setor *@
+
+            <div class="secaoAcao">
+                <label>Nome:</label>
+                <input type="text" id="inputSetorNome" class="inputTexto" /> @* <-- MUDANÇA AQUI: Renomeado ID para ser genérico *@
+            </div>
+
+            <div class="secaoAcao">
+                <label>Descrição:</label>
+                <input type="text" id="inputSetorDescricao" class="inputTexto" /> @* <-- MUDANÇA AQUI: Renomeado ID para ser genérico *@
+            </div>
+
+            <div class="secaoAcao">
+                <label for="selectSetorStatus">Status:</label>
+                <select id="selectSetorStatus" name="selectSetorStatus" class="inputTexto"> @* <-- MUDANÇA AQUI: Renomeado ID para ser genérico *@
+                    <option value="true">Ativo</option>
+                    <option value="false">Inativo</option>
+                </select>
+            </div>
+
+            <button class="btn-concluir" id="modalSetorSubmitButton" onclick="handleSetorSubmit()">Adicionar</button> @* <-- MUDANÇA AQUI: Adicionado ID e nova função de tratamento *@
+        </div>
+    </section>
 </section>
