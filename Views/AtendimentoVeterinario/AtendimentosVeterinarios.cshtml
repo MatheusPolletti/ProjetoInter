@@ -26,12 +26,16 @@
 
             <h1 class="NomePagina">Atendimentos</h1>
 
-            <div class="Barrabusca">
-                <input type="text" placeholder="Pesquisar..." class="TextoPesquisa">
-                <button class="BotaoIconePesquisa" aria-label="Pesquisar">
-                    <i class="fas fa-search" aria-hidden="true"></i>
-                </button>
-            </div>
+            <form method="get" asp-action="AtendimentosVeterinarios" class="Barrabusca">
+                <input type="text" 
+                    name="busca" 
+                    placeholder="Pesquisar…" 
+                    class="TextoPesquisa" 
+                    value="@(Context.Request.Query["busca"])" />
+                <button type="submit" class="BotaoIconePesquisa">
+                    <i class="fas fa-search"></i>
+                </button>    
+            </form>
 
             <div class="BotoesAcoes">
                 <button class="BotaoExcluir" onclick="excluirAtendimentosSelecionados()">Excluir</button>

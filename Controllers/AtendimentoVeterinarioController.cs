@@ -14,17 +14,36 @@ public class AtendimentoVeterinarioController : BaseController
         _hostingEnvironment = hostingEnvironment;
     }
 
-    public async Task<IActionResult> AtendimentosVeterinarios()
+    [HttpGet]
+    public async Task<IActionResult> AtendimentosVeterinarios(string busca)
     {
-        var atendimentos = await context.AtendimentosVeterinarios
+        var query = context.AtendimentosVeterinarios
             .Include(a => a.Animal)
                 .ThenInclude(animal => animal.Setor)
             .Include(a => a.Animal)
                 .ThenInclude(animal => animal.Especie)
             .Include(a => a.FuncionarioSolicitante)
             .Include(a => a.FuncionarioVeterinario)
-            .ToListAsync();
+            .AsQueryable();
 
+        // Adicione esta parte para implementar a busca
+        if (!string.IsNullOrWhiteSpace(busca))
+        {
+            busca = busca.ToLower();
+            query = query.Where(a => 
+                a.Animal.Nome.ToLower().Contains(busca) ||
+                a.Descricao.ToLower().Contains(busca) ||
+                a.Resultado.ToLower().Contains(busca) ||
+                a.FuncionarioSolicitante.Nome.ToLower().Contains(busca) ||
+                a.FuncionarioVeterinario.Nome.ToLower().Contains(busca));
+        }
+
+        // Ordenação (opcional)
+        query = query.OrderByDescending(a => a.Data);
+
+        var atendimentos = await query.ToListAsync();
+
+        // Mantenha os ViewBags para os dropdowns
         ViewBag.Especies = await context.AnimalEspecies
             .OrderBy(e => e.Descricao)
             .ToListAsync();
@@ -44,7 +63,7 @@ public class AtendimentoVeterinarioController : BaseController
             .ToListAsync();
 
         ViewBag.Veterinarios = await context.Funcionarios
-            .Where(f => f.StatusFuncionarioId == 1 /* && f.CargoId == ID_DO_CARGO_VETERINARIO */) // Exemplo: Adicione sua lógica para identificar veterinários
+            .Where(f => f.StatusFuncionarioId == 1)
             .OrderBy(f => f.Nome)
             .ToListAsync();
 
