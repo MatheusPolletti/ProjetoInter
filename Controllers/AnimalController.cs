@@ -14,7 +14,6 @@ public class AnimalController : BaseController
         _hostingEnvironment = hostingEnvironment;
     }
 
-    // GET: /Animal/Animais?busca=texto
     public async Task<IActionResult> Animais(string busca)
     {
         var query = context.Animais
@@ -38,7 +37,6 @@ public class AnimalController : BaseController
         return View(animais);
     }
 
-    // GET: /Animal/Novo - Retorna o partial view modal
     public async Task<IActionResult> Novo()
     {
         ViewBag.Especies = await context.AnimalEspecies.ToListAsync();
@@ -46,14 +44,12 @@ public class AnimalController : BaseController
         return PartialView("_ModalNovoAnimal");
     }
 
-    // POST: /Animal/AdicionarAnimal
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AdicionarAnimal(Animal novoAnimal, IFormFile Imagem)
     {
         var erros = new List<string>();
 
-        // Validações básicas
         if (string.IsNullOrWhiteSpace(novoAnimal.Nome))
             erros.Add("O nome do animal é obrigatório.");
 
@@ -93,7 +89,7 @@ public class AnimalController : BaseController
             novoAnimal.ImagemUrl = "/img/Animais/" + fileName;
         }
 
-        novoAnimal.StatusId = 1; // Status "Ativo"
+        novoAnimal.StatusId = 1;
 
         context.Animais.Add(novoAnimal);
         await context.SaveChangesAsync();
@@ -124,7 +120,6 @@ public class AnimalController : BaseController
         return Json(new { success = false, message = "Descrição inválida." });
     }
 
-    // GET: /Animal/Editar/5
     [HttpGet]
     public async Task<IActionResult> Editar(int id)
     {
@@ -141,7 +136,6 @@ public class AnimalController : BaseController
         return PartialView("_ModalEditarAnimal", animal);
     }
 
-    // POST: /Animal/EditarAnimal
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditarAnimal(Animal animal, IFormFile Imagem)
@@ -212,7 +206,7 @@ public class AnimalController : BaseController
     {
         try
         {
-            const int STATUS_INATIVO = 6; // Status "Inativo"
+            const int STATUS_INATIVO = 6;
 
             var animais = await context.Animais
                 .Where(a => model.AnimalIds.Contains(a.AnimalId))
@@ -220,7 +214,6 @@ public class AnimalController : BaseController
 
             foreach (var animal in animais)
             {
-                // Verificar se existem tarefas pendentes para o animal
                 var tarefasPendentes = await context.Procedimentos
                     .AnyAsync(p => p.AnimalId == animal.AnimalId && !p.Status);
 
@@ -232,7 +225,6 @@ public class AnimalController : BaseController
                     });
                 }
 
-                // Verificar se existem transferências pendentes para o animal
                 var transferenciasPendentes = await context.Transferencias
                     .AnyAsync(t => t.AnimalId == animal.AnimalId && t.Status);
 
@@ -244,7 +236,6 @@ public class AnimalController : BaseController
                     });
                 }
 
-                // Excluir tarefas concluídas associadas ao animal
                 var tarefasConcluidas = await context.Procedimentos
                     .Where(p => p.AnimalId == animal.AnimalId && p.Status)
                     .ToListAsync();
@@ -254,7 +245,7 @@ public class AnimalController : BaseController
                     context.Procedimentos.RemoveRange(tarefasConcluidas);
                 }
 
-                animal.StatusId = STATUS_INATIVO; // Marca como inativo
+                animal.StatusId = STATUS_INATIVO;
 
                 if (model.AnimalIds.Count == 1 &&
                     !string.IsNullOrEmpty(model.DataFalecimento) &&

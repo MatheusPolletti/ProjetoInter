@@ -78,7 +78,6 @@ public class HomeController : BaseController
                     return RedirectToAction("LoginCadastro");
                 }
 
-                // Verifique o status do funcionário
                 if (funcionario.StatusFuncionarioId == 3 || funcionario.StatusFuncionarioId == 5)
                 {
                     TempData["Erro"] = "Erro: Usuário inativo";
@@ -86,18 +85,16 @@ public class HomeController : BaseController
                     return RedirectToAction("LoginCadastro");
                 }
 
-                // Armazena tokens na sessão com segurança
                 HttpContext.Session.SetString("SupabaseAccessToken", accessToken!);
                 HttpContext.Session.SetString("SupabaseRefreshToken", refreshToken!);
 
-                // Cria o cookie de autenticação com os claims do usuário
                 var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, funcionario.FuncionarioId.ToString()), // ID do funcionário
-                new Claim(ClaimTypes.Name, funcionario.Nome), // Nome do funcionário para exibição
-                new Claim(ClaimTypes.Email, email), // Email do funcionário
-                new Claim("uid", uidString!), // UID do Supabase, se precisar para outras operações
-                new Claim("InstituicaoId", funcionario.InstituicaoId.ToString()) // ID da instituição
+                new Claim(ClaimTypes.NameIdentifier, funcionario.FuncionarioId.ToString()),
+                new Claim(ClaimTypes.Name, funcionario.Nome),
+                new Claim(ClaimTypes.Email, email),
+                new Claim("uid", uidString!),
+                new Claim("InstituicaoId", funcionario.InstituicaoId.ToString())
             };
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

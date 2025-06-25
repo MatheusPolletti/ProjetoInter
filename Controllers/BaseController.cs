@@ -40,7 +40,7 @@ public class BaseController : Controller
 
         if (funcionario?.StatusFuncionarioId == 3 || funcionario?.StatusFuncionarioId == 5)
         {
-            return null; // Retorna null se o status for 3 ou 5
+            return null;
         }
 
         return funcionario;

@@ -24,13 +24,10 @@ public class ResetarSenhaController : Controller
 
         try
         {
-            // Decodifica a URL completa que vem no access_token
             var decodedUrl = System.Net.WebUtility.UrlDecode(access_token);
 
-            // Cria Uri para extrair parâmetros da query string
             var uri = new Uri(decodedUrl);
 
-            // Extrai o token JWT do parâmetro "token" na query string
             var queryParams = QueryHelpers.ParseQuery(uri.Query);
 
             if (!queryParams.TryGetValue("token", out var token) || string.IsNullOrEmpty(token))
@@ -39,7 +36,6 @@ public class ResetarSenhaController : Controller
                 return View();
             }
 
-            // Passa o token puro para a view, para usar no POST
             ViewBag.AccessToken = token.ToString();
         }
         catch (Exception)

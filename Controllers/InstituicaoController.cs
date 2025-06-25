@@ -81,7 +81,6 @@ public class InstituicaoController : BaseController
         }
     }
 
-    
     [HttpGet]
     public async Task<IActionResult> Editar(int id)
     {
@@ -164,7 +163,6 @@ public class InstituicaoController : BaseController
                 return Json(new { success = false, message = "Instituição não encontrada." });
             }
 
-            // Verificar se existem funcionários associados
             var funcionariosAssociados = await context.Funcionarios
                 .AnyAsync(f => f.InstituicaoId == id);
 
@@ -176,7 +174,6 @@ public class InstituicaoController : BaseController
                 });
             }
 
-            // Verificar se existem transferências associadas
             var transferenciasAssociadas = await context.Transferencias
                 .AnyAsync(t => t.InstituicaoOrigemId == id || t.InstituicaoDestinoId == id);
 
@@ -188,7 +185,6 @@ public class InstituicaoController : BaseController
                 });
             }
 
-            // Excluir a imagem se existir
             if (!string.IsNullOrEmpty(instituicao.ImagemUrl))
             {
                 var filePath = Path.Combine(

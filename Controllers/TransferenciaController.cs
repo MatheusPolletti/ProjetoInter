@@ -2,9 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProjetoInter.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-using System.Linq;
 using ProjetoInter.Models;
-using System.Threading.Tasks;
 
 [Authorize]
 public class TransferenciaController : BaseController

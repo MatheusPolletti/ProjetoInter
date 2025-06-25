@@ -51,4 +51,3 @@ function retangulosSeSobrepoemComMargem(rect1, rect2, margem = 1) {
     rect1.top + margem > rect2.bottom - margem
   );
 }
-

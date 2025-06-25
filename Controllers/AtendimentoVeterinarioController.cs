@@ -26,7 +26,6 @@ public class AtendimentoVeterinarioController : BaseController
             .Include(a => a.FuncionarioVeterinario)
             .AsQueryable();
 
-        // Adicione esta parte para implementar a busca
         if (!string.IsNullOrWhiteSpace(busca))
         {
             busca = busca.ToLower();
@@ -38,12 +37,10 @@ public class AtendimentoVeterinarioController : BaseController
                 a.FuncionarioVeterinario.Nome.ToLower().Contains(busca));
         }
 
-        // Ordenação (opcional)
         query = query.OrderByDescending(a => a.Data);
 
         var atendimentos = await query.ToListAsync();
 
-        // Mantenha os ViewBags para os dropdowns
         ViewBag.Especies = await context.AnimalEspecies
             .OrderBy(e => e.Descricao)
             .ToListAsync();
@@ -141,7 +138,7 @@ public class AtendimentoVeterinarioController : BaseController
         return RedirectToAction("Tarefas", "Tarefa");
     }
 
-    [HttpGet("/AtendimentoVeterinario/ObterAtendimentoPorId/{id}")] // Rota convencional: /AtendimentoVeterinario/ObterAtendimentoPorId/{id}
+    [HttpGet("/AtendimentoVeterinario/ObterAtendimentoPorId/{id}")]
     public async Task<IActionResult> ObterAtendimentoPorId(int id)
     {
         var atendimento = await context.AtendimentosVeterinarios
@@ -162,7 +159,7 @@ public class AtendimentoVeterinarioController : BaseController
     }
 
     // MÉTODO PARA ATUALIZAR
-    [HttpPost("/AtendimentoVeterinario/AtualizarAtendimento")] // Rota convencional: /AtendimentoVeterinario/AtualizarAtendimento
+    [HttpPost("/AtendimentoVeterinario/AtualizarAtendimento")]
     public async Task<IActionResult> AtualizarAtendimento([FromBody] AtendimentoVeterinario model)
     {
         if (model == null || model.AtendimentoVeterinarioId <= 0)
@@ -201,7 +198,7 @@ public class AtendimentoVeterinarioController : BaseController
     }
 
     [HttpPost("/AtendimentoVeterinario/ConcluirAtendimento")]
-    public async Task<IActionResult> ConcluirAtendimento([FromBody] AtendimentoVeterinario model) // Mude o tipo do parâmetro
+    public async Task<IActionResult> ConcluirAtendimento([FromBody] AtendimentoVeterinario model)
     {
         if (model == null || model.AtendimentoVeterinarioId <= 0)
         {
@@ -217,10 +214,9 @@ public class AtendimentoVeterinarioController : BaseController
 
         try
         {
-            // Atualize os campos relevantes do atendimento existente
-            atendimentoExistente.Resultado = model.Resultado; // Exemplo: atualiza resultado
-            atendimentoExistente.Observacoes = model.Observacoes; // Exemplo: atualiza observações
-            atendimentoExistente.Status = false; // Define o status como false para "concluir"
+            atendimentoExistente.Resultado = model.Resultado;
+            atendimentoExistente.Observacoes = model.Observacoes;
+            atendimentoExistente.Status = false;
 
             context.AtendimentosVeterinarios.Update(atendimentoExistente);
             await context.SaveChangesAsync();
@@ -251,7 +247,7 @@ public class AtendimentoVeterinarioController : BaseController
                 return NotFound(new { success = false, message = "Atendimento não encontrado para exclusão." });
             }
 
-            context.AtendimentosVeterinarios.Remove(atendimento); // Remove o registro
+            context.AtendimentosVeterinarios.Remove(atendimento);
             await context.SaveChangesAsync();
 
             return Ok(new { success = true, message = "Atendimento excluído permanentemente com sucesso!" });
